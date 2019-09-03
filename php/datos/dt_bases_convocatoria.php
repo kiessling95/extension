@@ -1,15 +1,8 @@
 <?php
 class dt_bases_convocatoria extends extension_datos_tabla
 {
-	function get_listado($filtro=array())
+	function get_listado($where=null)
 	{
-		$where = array();
-		if (isset($filtro['id_bases'])) {
-			$where[] = "id_bases = ".quote($filtro['id_bases']);
-		}
-		if (isset($filtro['tipo_convocatoria'])) {
-			$where[] = "tipo_convocatoria ILIKE ".quote("%{$filtro['tipo_convocatoria']}%");
-		}
 		$sql = "SELECT
 			t_bc.id_bases,
 			t_bc.convocatoria,
@@ -27,11 +20,15 @@ class dt_bases_convocatoria extends extension_datos_tabla
 			t_bc.ordenanza,
 			t_bc.tipo_convocatoria
 		FROM
-			bases_convocatoria as t_bc
-		ORDER BY convocatoria";
-		if (count($where)>0) {
-			$sql = sql_concatenar_where($sql, $where);
+			bases_convocatoria as t_bc";
+		if (!is_null($where)) {
+			$sql.="
+			WHERE
+				$where";
 		}
+		$sql .="
+		ORDER BY convocatoria";
+		
 		return toba::db('extension')->consultar($sql);
 	}
 

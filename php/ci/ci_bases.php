@@ -14,19 +14,10 @@ class ci_bases extends abm_ci
 		$pdf->ezStartPageNumbers(300, 20, 8, 'left', $formato, 1);    //x, y, size, pos, texto, pagina inicio
 		
 		//Inserto los componentes usando la API de toba_vista_pdf
-		$salida->titulo($this->get_nombre());
+		//$salida->titulo($this->get_nombre());
 		//$salida->mensaje('Nota: Este es el Principal');
 		$this->dependencia('formulario')->vista_pdf($salida);
-		
-		//Encabezado
-		$pdf = $salida->get_pdf();
-		foreach ($pdf->ezPages as $pageNum=>$id){
-			$pdf->reopenObject($id);
-			$imagen = toba::proyecto()->get_path().'/www/img/logo_toba_siu.jpg';
-			$pdf->addJpegFromFile($imagen, 50, 780, 141, 45);    //imagen, x, y, ancho, alto
-				$pdf->closeObject();        
-		}        
-		
+			
 	}
 }
 ?>

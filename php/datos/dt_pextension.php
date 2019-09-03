@@ -1,12 +1,8 @@
 <?php
 class dt_pextension extends extension_datos_tabla
 {
-	function get_listado($filtro=array())
+	function get_listado($where = null)
 	{
-		$where = array();
-		if (isset($filtro['uni_acad'])) {
-			$where[] = "uni_acad = ".quote($filtro['uni_acad']);
-		}
 		$sql = "SELECT
 			t_p.id_pext,
 			t_p.codigo,
@@ -33,11 +29,15 @@ class dt_pextension extends extension_datos_tabla
 			t_p.estado_informe_a,
 			t_p.estado_informe_f
 		FROM
-			pextension as t_p	LEFT OUTER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
-		ORDER BY codigo";
-		if (count($where)>0) {
-			$sql = sql_concatenar_where($sql, $where);
+			pextension as t_p	LEFT OUTER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)";
+		if (!is_null($where)) {
+			$sql .="
+			WHERE 
+				$where";
 		}
+		$sql .="
+		ORDER BY codigo";
+		
 		return toba::db('extension')->consultar($sql);
 	}
 

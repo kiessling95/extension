@@ -1,3 +1,28 @@
 /**
 	Incluir aquí las reglas css propias de este proyecto 
 */
+body {
+	background-color: #b2dab4;/**c0d4c0*/
+}
+/**Color de arriba claro(#53a181) y abajo oscuro (#24685d)*/
+#barra_superior {
+	background-image: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0.5, #53a181),
+	    color-stop(0.5, #24685d)
+	);
+	background-image: -moz-linear-gradient(
+	    center top,
+	    #53a181 50%,
+	    #24685d 50%
+	);		
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient (GradientType=0, startColorstr=#53a181, endColorstr=#24685d)";
+	
+	border: #085a46 1px solid ;
+	border-bottom: 1px solid #005638;
+	color: white;
+	min-height: 38px;
+}
+
