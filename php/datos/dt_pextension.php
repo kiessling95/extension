@@ -1,9 +1,9 @@
 <?php
-class dt_pextension extends extension_datos_tabla
-{
-	function get_listado($where = null)
-	{
-		$sql = "SELECT
+
+class dt_pextension extends extension_datos_tabla {
+
+    function get_listado($where = null) {
+        $sql = "SELECT
 			t_p.id_pext,
 			t_p.codigo,
 			t_p.denominacion,
@@ -27,20 +27,25 @@ class dt_pextension extends extension_datos_tabla
 			t_p.fecha_prorroga2,
 			t_p.observacion,
 			t_p.estado_informe_a,
-			t_p.estado_informe_f
-		FROM
-			pextension as t_p	LEFT OUTER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)";
-		if (!is_null($where)) {
-			$sql .="
+			t_p.estado_informe_f,
+                        t_p.uni_acad,
+                        dc.apellido || ' '|| dc.nombre as director
+                FROM
+                        pextension as t_p LEFT OUTER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla) 
+                        LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D') 
+                        LEFT OUTER JOIN designacion as d ON (i.id_designacion = d.id_designacion )
+                        LEFT OUTER JOIN docente as dc ON ( dc.id_docente = d.id_docente ) ";
+        if (!is_null($where)) {
+            $sql .= "
 			WHERE 
 				$where";
-		}
-		$sql .="
-		ORDER BY codigo";
-		
-		return toba::db('extension')->consultar($sql);
-	}
+        }
+        $sql .= "
+		ORDER BY denominacion";
 
+        return toba::db('extension')->consultar($sql);
+    }
 
 }
+
 ?>

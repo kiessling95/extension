@@ -231,3 +231,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'0', --orden
 	'1001000131'  --dep_id
 );
+
+------------------------------------------------------------
+-- apex_eventos_pantalla
+------------------------------------------------------------
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000069', --pantalla
+	'1001000177', --objeto_ci
+	'1001000214', --evento_id
+	'extension'  --proyecto
+);
