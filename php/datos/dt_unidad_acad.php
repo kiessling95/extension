@@ -10,7 +10,7 @@ class dt_unidad_acad extends extension_datos_tabla {
 
     function get_descripcion($sigla) {
         $sql = "select descripcion from unidad_acad where sigla='" . $sigla . "'";
-        $resul = toba::db('designa')->consultar($sql);
+        $resul = toba::db('extension')->consultar($sql);
         if (count($resul) > 0) {
             return trim($resul[0]['descripcion']);
         } else {
@@ -23,7 +23,7 @@ class dt_unidad_acad extends extension_datos_tabla {
         if (isset($perfil)) {       //es usuario de la UA
             $sql = "select sigla,descripcion from unidad_acad ";
             $sql = toba::perfil_de_datos()->filtrar($sql);
-            $resul = toba::db('designa')->consultar($sql);
+            $resul = toba::db('extension')->consultar($sql);
             $sql = "select * from unidad_acad WHERE sigla<>'AUZA' and sigla<>'ASMA' and sigla<>'" . $resul[0]['sigla'] . "'";
         } else {
             $sql = "select * from unidad_acad ";

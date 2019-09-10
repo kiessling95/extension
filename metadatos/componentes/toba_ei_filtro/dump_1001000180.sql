@@ -134,7 +134,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'extension', --objeto_ei_filtro_proyecto
 	'opciones', --tipo
 	'uni_acad', --nombre
-	'uni_acad', --expresion
+	't_p.uni_acad', --expresion
 	'Unidad Academica', --etiqueta
 	NULL, --descripcion
 	'0', --obligatorio
