@@ -341,6 +341,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_planilla";
     }
 
+    
+
     // creo que todas estas conf ya no son necesarias 
     //-----------------------------------------------------------------------------------
     //---- cuadro_int -------------------------------------------------------------------
