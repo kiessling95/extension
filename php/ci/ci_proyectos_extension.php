@@ -60,17 +60,18 @@ class ci_proyectos_extension extends extension_ci {
         $this->set_pantalla('pant_formulario');
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
-/*]
-    function evt__cuadro__integrantes($datos) {
 
-        
-        //$this->set_pantalla('pant_planilla'); //no funciona
+    /* ]
+      function evt__cuadro__integrantes($datos) {
 
-        //$this->set_pantalla('pant_integrantese');
-        //$this->dep('datos')->tabla('pextension')->cargar($datos);
-        //$ar = array('id_pext' => $datos['id_pext']);
-        //$this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
-    }*/
+
+      //$this->set_pantalla('pant_planilla'); //no funciona
+
+      //$this->set_pantalla('pant_integrantese');
+      //$this->dep('datos')->tabla('pextension')->cargar($datos);
+      //$ar = array('id_pext' => $datos['id_pext']);
+      //$this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
+      } */
 
     //---- Formulario -------------------------------------------------------------------
 
@@ -170,7 +171,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__formulario__integrantes($datos) {
 
         //opcion 1)
-        $this->set_pantalla('pant_planilla'); 
+        $this->set_pantalla('pant_planilla');
         //opcion 2)
         //$this->set_pantalla('pant_integrantese');
         //$this->dep('datos')->tabla('pextension')->cargar($datos);
@@ -228,13 +229,37 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__volver() {
-        $this->set_pantalla('pant_edicion');
-        $this->dep('datos')->tabla('pextension')->resetear();
-        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-        $this->s__mostrar = 0;
+        //print_r($this->s__pantalla);        exit();
+        switch ($this->s__pantalla) {
+            case 'pant_interno':
+                //$this->s__mostrar = 1;
+                
+                $this->set_pantalla('pant_planilla');
+                $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+                break;
+            case 'pant_externo':
+                //$this->s__mostrar_e = 1;
+                $this->set_pantalla('pant_planilla');
+                $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                break;
+            case 'pant_planilla':
+                //problema aca 
+                $this->set_pantalla('pant_formulario');
+                $this->dep('datos')->tabla('pextension')->cargar($datos);
+                break;
+            default :
+                
+                $this->set_pantalla('pant_edicion');
+                $this->dep('datos')->tabla('pextension')->resetear();
+                
+                break;
+                //$this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+        }
+
+        //$this->s__mostrar = 0;
     }
-    
-     function evt__integrantesi() {
+
+    function evt__integrantesi() {
         $this->set_pantalla('pant_integrantesi');
         //$this->dep('datos')->tabla('pextension')->cargar($datos);
         //$ar = array('id_pext' => $datos['id_pext']);
@@ -310,6 +335,10 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__pant_integrantese(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_externo";
+    }
+    
+    function conf__pant_planilla(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_planilla";
     }
 
     // creo que todas estas conf ya no son necesarias 
@@ -408,20 +437,21 @@ class ci_proyectos_extension extends extension_ci {
         $cuadro->set_titulo(str_replace(':', '', $pe['denominacion']) . '(ResCD: ' . $pe['nro_resol'] . $fecha . ')' . $duracion);
         $cuadro->set_datos($datos);
     }
-/*
-    function evt__cuadro_plantilla__integrantesi($datos) {
-        $this->set_pantalla('pant_integrantesi');
-        $this->dep('datos')->tabla('pextension')->cargar($datos);
-        $ar = array('id_pext' => $datos['id_pext']);
-        $this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
-    }
 
-    function evt__cuadro_plantilla__integrantese($datos) {
-        $this->set_pantalla('pant_integrantese');
-        $this->dep('datos')->tabla('pextension')->cargar($datos);
-        $ar = array('id_pext' => $datos['id_pext']);
-        $this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
-    }*/
+    /*
+      function evt__cuadro_plantilla__integrantesi($datos) {
+      $this->set_pantalla('pant_integrantesi');
+      $this->dep('datos')->tabla('pextension')->cargar($datos);
+      $ar = array('id_pext' => $datos['id_pext']);
+      $this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
+      }
+
+      function evt__cuadro_plantilla__integrantese($datos) {
+      $this->set_pantalla('pant_integrantese');
+      $this->dep('datos')->tabla('pextension')->cargar($datos);
+      $ar = array('id_pext' => $datos['id_pext']);
+      $this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
+      } */
 
     function evt__cuadro_plantilla__seleccion($datos) {
         //$this->s__mostrar = 1;

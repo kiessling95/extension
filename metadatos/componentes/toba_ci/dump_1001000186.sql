@@ -549,3 +549,9 @@ INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VAL
 	'1001000245', --evento_id
 	'extension'  --proyecto
 );
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000078', --pantalla
+	'1001000186', --objeto_ci
+	'1001000231', --evento_id
+	'extension'  --proyecto
+);

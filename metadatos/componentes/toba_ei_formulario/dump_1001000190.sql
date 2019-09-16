@@ -51,13 +51,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000226', --evento_id
 	'1001000190', --objeto
 	'alta', --identificador
-	'&Agregar', --etiqueta
+	'&Guardar', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	'ei-boton-alta', --estilo
 	'apex', --imagen_recurso_origen
-	NULL, --imagen
+	'guardar.gif', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'1', --orden
@@ -150,19 +150,19 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000229', --evento_id
 	'1001000190', --objeto
 	'cancelar', --identificador
-	'Ca&ncelar', --etiqueta
-	'0', --maneja_datos
+	'&Cancelar', --etiqueta
+	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	'ei-boton-canc', --estilo
 	'apex', --imagen_recurso_origen
-	NULL, --imagen
+	'volver.png', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'4', --orden
 	NULL, --ci_predep
 	'0', --implicito
-	'0', --defecto
+	'1', --defecto
 	NULL, --display_datos_cargados
 	'cargado', --grupo
 	NULL, --accion
@@ -170,7 +170,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --accion_vinculo_carpeta
 	NULL, --accion_vinculo_item
 	NULL, --accion_vinculo_objeto
-	NULL, --accion_vinculo_popup
+	'0', --accion_vinculo_popup
 	NULL, --accion_vinculo_popup_param
 	NULL, --accion_vinculo_target
 	NULL, --accion_vinculo_celda
