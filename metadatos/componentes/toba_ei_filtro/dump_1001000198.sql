@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - filtro_integrantes', --nombre
-	NULL, --titulo
+	'Integrantes del Proyecto de Extensión', --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
@@ -137,7 +137,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'tipo', --expresion
 	'Tipo Integrante', --etiqueta
 	NULL, --descripcion
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --inicial
 	'1', --orden
 	NULL, --estado_defecto
@@ -150,7 +150,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'extension', --carga_fuente
-	'Interno,Externo', --carga_lista
+	'interno,externo', --carga_lista
 	NULL, --carga_col_clave
 	NULL, --carga_col_desc
 	'0', --carga_permite_no_seteado
