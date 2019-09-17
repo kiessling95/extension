@@ -4,6 +4,31 @@ require_once 'dt_mocovi_periodo_presupuestario.php';
 require_once 'consultas_mapuche.php';
 
 class dt_integrante_interno_pe extends extension_datos_tabla {
+    
+     function get_listado($id_p = null) {
+        $sql = "select "
+                . "id_pext,"
+                . "trim(apellido)||', '||trim(nombre) as nombre,"
+                . "dc.tipo_docum,"
+                . "dc.nro_docum,"
+                . "fec_nacim,"
+                . "tipo_sexo,"
+                . "pais_nacim,"
+                . "funcion_p,"
+                . "carga_horaria,"
+                . "t_i.desde,"
+                . "t_i.hasta,"
+                . "rescd,"
+                . "tipo "
+                . "from integrante_interno_pe as t_i "
+                . "INNER JOIN designacion as d ON (t_i.id_designacion = d.id_designacion ) "
+                . "LEFT OUTER JOIN docente as dc ON ( dc.id_docente = d.id_docente )  "
+                . "where id_pext=" . $id_p
+                . "order by nombre,desde"
+        ;
+        //print_r($sql);        exit();
+        return toba::db('extension')->consultar($sql);
+    }
 
     //recibe el id_docente
     function sus_proyectos_ext($id_doc) {

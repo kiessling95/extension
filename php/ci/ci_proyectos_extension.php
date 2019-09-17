@@ -360,6 +360,25 @@ class ci_proyectos_extension extends extension_ci {
         //print_r($datos);exit();
         $this->dep('datos')->tabla('integrante_externo_pe')->cargar($datos);
     }
+    
+    
+    
+    //-----------------------------------------------------------------------------------
+    //---- cuadro_integrantes internos  -------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+
+    function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
+    }
+
+    function evt__cuadro_ii__seleccion($datos) {
+        $this->s__mostrar_e = 1;
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        //print_r($datos);exit();
+        $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
+    }
 
     //-----------------------------------------------------------------------------------
     //---- form_integrante_e ------------------------------------------------------------
@@ -428,7 +447,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_plantilla(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext']);
+        $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'],$this->s__datos_filtro);
         $duracion = '';
         $fecha = date('d-m-Y', strtotime($pe['fecha_resol']));
 
@@ -462,7 +481,20 @@ class ci_proyectos_extension extends extension_ci {
         $this->set_pantalla('pant_formulario');
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
+    
+    function conf__filtro_integrantes(toba_ei_filtro $filtro) {
+        if (isset($this->s__datos_filtro)) {
+            $filtro->set_datos($this->s__datos_filtro);
+        }
+    }
 
+    function evt__filtro_integrantes__filtrar($datos) {
+        $this->s__datos_filtro = $datos;
+    }
+
+    function evt__filtro_integrantes__cancelar() {
+        unset($this->s__datos_filtro);
+    }
 }
 
 ?>
