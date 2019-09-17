@@ -15,7 +15,7 @@ class consultas
 					titulo
 				WHERE
 					codc_titul = $id";
-		$result = toba::db('designa')->consultar($sql);
+		$result = toba::db('extension')->consultar($sql);
 		if (! empty($result)) {
 			return $result[0]['desc_titul'];
 		}
@@ -40,7 +40,7 @@ class consultas
                         . " $where"
                         . " ORDER BY desc_titul";
 			
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
         
 	 static function get_titulos_p($filtro=null, $locale=null)
@@ -60,7 +60,7 @@ class consultas
                         . " $where"
                         . " ORDER BY desc_titul";
 			
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
         static function get_titulos_todos($filtro=null, $locale=null)
 	{
@@ -79,7 +79,7 @@ class consultas
                         . " $where"
                         . " ORDER BY desc_titul";
 			
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
 }
 

@@ -1,5 +1,4 @@
 <?php
-
 class dt_persona extends extension_datos_tabla {
 
     function minimo_docum() {
@@ -97,33 +96,44 @@ class dt_persona extends extension_datos_tabla {
 
     //metodo utilizado para mostrar las personas
     //ordenado por apellido y nombre
-    function get_listado($where = null) {
-        if (!is_null($where)) {
-            $where = ' WHERE ' . $where;
-        } else {
-            $where = '';
-        }
-        $sql = "SELECT * from (SELECT
-                                        t_p.apellido,
-                                        t_p.nombre,
-                                        t_p.nro_tabla,
-                                        t_p.tipo_docum,
-                                        t_p.nro_docum,
-                                        case when t_p.tipo_docum='EXTR' then t_p.docum_extran else cast (t_p.nro_docum as text) end as nro_documento,
-                                        t_p.tipo_sexo,
-                                        t_p1.nombre as pais_nacim_nombre,
-                                        t_p2.descripcion_pcia as pcia_nacim_nombre,
-                                        t_p.fec_nacim
-                                    
-                                    FROM
-                                    persona as t_p	
-                                    LEFT OUTER JOIN pais as t_p1 ON (t_p.pais_nacim = t_p1.codigo_pais)
-                                    LEFT OUTER JOIN provincia as t_p2 ON (t_p.pcia_nacim = t_p2.codigo_pcia)
-                                    )sub
-                            $where
-		ORDER BY apellido,nombre";
-        return toba::db('extension')->consultar($sql);
-    }
+	function get_listado($filtro=array())
+	{
+		$where = array();
+		if (isset($filtro['apellido'])) {
+			$where[] = "apellido ILIKE ".quote("%{$filtro['apellido']}%");
+		}
+		if (isset($filtro['nombre'])) {
+			$where[] = "nombre ILIKE ".quote("%{$filtro['nombre']}%");
+		}
+		if (isset($filtro['nro_docum'])) {
+			$where[] = "nro_docum = ".quote($filtro['nro_docum']);
+		}
+		$sql = "SELECT
+			t_p.apellido,
+			t_p.nombre,
+			t_p.nro_tabla,
+			t_p.tipo_docum,
+			t_p.nro_docum,
+			t_p.tipo_sexo,
+			t_p1.nombre as pais_nacim_nombre,
+			t_p2.descripcion_pcia as pcia_nacim_nombre,
+			t_p.fec_nacim,
+			t_t.codc_nivel as titulog_nombre,
+			t_t3.codc_nivel as titulop_nombre,
+			t_p.docum_extran
+		FROM
+			persona as t_p	LEFT OUTER JOIN pais as t_p1 ON (t_p.pais_nacim = t_p1.codigo_pais)
+			LEFT OUTER JOIN provincia as t_p2 ON (t_p.pcia_nacim = t_p2.codigo_pcia)
+			LEFT OUTER JOIN titulo as t_t ON (t_p.titulog = t_t.codc_titul)
+			LEFT OUTER JOIN titulo as t_t3 ON (t_p.titulop = t_t3.codc_titul)
+		ORDER BY nombre";
+		if (count($where)>0) {
+			$sql = sql_concatenar_where($sql, $where);
+		}
+		return toba::db('extension')->consultar($sql);
+	}
+
+
 
     //solo trae las personas cuyo apellido comienza con a
     function get_listado_comienzan_a() {
@@ -155,5 +165,4 @@ class dt_persona extends extension_datos_tabla {
     }
 
 }
-
 ?>
