@@ -230,7 +230,8 @@ class dt_docente extends extension_datos_tabla {
 			t_d.porcdedicagestion,
 			t_d.porcdedicaextens,
 			t_p1.descripcion_pcia as pcia_nacim_nombre,
-			t_d.fec_ingreso
+			t_d.fec_ingreso,
+                        t_d.situacion_docente
 		FROM
 			docente as t_d	LEFT OUTER JOIN pais as t_p ON (t_d.pais_nacim = t_p.codigo_pais)
 			LEFT OUTER JOIN provincia as t_p1 ON (t_d.pcia_nacim = t_p1.codigo_pcia))a

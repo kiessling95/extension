@@ -136,7 +136,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'1001000490', --objeto_cuadro_col
 	'funcion_p', --clave
 	'6', --orden
-	'Funcion p', --titulo
+	'Función en el proyecto', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho

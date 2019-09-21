@@ -383,7 +383,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'5', --orden
 	'Ua', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'en desarrollo', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -394,7 +394,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_descripciones_ua', --carga_metodo
+	'get_ua', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
 	'1001000161', --carga_dt
@@ -404,7 +404,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_lista
 	'sigla', --carga_col_clave
 	'sigla', --carga_col_desc
-	'id_designacion', --carga_maestros
+	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -696,14 +696,14 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000196', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'id_designacion', --identificador
-	'ef_combo', --elemento_formulario
+	'ef_editable', --elemento_formulario
 	'id_designacion', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
 	'Categoría', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'-- en desarrollo esto sera un ef combo--', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -714,17 +714,17 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_categorias_doc', --carga_metodo
+	NULL, --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	'1001000173', --carga_dt
+	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'extension', --carga_fuente
 	NULL, --carga_lista
 	'id_designacion', --carga_col_clave
 	'categoria', --carga_col_desc
-	'id_docente', --carga_maestros
+	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
