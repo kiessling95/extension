@@ -120,7 +120,8 @@ class dt_persona extends extension_datos_tabla {
 			t_p.fec_nacim,
 			t_t.codc_nivel as titulog_nombre,
 			t_t3.codc_nivel as titulop_nombre,
-			t_p.docum_extran
+			t_p.docum_extran,
+                        t_p.telefono
 		FROM
 			persona as t_p	LEFT OUTER JOIN pais as t_p1 ON (t_p.pais_nacim = t_p1.codigo_pais)
 			LEFT OUTER JOIN provincia as t_p2 ON (t_p.pcia_nacim = t_p2.codigo_pcia)

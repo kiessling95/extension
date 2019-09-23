@@ -87,11 +87,20 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('palabras_clave')->set_obligatorio('true');
             $form->ef('objetivo')->set_obligatorio('true');
         } //else {
-        //$this->dep('formulario')->colapsar();
+        // $this->dep('formulario')->colapsar();
         //}
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
+            //print_r($datos);
+            $where = array();
+            $where['uni_acad'] = $datos[uni_acad];
+            $where['id_pext'] = $datos[id_pext];
+            //print_r($where);
+            $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
+            $datos = $datos[0];
+            //print_r($datos);
+
             if ($datos['financiacion'] == true) {
                 $datos['financiacion'] = 'SI';
             };
@@ -105,6 +114,7 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::usuario()->get_perfil_datos();
         if ($perfil != null) {//si esta asociado a un perfil de datos entonces no permito que toquen los sig campos
             $form->ef('uni_acad')->set_solo_lectura(true);
+            $form->ef('area')->set_solo_lectura(true);
             $form->ef('codigo')->set_solo_lectura(true);
             $form->ef('nro_ord_cs')->set_solo_lectura(true);
             $form->ef('res_rect')->set_solo_lectura(true);
@@ -136,7 +146,10 @@ class ci_proyectos_extension extends extension_ci {
         if (trim($datos['financiacion']) == 'NO') {
             $datos['financiacion'] = false;
         };
-
+        print_r($datos);
+        unset($datos[director]);
+        unset($datos[departamento]);
+        unset($datos[area]);
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
         $this->dep('datos')->tabla('pextension')->cargar($datos);
@@ -213,8 +226,10 @@ class ci_proyectos_extension extends extension_ci {
     function evt__alta() {
         switch ($this->s__pantalla) {
             case 'pant_interno':
+
                 $this->s__mostrar = 1;
-                $this->dep('datos')->tabla('pextension')->resetear();
+                //print_r("hola" + $this->s__mostrar);                exit();
+                $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
                 break;
             case 'pant_externo':
                 $this->s__mostrar_e = 1;
@@ -233,7 +248,7 @@ class ci_proyectos_extension extends extension_ci {
         switch ($this->s__pantalla) {
             case 'pant_interno':
                 //$this->s__mostrar = 1;
-                
+
                 $this->set_pantalla('pant_planilla');
                 $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
                 break;
@@ -248,12 +263,12 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('datos')->tabla('pextension')->cargar($datos);
                 break;
             default :
-                
+
                 $this->set_pantalla('pant_edicion');
                 $this->dep('datos')->tabla('pextension')->resetear();
-                
+
                 break;
-                //$this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+            //$this->dep('datos')->tabla('integrante_interno_pe')->resetear();
         }
 
         //$this->s__mostrar = 0;
@@ -269,32 +284,48 @@ class ci_proyectos_extension extends extension_ci {
     function evt__integrantese() {
         $this->set_pantalla('pant_integrantese');
         //$this->dep('datos')->tabla('pextension')->cargar($datos);
-        //$ar = array('id_pext' => $datos['id_pext']);
+        //$ar = array('id_pext' => $integrante_externo_pedatos['id_pext']);
         //$this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
     }
 
     //-----------------------------------------------------------------------------------
-    //---- form_integrantes -------------------------------------------------------------
+    //---- form_integrantes internos-------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
 
     function conf__form_integrantes(toba_ei_formulario $form) {
+        if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
+            $this->dep('form_integrantes')->descolapsar();
+            //$form->ef('integrante_docente')->set_obligatorio('true');
+            //$form->ef('id_designacion')->set_obligatorio('true');
+            //$form->ef('funcion_p')->set_obligatorio('true');
+            //$form->ef('carga_horaria')->set_obligatorio('true');
+            //$form->ef('ua')->set_obligatorio('true');
+            //$form->ef('desde')->set_obligatorio('true');
+            //$form->ef('hasta')->set_obligatorio('true');
+            //$form->ef('rescd')->set_obligatorio('true');
+            //$form->ef('ad_honorem')->set_obligatorio('true');
+        } else {
+            $this->dep('form_integrantes')->colapsar();
+        }
+
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $ar = array('id_pext' => $pe['id_pext']);
         $res = $this->dep('datos')->tabla('integrante_interno_pe')->get_filas($ar);
+        //print_r("res" + $res);        exit();
         //le agrego el nombre del docente 
         foreach ($res as $key => $row) {
             $nom = $this->dep('datos')->tabla('docente')->get_nombre($res[$key]['id_designacion']);
             $res[$key]['nombre'] = $nom;
         }
-
+        
         //ordenamos el arreglo
         //$aux tiene la información que queremos ordenar
         foreach ($res as $key => $row) {
             $aux[$key] = $row['nombre'] . $row['desde'];
         }
         array_multisort($aux, SORT_ASC, $res);
-
         if (isset($res)) {//si hay integrantes
             foreach ($res as $key => $value) {
                 $doc = $this->dep('datos')->tabla('designacion')->get_docente($res[$key]['id_designacion']);
@@ -303,17 +334,25 @@ class ci_proyectos_extension extends extension_ci {
                 $res[$key]['funcion_p'] = str_pad($res[$key]['funcion_p'], 5);
             }
         }
+        //print_r($res);        //exit();
         $form->set_datos($res);
     }
 
     function evt__form_integrantes__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        print_r($pe);        //exit();
+
         foreach ($datos as $clave => $elem) {
+            //print_r("clave "+$clave);
             $datos[$clave]['id_pext'] = $pe['id_pext'];
         }
-        //verifico que las fechas correspondan
+        //print($datos);        //exit();
 
-        $this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
+        $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+        //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+        //$this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+        //verifico que las fechas correspondan
+        //$this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
         $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
     }
 
@@ -336,12 +375,10 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_integrantese(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_externo";
     }
-    
+
     function conf__pant_planilla(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_planilla";
     }
-
-    
 
     // creo que todas estas conf ya no son necesarias 
     //-----------------------------------------------------------------------------------
@@ -360,9 +397,7 @@ class ci_proyectos_extension extends extension_ci {
         //print_r($datos);exit();
         $this->dep('datos')->tabla('integrante_externo_pe')->cargar($datos);
     }
-    
-    
-    
+
     //-----------------------------------------------------------------------------------
     //---- cuadro_integrantes internos  -------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
@@ -396,7 +431,8 @@ class ci_proyectos_extension extends extension_ci {
         } else {
             $this->dep('form_integrante_e')->colapsar();
         }
-
+        
+        //para la edicion de los integrantes ya cargados
         if ($this->dep('datos')->tabla('integrante_externo_pe')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get();
             $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
@@ -405,7 +441,7 @@ class ci_proyectos_extension extends extension_ci {
             if (count($persona) > 0) {
                 $datos['integrante'] = $persona[0]['nombre'];
             }
-
+            print_r($datos);
             $form->set_datos($datos);
         }
     }
@@ -415,6 +451,8 @@ class ci_proyectos_extension extends extension_ci {
 	print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        //print_r($datos);
+        //exit();
         $datos['nro_tabla'] = 1;
         //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
         //$personas=$this->dep('datos')->tabla('persona')->get_listado();           
@@ -449,7 +487,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_plantilla(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'],$this->s__datos_filtro);
+        $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'], $this->s__datos_filtro);
         $duracion = '';
         $fecha = date('d-m-Y', strtotime($pe['fecha_resol']));
 
@@ -483,7 +521,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->set_pantalla('pant_formulario');
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
-    
+
     function conf__filtro_integrantes(toba_ei_filtro $filtro) {
         if (isset($this->s__datos_filtro)) {
             $filtro->set_datos($this->s__datos_filtro);
@@ -497,6 +535,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__filtro_integrantes__cancelar() {
         unset($this->s__datos_filtro);
     }
+
 }
 
 ?>
