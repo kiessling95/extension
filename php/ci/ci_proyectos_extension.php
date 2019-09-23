@@ -412,6 +412,7 @@ class ci_proyectos_extension extends extension_ci {
 
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__guardar($datos) {
+	print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         $datos['nro_tabla'] = 1;
@@ -422,6 +423,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
         $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+	
     }
 
     function evt__form_integrante_e__baja($datos) {
