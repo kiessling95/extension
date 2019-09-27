@@ -62,7 +62,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --ayuda
 	'1', --orden
 	NULL, --ci_predep
-	'1', --implicito
+	'0', --implicito
 	'0', --defecto
 	NULL, --display_datos_cargados
 	NULL, --grupo
@@ -138,7 +138,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'id_docente', --identificador
 	'ef_combo', --elemento_formulario
 	'id_docente', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
 	'Integrante Docente', --etiqueta
@@ -218,7 +218,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'funcion_p', --identificador
 	'ef_combo', --elemento_formulario
 	'funcion_p', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'3', --orden
 	'Funcion p', --etiqueta
@@ -298,7 +298,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'carga_horaria', --identificador
 	'ef_editable', --elemento_formulario
 	'carga_horaria', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'4', --orden
 	'Carga horaria', --etiqueta
@@ -378,7 +378,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'ua', --identificador
 	'ef_combo', --elemento_formulario
 	'ua', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'5', --orden
 	'Ua', --etiqueta
@@ -458,7 +458,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'hasta', --identificador
 	'ef_editable_fecha', --elemento_formulario
 	'hasta', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'7', --orden
 	'Hasta', --etiqueta
@@ -696,12 +696,12 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000196', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'id_designacion', --identificador
-	'ef_editable', --elemento_formulario
+	'ef_combo', --elemento_formulario
 	'id_designacion', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
-	'Categoría', --etiqueta
+	'categoría', --etiqueta
 	NULL, --etiqueta_estilo
 	'-- en desarrollo esto sera un ef combo--', --descripcion
 	'0', --colapsado
@@ -714,17 +714,17 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	NULL, --carga_metodo
+	'get_categorias_doc', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	NULL, --carga_dt
+	'1001000173', --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'extension', --carga_fuente
 	NULL, --carga_lista
 	'id_designacion', --carga_col_clave
 	'categoria', --carga_col_desc
-	NULL, --carga_maestros
+	'id_docente', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -778,7 +778,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'desde', --identificador
 	'ef_editable_fecha', --elemento_formulario
 	'desde', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'6', --orden
 	'Desde', --etiqueta
