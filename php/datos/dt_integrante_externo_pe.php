@@ -83,10 +83,6 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         } else {
             $sql .= " where t_e.id_pext = " . $id_p . " and t_e.hasta = p.fec_hasta)";
         }
-
-
-        //print_r($sql);
-        //exit();
         return toba::db('extension')->consultar($sql);
     }
 

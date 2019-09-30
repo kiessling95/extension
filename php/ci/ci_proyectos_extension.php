@@ -272,6 +272,7 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         $this->s__mostrar = 0;
+        $this->s__mostrar_e = 0;
     }
 
     function evt__integrantesi() {
@@ -296,53 +297,33 @@ class ci_proyectos_extension extends extension_ci {
     function conf__form_integrantes(toba_ei_formulario $form) {
         if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_integrantes')->descolapsar();
-            //$form->ef('id_docente')->set_obligatorio('true');
-            //$form->ef('id_designacion')->set_obligatorio('true');
-            //$form->ef('funcion_p')->set_obligatorio('true');
-            //$form->ef('carga_horaria')->set_obligatorio('true');
-            //$form->ef('ua')->set_obligatorio('true');
-            //$form->ef('desde')->set_obligatorio('true');
-            //$form->ef('hasta')->set_obligatorio('true');
-            //$form->ef('rescd')->set_obligatorio('true');
-            //$form->ef('ad_honorem')->set_obligatorio('true');
+            $form->ef('id_docente')->set_obligatorio('true');
+            $form->ef('id_designacion')->set_obligatorio('true');
+            $form->ef('funcion_p')->set_obligatorio('true');
+            $form->ef('carga_horaria')->set_obligatorio('true');
+            $form->ef('ua')->set_obligatorio('true');
+            $form->ef('desde')->set_obligatorio('true');
+            $form->ef('hasta')->set_obligatorio('true');
+            $form->ef('rescd')->set_obligatorio('true');
+            $form->ef('ad_honorem')->set_obligatorio('true');
         } else {
             $this->dep('form_integrantes')->colapsar();
         }
 
-
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $ar = array('id_pext' => $pe['id_pext']);
-        $res = $this->dep('datos')->tabla('integrante_interno_pe')->get_filas($ar);
- 
-      
-        //le agrego el nombre del docente 
-        foreach ($res as $key => $row) {
-            $nom = $this->dep('datos')->tabla('docente')->get_nombre($res[$key]['id_designacion']);
-            $res[$key]['nombre'] = $nom;
-        }
-
-        
-        //ordenamos el arreglo
-        //$aux tiene la información que queremos ordenar
-        foreach ($res as $key => $row) {
-            $aux[$key] = $row['nombre'] . $row['desde'];
-        }
-        
-        array_multisort($aux, SORT_ASC, $res);
-        if (isset($res)) {//si hay integrantes
-            foreach ($res as $key => $value) {
-                $doc = $this->dep('datos')->tabla('designacion')->get_docente($res[$key]['id_designacion']);
-                $res[$key]['id_docente'] = $doc;
-                //autocompleto con blanco hasta 5
-                $res[$key]['funcion_p'] = str_pad($res[$key]['funcion_p'], 5);
+        //para la edicion de los integrantes ya cargados
+        if ($this->dep('datos')->tabla('integrante_interno_pe')->esta_cargada()) {
+            $datos = $this->dep('datos')->tabla('integrante_interno_pe')->get();
+            $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
+            $docente = $this->dep('datos')->tabla('docente')->get_id_docente($datos['id_designacion']);
+            if (count($docente) > 0) {
+                $datos['id_docente'] = $docente;  
             }
-            
+            print_r($datos);
+            $form->set_datos($datos);
         }
-        $form->set_datos($res);
+        //$form->set_datos($res);
     }
-    
-    
- 
+
     function evt__form_integrantes__guardar($datos) {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
@@ -351,20 +332,36 @@ class ci_proyectos_extension extends extension_ci {
         //foreach ($datos as $clave => $elem) {
         //    $datos[$clave]['id_pext'] = $pe['id_pext'];
         //}
-        $datos[id_pext] =$pe['id_pext'];
-        $datos['tipo'] ='interno';
+        $datos[id_pext] = $pe['id_pext'];
+        $datos['tipo'] = 'interno';
         //print_r($datos);        exit();
         //verifico que las fechas correspondan (FALTA)
-        
+
         $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
         $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-        
+
         //$this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
         //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-        //$this->s__mostrar_e = 0;
+        $this->s__mostrar = 0;
     }
-    
+
+    function evt__form_integrantes__baja($datos) {
+        $this->dep('datos')->tabla('integrante_interno_pe')->eliminar_todo();
+        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+        toba::notificacion()->agregar('El integrante se ha eliminado  correctamente.', 'info');
+        $this->s__mostrar = 0;
+    }
+
+    function evt__form_integrantes__modificacion($datos) {
+        $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+        $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+    }
+
+    function evt__form_integrantes__cancelar() {
+        $this->s__mostrar = 0;
+        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+    }
 
     //-----------------------------------------------------------------------------------
     //---- Configuraciones --------------------------------------------------------------
@@ -401,10 +398,10 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__cuadro_int__seleccion($datos) {
+
         $this->s__mostrar_e = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        print_r($datos);exit();
         $this->dep('datos')->tabla('integrante_externo_pe')->cargar($datos);
     }
 
@@ -416,16 +413,12 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
     }
-    
 
-    // no me la toma
-    
     function evt__cuadro_ii__seleccion($datos) {
-        //print_r($datos);        exit();
-        $this->s__mostrar_e = 1;
+        //habilito formulario
+        $this->s__mostrar = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        //print_r($datos);exit();
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
 
@@ -445,7 +438,7 @@ class ci_proyectos_extension extends extension_ci {
         } else {
             $this->dep('form_integrante_e')->colapsar();
         }
-        
+
         //para la edicion de los integrantes ya cargados
         if ($this->dep('datos')->tabla('integrante_externo_pe')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get();
@@ -464,6 +457,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        $datos['tipo'] = 'interno';
         $datos['nro_tabla'] = 1;
         //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
         //$personas=$this->dep('datos')->tabla('persona')->get_listado();           
