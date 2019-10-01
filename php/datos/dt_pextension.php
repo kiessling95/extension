@@ -42,13 +42,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.caracterizacion_poblacion,
                         t_p.localizacion_geo,
                         t_p.antecedente_participacion,
-                        t_p.importancia_necesidad,
-                        t_p.rubro,
-                        t_p.concepto,
-                        t_p.cantidad,
-                        t_p.rubro_presupuestario,
-                        t_p.total_rubro,
-                        t_p.porcentaje
+                        t_p.importancia_necesidad
+                        
                     FROM
                         pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
@@ -97,13 +92,8 @@ class dt_pextension extends extension_datos_tabla {
                     t_p.caracterizacion_poblacion,
                     t_p.localizacion_geo,
                     t_p.antecedente_participacion,
-                    t_p.importancia_necesidad,
-                    t_p.rubro,
-                    t_p.concepto,
-                    t_p.cantidad,
-                    t_p.rubro_presupuestario,
-                    t_p.total_rubro,
-                    t_p.porcentaje
+                    t_p.importancia_necesidad
+                    
                 FROM
                     pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                     LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
@@ -164,13 +154,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.caracterizacion_poblacion,
                         t_p.localizacion_geo,
                         t_p.antecedente_participacion,
-                        t_p.importancia_necesidad,
-                        t_p.rubro,
-                        t_p.concepto,
-                        t_p.cantidad,
-                        t_p.rubro_presupuestario,
-                        t_p.total_rubro,
-                        t_p.porcentaje
+                        t_p.importancia_necesidad
                     FROM
                         pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')

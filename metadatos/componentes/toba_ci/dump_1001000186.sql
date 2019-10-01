@@ -633,7 +633,7 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'extension', --proyecto
 	'1002000009', --pantalla
 	'1001000186', --objeto_ci
-	'2', --orden
+	'0', --orden
 	'1002000022'  --dep_id
 );
 

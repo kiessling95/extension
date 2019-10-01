@@ -86,12 +86,7 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('fec_hasta')->set_obligatorio('true');
             $form->ef('palabras_clave')->set_obligatorio('true');
             $form->ef('objetivo')->set_obligatorio('true');
-            $form->ef('rubro')->set_obligatorio('true');
-            $form->ef('concepto')->set_obligatorio('true');
-            $form->ef('cantidad')->set_obligatorio('true');
-            $form->ef('rubro_presupuestario')->set_obligatorio('true');
-            $form->ef('total_rubro')->set_obligatorio('true');
-            $form->ef('porcentaje')->set_obligatorio('true');
+            
         } //else {
         // $this->dep('formulario')->colapsar();
         //}
@@ -203,6 +198,8 @@ class ci_proyectos_extension extends extension_ci {
 
         //opcion 1)
         $this->set_pantalla('pant_presupuesto');
+        $this->dep('datos')->tabla('pextension')->cargar($datos);
+        
         
     }
 
@@ -248,6 +245,10 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_externo':
                 $this->s__mostrar_e = 1;
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+            case 'pant_presupuesto':
+                $this->s__mostrar_e = 1;
+                
+                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
             case 'pant_edicion':
                 //$this->s__mostrar = 1;
@@ -270,6 +271,11 @@ class ci_proyectos_extension extends extension_ci {
                 //$this->s__mostrar_e = 1;
                 $this->set_pantalla('pant_planilla');
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                break;
+            case 'pant_presupuesto':
+                //$this->s__mostrar_e = 1;
+                $this->set_pantalla('pant_presupuesto');
+                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
             case 'pant_planilla':
                 //problema aca 
@@ -389,63 +395,61 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('concepto')->set_obligatorio('true');
             $form->ef('cantidad')->set_obligatorio('true');
             $form->ef('monto')->set_obligatorio('true');
-            $form->ef('rubro_presupuestario')->set_obligatorio('true');
-            $form->ef('total_rubro')->set_obligatorio('true');
-            $form->ef('porcentaje')->set_obligatorio('true');
             
         } else {
             $this->dep('form_presupuesto')->colapsar();
         }
-        if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
-            $datos = $this->dep('datos')->tabla('pextension')->get();
-            //print_r($datos);
-            $where = array();
-            $where['uni_acad'] = $datos[uni_acad];
-            $where['id_pext'] = $datos[id_pext];
-            //print_r($where);
-            $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
-            $datos = $datos[0];
-            //print_r($datos);
+        
+        if ($this->dep('datos')->tabla('presupuesto_extension')->esta_cargada()) {
+            $datos = $this->dep('datos')->tabla('presupuesto_extension')->get();
+            $datos['rubro'] = str_pad($datos['rubro'], 5);
+            $rubro = $this->dep('datos')->tabla('rubro_presup_extension')->get_datos($datos['id_rubro_extension']);
 
-            
+            if (count($rubro) > 0) {
+                $datos['rubro'] = $rubro[0]['tipo'];
+            }
+            print_r($datos);
             $form->set_datos($datos);
         }
+        
+        
+        //le agrego el nombre del docente 
+        /*foreach ($res as $key => $row) {
+            $nom = $this->dep('datos')->tabla('docente')->get_nombre($res[$key]['id_designacion']);
+            $res[$key]['nombre'] = $nom;
+        }
+        
+        //ordenamos el arreglo
+        //$aux tiene la información que queremos ordenar
+        foreach ($res as $key => $row) {
+            $aux[$key] = $row['nombre'] . $row['desde'];
+        }
+        array_multisort($aux, SORT_ASC, $res);
+        if (isset($res)) {//si hay integrantes
+            foreach ($res as $key => $value) {
+                $doc = $this->dep('datos')->tabla('designacion')->get_docente($res[$key]['id_designacion']);
+                $res[$key]['id_docente'] = $doc;
+                //autocompleto con blanco hasta 5
+                $res[$key]['funcion_p'] = str_pad($res[$key]['funcion_p'], 5);
+            }
+        }*/
        
         
     }
     
     function evt__form_presupuesto__guardar($datos) {
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        print_r($pe);        //exit();
-
-        foreach ($datos as $clave => $elem) {
-            //print_r("clave "+$clave);
-            $datos[$clave]['id_pext'] = $pe['id_pext'];
-        }
-
-        $this->dep('datos')->tabla('pextension')->set($datos);
-        //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-        //$this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-        //verifico que las fechas correspondan
-        //$this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
-        $this->dep('datos')->tabla('pextension')->sincronizar();
+        
     }
     
     function evt__form_presupuesto__baja($datos) {
-        $this->dep('datos')->tabla('pextension')->eliminar_todo();
-        $this->dep('datos')->tabla('pextension')->resetear();
-        toba::notificacion()->agregar('El presupuesto se ha eliminado  correctamente.', 'info');
-        $this->s__mostrar_e = 0;
-    }
+        }
 
     function evt__form_presupuesto__modificacion($datos) {
-        $this->dep('datos')->tabla('pextension')->set($datos);
-        $this->dep('datos')->tabla('pextension')->sincronizar();
+        
     }
 
     function evt__form_presupuesto__cancelar() {
-        $this->s__mostrar_e = 0;
-        $this->dep('datos')->tabla('pextension')->resetear();
+       
     }
 
     //-----------------------------------------------------------------------------------
@@ -517,14 +521,15 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_presup(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($pe['id_pext']));
-    }
+        $cuadro->set_datos($this->dep('datos')->tabla('presupuesto_extension')->get_listado($pe['id_pext']));
+        }
     
     function evt__cuadro_presup__seleccion($datos) {
         $this->s__mostrar_e = 1;
+        $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        print_r($datos);exit();
-        $this->dep('datos')->tabla('pextension')->cargar($datos);
+        //print_r($datos);exit();
+        $this->dep('datos')->tabla('presupuesto_extension')->cargar($datos);
     }
 
     //-----------------------------------------------------------------------------------
