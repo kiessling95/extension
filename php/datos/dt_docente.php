@@ -10,10 +10,18 @@ class dt_docente extends extension_datos_tabla {
         $res = toba::db('extension')->consultar($sql);
         return $res[0]['nombre'];
     }
+    function get_id_docente($id_desig){
+        $sql = "select t_do.id_docente from docente t_do,designacion t_d where t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig;
+        $res = toba::db('extension')->consultar($sql);
+        return $res[0]['id_docente'];
+    }
 
     function get_agente($id_doc) {
         $sql = "select apellido||', '||nombre as nombre from docente where id_docente=" . $id_doc;
+        print_r($sql);
+        
         $res = toba::db('extension')->consultar($sql);
+        print_r($res); 
         return $res[0]['nombre'];
     }
 
@@ -29,6 +37,11 @@ class dt_docente extends extension_datos_tabla {
             $where .= " WHERE id_docente = " . $filtro['id_docente'];
         }
         $sql = "SELECT id_docente, apellido, nombre,legajo FROM docente $where ORDER BY nombre";
+        return toba::db('extension')->consultar($sql);
+    }
+    function get_datos($tipo, $nro) {
+        $sql = "select id_docente from docente"
+                . " where tipo_docum='" . $tipo . "'" . " and nro_docum=" . $nro;
         return toba::db('extension')->consultar($sql);
     }
 

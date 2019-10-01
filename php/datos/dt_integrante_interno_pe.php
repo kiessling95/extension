@@ -9,6 +9,7 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
         $sql = "select "
                 . "id_pext,"
                 . "trim(apellido)||', '||trim(nombre) as nombre,"
+                . "t_i.id_designacion,"
                 . "dc.tipo_docum,"
                 . "dc.nro_docum,"
                 . "fec_nacim,"
@@ -29,6 +30,7 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
         //print_r($sql);        exit();
         return toba::db('extension')->consultar($sql);
     }
+    
 
     //recibe el id_docente
     function sus_proyectos_ext($id_doc) {
