@@ -195,11 +195,10 @@ class ci_proyectos_extension extends extension_ci {
     }
     
     function evt__formulario__presupuesto($datos) {
-
-        //opcion 1)
         $this->set_pantalla('pant_presupuesto');
-        $this->dep('datos')->tabla('pextension')->cargar($datos);
-        
+        //$this->dep('datos')->tabla('pextension')->cargar($datos);
+        //$ar = array('id_pext' => $datos['id_pext']);
+        //$this->dep('datos')->tabla('presupuesto_extension')->cargar($ar);
         
     }
 
@@ -246,8 +245,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__mostrar_e = 1;
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
             case 'pant_presupuesto':
-                $this->s__mostrar_e = 1;
-                
+                $this->s__mostrar_e = 1;           
                 $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
             case 'pant_edicion':
@@ -311,8 +309,8 @@ class ci_proyectos_extension extends extension_ci {
     function evt__presupuesto() {
         $this->set_pantalla('pant_presupuesto');
         //$this->dep('datos')->tabla('pextension')->cargar($datos);
-        //$ar = array('id_pext' => $integrante_externo_pedatos['id_pext']);
-        //$this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
+        //$ar = array('id_pext' => $presupuesto_extensiondatos['id_pext']);
+        //$this->dep('datos')->tabla('presupuesto_extension')->cargar($ar);
     }
 
     //-----------------------------------------------------------------------------------
@@ -391,7 +389,6 @@ class ci_proyectos_extension extends extension_ci {
     function conf__form_presupuesto(toba_ei_formulario $form) {
         if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_presupuesto')->descolapsar();
-            $form->ef('rubro')->set_obligatorio('true');
             $form->ef('concepto')->set_obligatorio('true');
             $form->ef('cantidad')->set_obligatorio('true');
             $form->ef('monto')->set_obligatorio('true');
@@ -403,6 +400,8 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('presupuesto_extension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('presupuesto_extension')->get();
             $datos['rubro'] = str_pad($datos['rubro'], 5);
+            print_r($datos);
+            
             $rubro = $this->dep('datos')->tabla('rubro_presup_extension')->get_datos($datos['id_rubro_extension']);
 
             if (count($rubro) > 0) {

@@ -101,7 +101,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'extension', --objeto_proyecto
 	'1002000044', --objeto
 	'1002000079', --col_id
-	'id_rubro', --columna
+	'id_rubro_extension', --columna
 	'E', --tipo
 	'0', --pk
 	'', --secuencia
