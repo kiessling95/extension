@@ -259,6 +259,24 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	NULL, --inicializar
 	NULL  --orden
 );
+--- FIN Grupo de desarrollo 1001
+
+--- INICIO Grupo de desarrollo 1002
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
+	'1002000021', --dep_id
+	'1001000186', --objeto_consumidor
+	'1002000046', --objeto_proveedor
+	'cuadro_presup', --identificador
+	NULL, --parametros_a
+	NULL, --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+--- FIN Grupo de desarrollo 1002
+
+--- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
 	'1001000154', --dep_id
@@ -448,6 +466,28 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 );
 --- FIN Grupo de desarrollo 1001
 
+--- INICIO Grupo de desarrollo 1002
+INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, identificador, orden, etiqueta, descripcion, tip, imagen_recurso_origen, imagen, objetos, eventos, subclase, subclase_archivo, template, template_impresion, punto_montaje) VALUES (
+	'extension', --objeto_ci_proyecto
+	'1001000186', --objeto_ci
+	'1002000009', --pantalla
+	'pant_presupuesto', --identificador
+	'6', --orden
+	'5-Presupuesto', --etiqueta
+	NULL, --descripcion
+	NULL, --tip
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	NULL, --objetos
+	NULL, --eventos
+	NULL, --subclase
+	NULL, --subclase_archivo
+	NULL, --template
+	NULL, --template_impresion
+	NULL  --punto_montaje
+);
+--- FIN Grupo de desarrollo 1002
+
 ------------------------------------------------------------
 -- apex_objetos_pantalla
 ------------------------------------------------------------
@@ -527,6 +567,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1001000186', --objeto_ci
 	'0', --orden
 	'1001000152'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1002000009', --pantalla
+	'1001000186', --objeto_ci
+	'0', --orden
+	'1002000021'  --dep_id
 );
 
 ------------------------------------------------------------
