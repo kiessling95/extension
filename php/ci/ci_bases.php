@@ -4,23 +4,40 @@ class ci_bases extends abm_ci {
 
     protected $nombre_tabla = 'bases_convocatoria';
 
+    function evt__cuadro__pdf($datos) {
+
+        $this->dep('datos')->tabla($this->nombre_tabla)->cargar($datos);
+
+        $salida = new toba_vista_pdf();
+        //$this->vista_pdf($salida);
+        header('Content-type: application/pdf');
+
+// Se llamará downloaded.pdf
+        header('Content-Disposition: attachment; filename="downloaded.pdf"');
+        print_r('datos');
+        $this->vista_pdf($salida);
+    }
+
     function vista_pdf(toba_vista_pdf $salida) {
+
+        //print_r($salida); exit();
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
-            //print_r($bases);
-            //exit();
-            $dato = array();
+            print_r($bases);
+            exit();
             //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Bases_Convocatoria.pdf");
 
             //recuperamos el objteo ezPDF para agregar la cabecera y el pie de página 
             $salida->set_papel_orientacion('portrait'); //landscape
-            $salida->set_papel_tamanio('A4');
             $salida->inicializar();
+            //$salida->set_pdf_fuente('Times-Roman.afm');
+            //$salida->set_papel_tamanio('A4');
 
             $pdf = $salida->get_pdf();
             //terc izquierda 
-            $pdf->ezSetCmMargins(1.80, 1.10, 1.60, 1.60);
+            //bajo normas Icontec y APA
+            $pdf->ezSetCmMargins(2.54, 2.54, 2.54, 2.54);
 
             //Configuramos el pie de página. El mismo, tendra el número de página centrado en la página y la fecha ubicada a la derecha. 
             //Primero definimos la plantilla para el número de página.
@@ -31,6 +48,7 @@ class ci_bases extends abm_ci {
             //$pdf->ezText('full');
             //Luego definimos la ubicación de la fecha en el pie de página.
             $pdf->addText(380, 20, 8, 'Mocovi - Extension ' . date('d/m/Y h:i:s a'));
+
             //Configuración de Título.
             $salida->titulo(utf8_d_seguro('UNIVERSIDAD NACIONAL DEL COMAHUE' . chr(10) . 'SECRETARÍA DE EXTENSIÓN UNIVERSITARIA' . chr(10) . 'BASES DE CONVOCATORIA '));
             $titulo = "   ";

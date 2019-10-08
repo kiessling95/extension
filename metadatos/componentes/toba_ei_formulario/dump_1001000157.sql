@@ -37,7 +37,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --parametro_f
 	NULL, --usuario
 	'2019-09-03 09:52:59', --creacion
-	'abajo'  --posicion_botonera
+	'ambos'  --posicion_botonera
 );
 --- FIN Grupo de desarrollo 1001
 
@@ -200,7 +200,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 	NULL, --clase_proyecto
 	NULL, --clase
 	NULL, --auto_reset
-	'800px', --ancho
+	'100%', --ancho
 	'200px', --ancho_etiqueta
 	'0', --expandir_descripcion
 	NULL, --campo_bl
@@ -243,15 +243,15 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'Id bases', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
-	NULL, --colapsado
-	NULL, --desactivado
+	'0', --colapsado
+	'0', --desactivado
 	NULL, --estilo
 	NULL, --total
 	NULL, --inicializacion
-	NULL, --permitir_html
-	NULL, --deshabilitar_rest_func
+	'0', --permitir_html
+	'0', --deshabilitar_rest_func
 	NULL, --estado_defecto
-	NULL, --solo_lectura
+	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
 	NULL, --carga_metodo
 	NULL, --carga_clase
@@ -355,7 +355,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'8', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -434,8 +434,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_mascara
 	NULL, --edit_unidad
 	NULL, --edit_rango
-	'40', --edit_filas
-	'65', --edit_columnas
+	'35', --edit_filas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -515,7 +515,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'20', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -595,7 +595,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'4', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -675,7 +675,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'20', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -755,7 +755,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'15', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -835,7 +835,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'3', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -994,8 +994,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_mascara
 	NULL, --edit_unidad
 	NULL, --edit_rango
-	'55', --edit_filas
-	'65', --edit_columnas
+	'50', --edit_filas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -1075,7 +1075,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'8', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -1155,7 +1155,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_unidad
 	NULL, --edit_rango
 	'5', --edit_filas
-	'65', --edit_columnas
+	'100', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -1229,8 +1229,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'0', --carga_permite_no_seteado
 	NULL, --carga_no_seteado
 	NULL, --carga_no_seteado_ocultar
-	'65', --edit_tamano
-	'65', --edit_maximo
+	'80', --edit_tamano
+	'80', --edit_maximo
 	NULL, --edit_mascara
 	NULL, --edit_unidad
 	NULL, --edit_rango
@@ -1310,7 +1310,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_no_seteado
 	NULL, --carga_no_seteado_ocultar
 	'60', --edit_tamano
-	NULL, --edit_maximo
+	'100', --edit_maximo
 	NULL, --edit_mascara
 	NULL, --edit_unidad
 	NULL, --edit_rango
