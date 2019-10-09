@@ -5,6 +5,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__datos_filtro;
     protected $s__mostrar;
     protected $s__mostrar_e;
+    protected $s__mostrar_presup;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
@@ -245,7 +246,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__mostrar_e = 1;
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
             case 'pant_presupuesto':
-                $this->s__mostrar_e = 1;           
+                $this->s__mostrar_presup = 1;           
                 $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
             case 'pant_edicion':
@@ -271,10 +272,10 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
                 break;
             case 'pant_presupuesto':
-                //$this->s__mostrar_e = 1;
-                $this->set_pantalla('pant_presupuesto');
-                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
-                break;
+                
+                $this->set_pantalla('pant_formulario');
+                $this->dep('datos')->tabla('pextension')->resetear();
+                break; 
             case 'pant_planilla':
                 //problema aca 
                 $this->set_pantalla('pant_formulario');
@@ -291,6 +292,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
+        $this->s__mostrar_presup = 0;
     }
 
     function evt__integrantesi() {
@@ -310,9 +312,11 @@ class ci_proyectos_extension extends extension_ci {
     function evt__presupuesto() {
         $this->set_pantalla('pant_presupuesto');
         //$this->dep('datos')->tabla('pextension')->cargar($datos);
-        //$ar = array('id_pext' => $presupuesto_extensiondatos['id_pext']);
-        //$this->dep('datos')->tabla('presupuesto_extension')->cargar($ar);
+        //$ar = array('id_pext' => $integrante_externo_pedatos['id_pext']);
+        //$this->dep('datos')->tabla('integrante_interno_pe')->cargar($ar);
     }
+    
+    
 
     //-----------------------------------------------------------------------------------
     //---- form_integrantes internos-------------------------------------------------------------
@@ -383,14 +387,19 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
     }
     
+    function evt__form_integrantes__cancelar() {
+        $this->s__mostrar = 0;
+        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+    }
     
     //-----------------------------------------------------------------------------------
     //---- form_presupuesto-------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
     function conf__form_presupuesto(toba_ei_formulario $form) {
-        if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
+        if ($this->s__mostrar_presup == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_presupuesto')->descolapsar();
+            $form->ef('id_presupuesto')->set_obligatorio('true');
             $form->ef('concepto')->set_obligatorio('true');
             $form->ef('cantidad')->set_obligatorio('true');
             $form->ef('monto')->set_obligatorio('true');
@@ -413,34 +422,18 @@ class ci_proyectos_extension extends extension_ci {
             $form->set_datos($datos);
         }
         
-        
-        //le agrego el nombre del docente 
-        /*foreach ($res as $key => $row) {
-            $nom = $this->dep('datos')->tabla('docente')->get_nombre($res[$key]['id_designacion']);
-            $res[$key]['nombre'] = $nom;
-        }
-        
-        //ordenamos el arreglo
-        //$aux tiene la información que queremos ordenar
-        foreach ($res as $key => $row) {
-            $aux[$key] = $row['nombre'] . $row['desde'];
-        }
-        array_multisort($aux, SORT_ASC, $res);
-        if (isset($res)) {//si hay integrantes
-            foreach ($res as $key => $value) {
-                $doc = $this->dep('datos')->tabla('designacion')->get_docente($res[$key]['id_designacion']);
-                $res[$key]['id_docente'] = $doc;
-                //autocompleto con blanco hasta 5
-                $res[$key]['funcion_p'] = str_pad($res[$key]['funcion_p'], 5);
-            }
-        }*/
-       
-        
     }
     
-    function evt__form_presupuesto__guardar($datos) {
+    function evt__form_presupuesto__guardar($datos) 
+   {
+	$pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos[id_pext] = $pe['id_pext'];
+        $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+        $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+        $this->dep('datos')->tabla('presupuesto_extension')->resetear();
         
-    }
+    }    
+    
     
     function evt__form_presupuesto__baja($datos) {
         }
@@ -449,14 +442,13 @@ class ci_proyectos_extension extends extension_ci {
         
     }
 
-    function evt__form_presupuesto__cancelar() {
-       
+    function evt__form_presupuesto__cancelar() 
+    {
+       $this->s__mostrar_presup = 0;
+       $this->dep('datos')->tabla('presupuesto_extension')->resetear();
     }
 
-    function evt__form_integrantes__cancelar() {
-        $this->s__mostrar = 0;
-        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-    }
+    
 
     //-----------------------------------------------------------------------------------
     //---- Configuraciones --------------------------------------------------------------
@@ -531,7 +523,7 @@ class ci_proyectos_extension extends extension_ci {
         }
     
     function evt__cuadro_presup__seleccion($datos) {
-        $this->s__mostrar_e = 1;
+        $this->s__mostrar_presup = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         //print_r($datos);exit();

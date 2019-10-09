@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_datos_tabla', --clase
 	'1001000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'dt_rubro_presup_extension', --subclase
+	'datos/dt_rubro_presup_extension.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - DR - rubro_presup_extension', --nombre

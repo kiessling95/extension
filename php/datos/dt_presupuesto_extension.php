@@ -6,6 +6,7 @@ class dt_presupuesto_extension extends extension_datos_tabla
         
         $sql = "select "
                 . "id_pext,"
+		. "id_presupuesto,"
                 . "r.id_rubro_extension,"
                 . "tipo,"
                 . "concepto,"
@@ -20,6 +21,8 @@ class dt_presupuesto_extension extends extension_datos_tabla
         //print_r($sql);        exit();
         return toba::db('extension')->consultar($sql);
     }
+
+    
 }
 ?>
 
