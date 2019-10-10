@@ -410,13 +410,13 @@ class ci_proyectos_extension extends extension_ci {
         
         if ($this->dep('datos')->tabla('presupuesto_extension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('presupuesto_extension')->get();
-            $datos['rubro'] = str_pad($datos['rubro'], 5);
+            $datos['id_rubro_extension'] = str_pad($datos['id_rubro_extension'], 5);
             print_r($datos);
             
             $rubro = $this->dep('datos')->tabla('rubro_presup_extension')->get_datos($datos['id_rubro_extension']);
 
             if (count($rubro) > 0) {
-                $datos['rubro'] = $rubro[0]['tipo'];
+                $datos['id_rubro_extension'] = $rubro[0]['tipo'];
             }
             print_r($datos);
             $form->set_datos($datos);
@@ -436,10 +436,15 @@ class ci_proyectos_extension extends extension_ci {
     
     
     function evt__form_presupuesto__baja($datos) {
+        $this->dep('datos')->tabla('presupuesto_extension')->eliminar_todo();
+        $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+        toba::notificacion()->agregar('El presupuesto se ha eliminado  correctamente.', 'info');
+        $this->s__mostrar_presup = 0;
         }
 
     function evt__form_presupuesto__modificacion($datos) {
-        
+        $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+        $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
     }
 
     function evt__form_presupuesto__cancelar() 
