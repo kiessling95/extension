@@ -248,7 +248,6 @@ class ci_proyectos_extension extends extension_ci {
         switch ($this->s__pantalla) {
             case 'pant_interno':
                 //$this->s__mostrar = 1;
-
                 $this->set_pantalla('pant_planilla');
                 $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
                 break;
@@ -259,8 +258,9 @@ class ci_proyectos_extension extends extension_ci {
                 break;
             case 'pant_planilla':
                 //problema aca 
+                
                 $this->set_pantalla('pant_formulario');
-                $this->dep('datos')->tabla('pextension')->cargar($datos);
+                //$this->dep('datos')->tabla('pextension')->cargar($datos);
                 break;
             default :
 

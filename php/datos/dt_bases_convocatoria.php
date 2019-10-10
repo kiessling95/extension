@@ -18,9 +18,10 @@ class dt_bases_convocatoria extends extension_datos_tabla
 			t_bc.consulta,
 			t_bc.bases_titulo,
 			t_bc.ordenanza,
-			t_bc.tipo_convocatoria
+			t_c.descripcion
 		FROM
-			bases_convocatoria as t_bc";
+			bases_convocatoria as t_bc
+                        LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = t_bc.tipo_convocatoria)";
 		if (!is_null($where)) {
 			$sql.="
 			WHERE
@@ -28,7 +29,7 @@ class dt_bases_convocatoria extends extension_datos_tabla
 		}
 		$sql .="
 		ORDER BY convocatoria";
-		
+
 		return toba::db('extension')->consultar($sql);
 	}
 

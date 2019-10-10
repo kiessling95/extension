@@ -293,7 +293,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1001000153', --objeto_cuadro
 	'1001000392', --objeto_cuadro_col
-	'tipo_convocatoria', --clave
+	'descripcion', --clave
 	'4', --orden
 	'Tipo convocatoria', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
