@@ -1,12 +1,10 @@
 <?php
-class dt_tipo_convocatoria extends toba_datos_tabla
-{
+class dt_tipo_convocatoria extends extension_datos_tabla {
+
 	function get_descripciones()
 	{
-		$sql = "SELECT id, descripcion FROM tipo_convocatoria ORDER BY descripcion";
-		return toba::db('designa')->consultar($sql);
+		$sql = "SELECT id_conv, descripcion FROM tipo_convocatoria ORDER BY descripcion";
+		return toba::db('extension')->consultar($sql);
 	}
-
 }
-
 ?>

@@ -42,13 +42,15 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.caracterizacion_poblacion,
                         t_p.localizacion_geo,
                         t_p.antecedente_participacion,
-                        t_p.importancia_necesidad
-                        
+                        t_p.importancia_necesidad,
+                        t_p.tipo_convocatoria
                     FROM
                         pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
                         LEFT OUTER JOIN designacion as d ON (i.id_designacion = d.id_designacion )
                         LEFT OUTER JOIN docente as dc ON ( dc.id_docente = d.id_docente )
+                        LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = t_p.tipo_convocatoria)
+                        
                     ORDER BY codigo";
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where);
@@ -154,7 +156,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.caracterizacion_poblacion,
                         t_p.localizacion_geo,
                         t_p.antecedente_participacion,
-                        t_p.importancia_necesidad
+                        t_p.importancia_necesidad,
+                        t_c.descripcion
                     FROM
                         pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
@@ -162,10 +165,14 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN docente as dc ON ( dc.id_docente = d.id_docente )  
                         LEFT OUTER JOIN departamento as dpto ON (dpto.idunidad_academica = t_ua.sigla)
                         LEFT OUTER JOIN area as a ON (a.iddepto = dpto.iddepto)
+                        LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = t_p.tipo_convocatoria)
                     ORDER BY codigo";
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where);
         }
+        $sql = toba::perfil_de_datos()->filtrar($sql);
+        // buscar usuario y rol
+        //si rol formulador agrego al filtro que solo muestre los proyectos que el formulo
         //print_r($sql);      //  exit();
         return toba::db('extension')->consultar($sql);
     }
