@@ -59,12 +59,14 @@ class ci_rubros extends extension_ci {
         } else {
             $this->dep('formulario')->colapsar();
         }
+        
         if ($this->dep('datos')->esta_cargada()) {
             $form->set_datos($this->dep('datos')->tabla('rubro_presup_extension')->get());
         }
     }
 
     function evt__formulario__alta($datos) {
+        print_r($datos);
         $this->dep('datos')->tabla('rubro_presup_extension')->set($datos);
         $this->dep('datos')->tabla('rubro_presup_extension')->sincronizar();
         $this->s__mostrar = 0;
@@ -112,9 +114,6 @@ class ci_rubros extends extension_ci {
 
     function evt__agregar() {
         $this->s__mostrar = 1;
-        $this->resetear();
-        $this->dep('cuadro')->colapsar();
-        $this->dep('filtro_rubro')->colapsar();
         unset($this->s__datos_filtro);
         unset($this->s__where);
     }
