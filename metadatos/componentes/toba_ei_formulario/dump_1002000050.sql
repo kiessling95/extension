@@ -51,13 +51,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1002000032', --evento_id
 	'1002000050', --objeto
 	'alta', --identificador
-	'Alta', --etiqueta
+	'Guardar', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	'ei-boton-alta', --estilo
 	'apex', --imagen_recurso_origen
-	'nucleo/agregar.gif', --imagen
+	'guardar.gif', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'1', --orden
