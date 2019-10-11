@@ -40,8 +40,7 @@ class ci_rubros extends extension_ci
 
     function evt__cuadro__seleccion($datos) {
         //$this->s__mostrar = 1;
-        $this->set_pantalla('pant_edicion');
-        $this->dep('datos')->tabla('rubro_presup_extension')->cargar($datos);
+        $this->dep('datos')->cargar($datos);
     }
     
     function evt__cuadro__editar($datos) 
@@ -49,8 +48,13 @@ class ci_rubros extends extension_ci
         $this->dep('datos')->cargar($datos);
         $this->s__mostrar = 1;
         $this->dep('cuadro')->colapsar();
+        $this->dep('filtro_rubro')->colapsar();
     }
     
+    
+    /*function evt__form_cargo__modif($datos) {
+        $this->s__datos = $datos;
+    }*/
     
     
     function conf__formulario(toba_ei_formulario $form) {
@@ -70,18 +74,19 @@ class ci_rubros extends extension_ci
     
     function evt__formulario__alta($datos) 
     {
+            $this->dep('datos')->tabla('rubro_presup_extension')->set($datos);
+            $this->dep('datos')->sincronizar();
+            $this->s__mostrar = 0;
+            $this->resetear();
+            $this->dep('cuadro')->descolapsar();
+            $this->dep('filtro_rubro')->descolapsar();
         
-        $this->dep('datos')->tabla('rubro_presup_extension')->set($datos);
-        $this->dep('datos')->tabla('rubro_presup_extension')->sincronizar();
-        $this->s__mostrar = 0;
-        $this->dep('datos')->resetear();
-	
+       
     }
     
      function evt__formulario__baja($datos) 
      {
-        $this->dep('datos')->tabla('rubro_presup_extension')->eliminar_todo();
-        $this->dep('datos')->tabla('rubro_presup_extension')->resetear();
+        $this->dep('datos')->eliminar_todo();
         toba::notificacion()->agregar('El rubro se ha eliminado  correctamente.', 'info');
         $this->s__mostrar = 0;
         $this->resetear();
@@ -96,26 +101,15 @@ class ci_rubros extends extension_ci
     function evt__formulario__cancelar() 
     {
         $this->s__mostrar = 0;
-        $this->dep('datos')->tabla('rubro_presup_extension')->resetear();
+        $this->resetear();
+        $this->dep('formulario')->descolapsar();
     }
     
     function resetear() {
         $this->dep('datos')->resetear();
     }
 
-    //-----------------------------------------------------------------------------------
-    //---- JAVASCRIPT -------------------------------------------------------------------
-    //-----------------------------------------------------------------------------------
-
-    function extender_objeto_js() {
-        echo "
-		//---- Eventos ---------------------------------------------
-		
-		{$this->objeto_js}.evt__agregar = function()
-		{
-		}
-		";
-    }
+   
 
     //-----------------------------------------------------------------------------------
     //---- Eventos ----------------------------------------------------------------------
@@ -124,10 +118,18 @@ class ci_rubros extends extension_ci
     function evt__agregar() {
         $this->s__mostrar = 1;
         $this->resetear();
-         $this->dep('cuadro')->colapsar();
+        $this->dep('cuadro')->colapsar();
         $this->dep('filtro_rubro')->colapsar();
         unset($this->s__datos_filtro);
         unset($this->s__where);
+    }
+    
+    function evt__volver()
+    {
+        $this->s__mostrar = 0;
+        $this->resetear();
+        $this->dep('cuadro')->descolapsar();
+        $this->dep('filtro_rubro')->descolapsar();
     }
 }
 ?>
