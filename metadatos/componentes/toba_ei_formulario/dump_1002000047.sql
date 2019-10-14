@@ -235,7 +235,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000047', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'id_rubro_extension', --identificador
-	'ef_combo', --elemento_formulario
+	'ef_popup', --elemento_formulario
 	'id_rubro_extension', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -281,14 +281,14 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_ajustable
 	NULL, --edit_confirmar_clave
 	NULL, --edit_expreg
-	NULL, --popup_item
-	NULL, --popup_proyecto
-	NULL, --popup_editable
+	'1002000004', --popup_item
+	'extension', --popup_proyecto
+	'0', --popup_editable
 	NULL, --popup_ventana
-	NULL, --popup_carga_desc_metodo
+	'get_rubro', --popup_carga_desc_metodo
 	NULL, --popup_carga_desc_clase
 	NULL, --popup_carga_desc_include
-	NULL, --popup_puede_borrar_estado
+	'1', --popup_puede_borrar_estado
 	NULL, --fieldset_fin
 	NULL, --check_valor_si
 	NULL, --check_valor_no
