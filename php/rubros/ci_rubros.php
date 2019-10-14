@@ -119,6 +119,8 @@ class ci_rubros extends extension_ci {
     }
 
     function evt__volver() {
+        
+        // actualmente no cumple con lo que deberia 
         $this->s__mostrar = 0;
         $this->resetear();
         $this->dep('cuadro')->descolapsar();
