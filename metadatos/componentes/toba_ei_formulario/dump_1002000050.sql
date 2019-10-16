@@ -178,6 +178,39 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'0', --es_seleccion_multiple
 	'0'  --es_autovinculo
 );
+INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
+	'extension', --proyecto
+	'1002000038', --evento_id
+	'1002000050', --objeto
+	'modif', --identificador
+	NULL, --etiqueta
+	'1', --maneja_datos
+	NULL, --sobre_fila
+	NULL, --confirmacion
+	NULL, --estilo
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	'0', --en_botonera
+	NULL, --ayuda
+	'5', --orden
+	NULL, --ci_predep
+	'1', --implicito
+	'0', --defecto
+	NULL, --display_datos_cargados
+	NULL, --grupo
+	NULL, --accion
+	NULL, --accion_imphtml_debug
+	NULL, --accion_vinculo_carpeta
+	NULL, --accion_vinculo_item
+	NULL, --accion_vinculo_objeto
+	NULL, --accion_vinculo_popup
+	NULL, --accion_vinculo_popup_param
+	NULL, --accion_vinculo_target
+	NULL, --accion_vinculo_celda
+	NULL, --accion_vinculo_servicio
+	'0', --es_seleccion_multiple
+	'0'  --es_autovinculo
+);
 --- FIN Grupo de desarrollo 1002
 
 ------------------------------------------------------------
@@ -237,7 +270,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'id_rubro_extension', --identificador
 	'ef_editable_numero', --elemento_formulario
 	'id_rubro_extension', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
 	'Id Rubro Extension', --etiqueta
@@ -317,7 +350,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'tipo', --identificador
 	'ef_editable', --elemento_formulario
 	'tipo', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
 	'Tipo', --etiqueta

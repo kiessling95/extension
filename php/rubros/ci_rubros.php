@@ -77,7 +77,7 @@ class ci_rubros extends extension_ci {
         $this->dep('datos')->eliminar_todo();
         toba::notificacion()->agregar('El rubro se ha eliminado  correctamente.', 'info');
         $this->s__mostrar = 0;
-        $this->resetear();
+        $this->dep('datos')->resetear();
     }
 
     function evt__formulario__modificacion($datos) {

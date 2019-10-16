@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - cuadro_presup', --nombre
-	'Presupuesto asociado al Proyecto de Extension', --titulo
+	'Presupuestos asociados al Proyecto de Extension', --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	NULL, --fuente_datos_proyecto
@@ -57,7 +57,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'doc.gif', --imagen
+	'editable.gif', --imagen
 	'0', --en_botonera
 	NULL, --ayuda
 	'1', --orden

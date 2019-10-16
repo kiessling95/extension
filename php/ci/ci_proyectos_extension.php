@@ -13,6 +13,10 @@ class ci_proyectos_extension extends extension_ci {
     function get_persona($id) {
         
     }
+    
+    function get_rubro($id) {
+        
+    }
 
     function fecha_desde_proyecto() {
         $datos = $this->dep('datos')->tabla('pextension')->get();
@@ -245,7 +249,7 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_externo':
                 $this->s__mostrar_e = 1;
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
-            case 'pant_presupuesto':
+            case 'pant_presup':
                 $this->s__mostrar_presup = 1;           
                 $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
@@ -270,10 +274,9 @@ class ci_proyectos_extension extends extension_ci {
                 $this->set_pantalla('pant_planilla');
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
                 break;
-            case 'pant_presupuesto':
+            case 'pant_presup':
                 
                 $this->set_pantalla('pant_formulario');
-                $this->dep('datos')->tabla('pextension')->resetear();
                 break; 
             case 'pant_planilla':
                 //problema aca 
@@ -410,15 +413,15 @@ class ci_proyectos_extension extends extension_ci {
         
         if ($this->dep('datos')->tabla('presupuesto_extension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('presupuesto_extension')->get();
-            $datos['id_rubro_extension'] = str_pad($datos['id_rubro_extension'], 5);
-            print_r($datos);
+          //  $datos['id_rubro_extension'] = str_pad($datos['id_rubro_extension'], 5);
+           // print_r($datos);
             
             $rubro = $this->dep('datos')->tabla('rubro_presup_extension')->get_datos($datos['id_rubro_extension']);
 
             if (count($rubro) > 0) {
                 $datos['id_rubro_extension'] = $rubro[0]['tipo'];
             }
-            print_r($datos);
+            ///print_r($datos);
             $form->set_datos($datos);
         }
         
@@ -428,6 +431,7 @@ class ci_proyectos_extension extends extension_ci {
    {
 	$pe = $this->dep('datos')->tabla('pextension')->get();
         $datos[id_pext] = $pe['id_pext'];
+        
         $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
         $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
         $this->dep('datos')->tabla('presupuesto_extension')->resetear();
@@ -480,7 +484,7 @@ class ci_proyectos_extension extends extension_ci {
     }
     
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
-        $this->s__pantalla = "pant_presupuesto";
+        $this->s__pantalla = "pant_presup";
     }
 
     // creo que todas estas conf ya no son necesarias 
@@ -528,13 +532,19 @@ class ci_proyectos_extension extends extension_ci {
         }
     
     function evt__cuadro_presup__seleccion($datos) {
+        
+        
         $this->s__mostrar_presup = 1;
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-        //print_r($datos);exit();
-        $this->dep('datos')->tabla('presupuesto_extension')->cargar($datos);
+        
+        
+        $presup = $this->dep('datos')->tabla('presupuesto_extension')->get_datos($datos);
+        
+       //print_r($presup[0]);        exit();
+        
+        $this->dep('datos')->tabla('presupuesto_extension')->cargar($presup[0]);
     }
-
+    
+    
     //-----------------------------------------------------------------------------------
     //---- Formulario Integrante Externo ------------------------------------------------------------
     //-----------------------------------------------------------------------------------
