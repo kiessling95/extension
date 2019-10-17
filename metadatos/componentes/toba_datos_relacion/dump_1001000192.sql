@@ -144,11 +144,11 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	'1001000192', --objeto_consumidor
 	'1002000045', --objeto_proveedor
 	'presupuesto_extension', --identificador
-	'', --parametros_a
-	'', --parametros_b
+	'1', --parametros_a
+	'1', --parametros_b
 	NULL, --parametros_c
 	NULL, --inicializar
-	NULL  --orden
+	'8'  --orden
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
@@ -156,11 +156,11 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	'1001000192', --objeto_consumidor
 	'1002000043', --objeto_proveedor
 	'rubro_presup_extension', --identificador
-	'', --parametros_a
-	'', --parametros_b
+	'1', --parametros_a
+	'1', --parametros_b
 	NULL, --parametros_c
 	NULL, --inicializar
-	NULL  --orden
+	'9'  --orden
 );
 --- FIN Grupo de desarrollo 1002
 
