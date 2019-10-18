@@ -76,10 +76,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'id_rubro_extension', --columna
 	'E', --tipo
 	'1', --pk
-	'', --secuencia
+	'rubro_presup_extension_seq', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'rubro_presup_extension'  --tabla
 );
@@ -93,7 +93,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'rubro_presup_extension'  --tabla
 );
