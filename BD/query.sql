@@ -27,3 +27,27 @@ ALTER TABLE presupuesto_extension ADD COLUMN id_pext integer;
 ALTER TABLE rubro_presup_extension ADD COLUMN id_rubro_extension integer;
 
 ALTER TABLE rubro_presup_extension ADD COLUMN tipo character varying;
+
+
+
+CREATE SEQUENCE public.rubro_presup_extension_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE ONLY public.rubro_presup_extension ALTER COLUMN id_rubro_extension SET DEFAULT nextval('public.rubro_presup_extension_seq'::regclass);
+
+CREATE SEQUENCE public.presupuesto_extension_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE ONLY public.presupuesto_extension ALTER COLUMN id_presupuesto SET DEFAULT nextval('public.presupuesto_extension_seq'::regclass);
+
+
+INSERT INTO rubro_presup_extension ( tipo ) VALUES ('pantalla')
+
