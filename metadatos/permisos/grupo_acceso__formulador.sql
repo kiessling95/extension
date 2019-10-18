@@ -62,3 +62,12 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	'1001000059'  --item
 );
 --- FIN Grupo de desarrollo 1001
+
+--- INICIO Grupo de desarrollo 1002
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'extension', --proyecto
+	'formulador', --usuario_grupo_acc
+	NULL, --item_id
+	'1002000004'  --item
+);
+--- FIN Grupo de desarrollo 1002
