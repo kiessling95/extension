@@ -1,10 +1,23 @@
 <?php
+
 class dt_tipo_convocatoria extends extension_datos_tabla {
 
-	function get_descripciones()
-	{
-		$sql = "SELECT id_conv, descripcion FROM tipo_convocatoria ORDER BY descripcion";
-		return toba::db('extension')->consultar($sql);
-	}
+    function get_descripciones($id_bases = null) {
+        //$sql = "SELECT id_conv, descripcion FROM tipo_convocatoria ORDER BY descripcion";
+        //return toba::db('extension')->consultar($sql);
+
+        if (!is_null($id_bases)) {
+            $sql = "SELECT id_conv,descripcion FROM tipo_convocatoria as t_c "
+                    . "INNER JOIN bases_convocatoria as b_c ON (b_c.id_conv = t_c.id_conv) ORDER BY descripcion "
+                    . "Where id_bases= " . $id_bases;
+            $res = toba::db('extension')->consultar($sql);
+        } else {
+            $res = array();
+        }
+        print_r($res);
+        return $res;
+    }
+
 }
+
 ?>
