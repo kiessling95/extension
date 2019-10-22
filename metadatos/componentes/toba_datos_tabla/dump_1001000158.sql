@@ -508,10 +508,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000158', --objeto
 	'1001000469', --col_id
 	'id_bases', --columna
-	'C', --tipo
+	'N', --tipo
 	'0', --pk
 	'', --secuencia
-	'10', --largo
+	NULL, --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa

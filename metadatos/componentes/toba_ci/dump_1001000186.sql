@@ -37,7 +37,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --parametro_f
 	NULL, --usuario
 	'2019-09-10 11:03:57', --creacion
-	'abajo'  --posicion_botonera
+	'ambos'  --posicion_botonera
 );
 --- FIN Grupo de desarrollo 1001
 
@@ -191,7 +191,7 @@ INSERT INTO apex_objeto_mt_me (objeto_mt_me_proyecto, objeto_mt_me, ev_procesar_
 	'900px', --ancho
 	'300px', --alto
 	NULL, --posicion_botonera
-	NULL, --tipo_navegacion
+	'tab_v', --tipo_navegacion
 	'0', --botonera_barra_item
 	'0', --con_toc
 	NULL, --incremental

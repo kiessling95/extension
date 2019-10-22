@@ -160,7 +160,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.antecedente_participacion,
                         t_p.importancia_necesidad,
                         b_c.id_bases,
-                        t_c.id_conv
+                        t_c.id_conv,
+                        t_c.descripcion
                     FROM
                         pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
