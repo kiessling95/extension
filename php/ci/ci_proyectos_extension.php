@@ -58,6 +58,19 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_planilla")->desactivar();
         $this->pantalla()->tab("pant_formulario")->desactivar();
         $this->pantalla()->tab("pant_presupuesto")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_objetivos")->desactivar();
+        $this->pantalla()->tab("pant_impacto")->desactivar();
+
+
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_planilla")->ocultar();
+        $this->pantalla()->tab("pant_formulario")->ocultar();
+        $this->pantalla()->tab("pant_presupuesto")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_objetivos")->ocultar();
+        $this->pantalla()->tab("pant_impacto")->ocultar();
 
         if (isset($this->s__datos_filtro)) {
             $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__datos_filtro));
@@ -66,7 +79,22 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__cuadro__seleccion($datos) {
         //$this->s__mostrar = 1;
+
+
         $this->set_pantalla('pant_formulario');
+
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+
+
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
@@ -128,6 +156,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario__alta($datos) {
+        //print_r($datos);
         $perfil = toba::usuario()->get_perfil_datos();
         if ($perfil != null) {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
@@ -143,6 +172,8 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[director]);
         unset($datos[departamento]);
         unset($datos[area]);
+        unset($datos[tipo_convocatoria]);
+    
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
         $this->dep('datos')->tabla('pextension')->cargar($datos);
@@ -172,13 +203,14 @@ class ci_proyectos_extension extends extension_ci {
         $this->set_pantalla('pant_edicion');
     }
 
-    function evt__formulario__integrantes($datos) {
-        $this->set_pantalla('pant_planilla');
-    }
+    /*
+      function evt__formulario__integrantes($datos) {
+      $this->set_pantalla('pant_planilla');
+      }
 
-    function evt__formulario__presupuesto($datos) {
-        $this->set_pantalla('pant_presupuesto');
-    }
+      function evt__formulario__presupuesto($datos) {
+      $this->set_pantalla('pant_presupuesto');
+      } */
 
     function resetear() {
         $this->dep('datos')->resetear();
@@ -226,6 +258,25 @@ class ci_proyectos_extension extends extension_ci {
                 break;
             case 'pant_edicion':
                 $this->set_pantalla('pant_formulario');
+
+                $this->pantalla()->tab("pant_integrantesi")->desactivar();
+                $this->pantalla()->tab("pant_integrantese")->desactivar();
+                $this->pantalla()->tab("pant_planilla")->desactivar();
+
+                $this->pantalla()->tab("pant_presupuesto")->desactivar();
+                $this->pantalla()->tab("pant_organizaciones")->desactivar();
+                $this->pantalla()->tab("pant_objetivos")->desactivar();
+                $this->pantalla()->tab("pant_impacto")->desactivar();
+
+
+                $this->pantalla()->tab("pant_integrantesi")->ocultar();
+                $this->pantalla()->tab("pant_integrantese")->ocultar();
+                $this->pantalla()->tab("pant_planilla")->ocultar();
+                $this->pantalla()->tab("pant_presupuesto")->ocultar();
+                $this->pantalla()->tab("pant_organizaciones")->ocultar();
+                $this->pantalla()->tab("pant_objetivos")->ocultar();
+                $this->pantalla()->tab("pant_impacto")->ocultar();
+
                 $this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
@@ -265,10 +316,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__integrantese() {
         $this->set_pantalla('pant_integrantese');
-    }
-
-    function evt__presupuesto() {
-        $this->set_pantalla('pant_presupuesto');
     }
 
     //-----------------------------------------------------------------------------------
@@ -399,26 +446,124 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__pant_edicion(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_edicion";
+
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     function conf__pant_formulario(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_formulario";
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     function conf__pant_integrantesi(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_interno";
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     function conf__pant_integrantese(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_externo";
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     function conf__pant_planilla(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_planilla";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+    }
+
+    function conf__pant_organizaciones(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_organizaciones";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+    }
+
+    function conf__pant_objetivos(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_objetivos";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+    }
+
+    function conf__pant_impacto(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_impacto";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_presup";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     // creo que todas estas conf ya no son necesarias 
