@@ -4,13 +4,24 @@
 #require_once 'dt_mocovi_periodo_presupuestario.php';
 
 class dt_docente extends extension_datos_tabla {
+    /*
+      function get_nombre($id_desig) {
+      $sql = "select apellido||', '||nombre as nombre from docente t_do,designacion t_d where t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig;
+      $res = toba::db('extension')->consultar($sql);
+      return $res[0]['nombre'];
+      }
+     * 
+     */
 
     function get_nombre($id_desig) {
-        $sql = "select apellido||', '||nombre as nombre from docente t_do,designacion t_d where t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig;
+        $sql = "SELECT n.nombre "
+                . "FROM dlink('dbname=designa', 'SELECT apellido||', '||nombre as nombre from docente t_do,designacion t_d "
+                . "           WHERE t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig . ")";
         $res = toba::db('extension')->consultar($sql);
         return $res[0]['nombre'];
     }
-    function get_id_docente($id_desig){
+
+    function get_id_docente($id_desig) {
         $sql = "select t_do.id_docente from docente t_do,designacion t_d where t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig;
         $res = toba::db('extension')->consultar($sql);
         return $res[0]['id_docente'];
@@ -19,9 +30,9 @@ class dt_docente extends extension_datos_tabla {
     function get_agente($id_doc) {
         $sql = "select apellido||', '||nombre as nombre from docente where id_docente=" . $id_doc;
         print_r($sql);
-        
+
         $res = toba::db('extension')->consultar($sql);
-        print_r($res); 
+        print_r($res);
         return $res[0]['nombre'];
     }
 
@@ -39,6 +50,7 @@ class dt_docente extends extension_datos_tabla {
         $sql = "SELECT id_docente, apellido, nombre,legajo FROM docente $where ORDER BY nombre";
         return toba::db('extension')->consultar($sql);
     }
+
     function get_datos($tipo, $nro) {
         $sql = "select id_docente from docente"
                 . " where tipo_docum='" . $tipo . "'" . " and nro_docum=" . $nro;
@@ -305,9 +317,18 @@ class dt_docente extends extension_datos_tabla {
 
         return $respuesta;
     }
-
+/*
     function get_descripciones() {
         $sql = "SELECT id_docente, trim(apellido)||', '||nombre as nombre FROM docente ORDER BY nombre";
+        return toba::db('extension')->consultar($sql);
+    }
+ * 
+ */
+    function get_descripciones() {
+        $sql = "SELECT d.id_docente , d.nombre "
+                . "FROM dblink('dbname=designa', 'SELECT id_docente, (trim(apellido),nombre) as nombre "
+                . "                              FROM docente ORDER BY nombre')  "
+                . "as d (id_docente INTEGER, nombre CHARACTER VARYING)";
         return toba::db('extension')->consultar($sql);
     }
 

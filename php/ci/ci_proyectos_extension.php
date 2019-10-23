@@ -262,7 +262,6 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_integrantesi")->desactivar();
                 $this->pantalla()->tab("pant_integrantese")->desactivar();
                 $this->pantalla()->tab("pant_planilla")->desactivar();
-
                 $this->pantalla()->tab("pant_presupuesto")->desactivar();
                 $this->pantalla()->tab("pant_organizaciones")->desactivar();
                 $this->pantalla()->tab("pant_objetivos")->desactivar();
@@ -474,11 +473,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_interno";
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        //$this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
-        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        //$this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }

@@ -28,7 +28,7 @@ class ci_personas extends extension_ci {
     //---- Cuadro -----------------------------------------------------------------------
 
     function conf__cuadro(toba_ei_cuadro $cuadro) {
-        #$cuadro->desactivar_modo_clave_segura();
+        $cuadro->desactivar_modo_clave_segura();
         if (isset($this->s__where)) {
             $cuadro->set_datos($this->dep('datos')->tabla('persona')->get_listado($this->s__where));
         } else {
