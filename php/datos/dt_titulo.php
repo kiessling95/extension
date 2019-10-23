@@ -1,6 +1,6 @@
 <?php
 
-require_once 'dt_mocovi_periodo_presupuestario.php';
+//require_once 'dt_mocovi_periodo_presupuestario.php';
 
 class dt_titulo extends toba_datos_tabla {
 

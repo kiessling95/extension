@@ -1,7 +1,7 @@
 <?php
 
-require_once 'consultas_mapuche.php';
-require_once 'dt_mocovi_periodo_presupuestario.php';
+#require_once 'consultas_mapuche.php';
+#require_once 'dt_mocovi_periodo_presupuestario.php';
 
 class dt_docente extends extension_datos_tabla {
 

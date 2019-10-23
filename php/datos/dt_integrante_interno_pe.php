@@ -1,7 +1,7 @@
 <?php
 
-require_once 'dt_mocovi_periodo_presupuestario.php';
-require_once 'consultas_mapuche.php';
+#require_once 'dt_mocovi_periodo_presupuestario.php';
+#require_once 'consultas_mapuche.php';
 
 class dt_integrante_interno_pe extends extension_datos_tabla {
     
