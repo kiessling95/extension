@@ -3,6 +3,7 @@
 class ci_proyectos_extension extends extension_ci {
 
     protected $s__datos_filtro;
+    protected $s__where;
     protected $s__mostrar;
     protected $s__mostrar_e;
     protected $s__mostrar_presup;
@@ -35,7 +36,7 @@ class ci_proyectos_extension extends extension_ci {
 
     //---- Filtro -----------------------------------------------------------------------
 
-    function conf__filtro(toba_ei_formulario $filtro) {
+    function conf__filtro(toba_ei_filtro $filtro) {
         if (isset($this->s__datos_filtro)) {
             $filtro->set_datos($this->s__datos_filtro);
         }
@@ -43,10 +44,12 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__filtro__filtrar($datos) {
         $this->s__datos_filtro = $datos;
+        $this->s__where = $this->dep('filtro')->get_sql_where();
     }
 
     function evt__filtro__cancelar() {
         unset($this->s__datos_filtro);
+        unset($this->s__where);
     }
 
     //---- Cuadro -----------------------------------------------------------------------
@@ -72,8 +75,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_impacto")->ocultar();
 
-        if (isset($this->s__datos_filtro)) {
-            $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__datos_filtro));
+        if (isset($this->s__where)) {
+            $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__where));
         }
     }
 
@@ -94,7 +97,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
 
-
+        print_r($datos);
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
@@ -473,11 +476,9 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_interno";
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
-        //$this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
-        //$this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
@@ -487,11 +488,9 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
-        $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
@@ -657,7 +656,7 @@ class ci_proyectos_extension extends extension_ci {
         print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        $datos['tipo'] = 'interno';
+        $datos['tipo'] = 'externo';
         $datos['nro_tabla'] = 1;
         //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
         //$personas=$this->dep('datos')->tabla('persona')->get_listado();           

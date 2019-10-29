@@ -7,7 +7,8 @@ class dt_unidad_acad extends extension_datos_tabla {
         $sql = "SELECT sigla, descripcion FROM unidad_acad ORDER BY descripcion";
         return toba::db('extension')->consultar($sql);
     }
-
+    
+   
     function get_descripcion($sigla) {
         $sql = "select descripcion from unidad_acad where sigla='" . $sigla . "'";
         $resul = toba::db('extension')->consultar($sql);
