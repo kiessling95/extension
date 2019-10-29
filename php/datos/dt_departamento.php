@@ -4,7 +4,7 @@ class dt_departamento extends toba_datos_tabla
 	function get_descripciones()
 	{
 		$sql = "SELECT iddepto, descripcion FROM departamento ORDER BY descripcion";
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
         //trae todos los departamentos menos los que se cargaron como SIN DEPARTAMENTO
         function get_descrip()
@@ -13,18 +13,19 @@ class dt_departamento extends toba_datos_tabla
                         . " LEFT OUTER JOIN unidad_acad u ON (d.idunidad_academica=u.sigla)"
                         . " WHERE not (d.descripcion like 'SIN%')"
                         . " ORDER BY descripcion";
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
         function get_descripcion($id_depto){//retorna la descripcion de un departamento
             $sql="select descripcion from departamento where iddepto=".$id_depto;
-            $res = toba::db('designa')->consultar($sql);
+            $res = toba::db('extension')->consultar($sql);
             return $res[0]['descripcion'];
         }
         function get_departamentos($id_ua=null)
 	{//si recibe parametro entonces filtra por la ua que recibe
-            $where ="";
+            //print_r($id_ua);
+
             if(isset($id_ua)){
-              $where=" and idunidad_academica='".$id_ua."'";        
+              $where=" and idunidad_academica='".$id_ua."'";  
              }
             $sql = "SELECT distinct t_d.iddepto, t_d.descripcion ||'('||t_u.sigla||')' as descripcion "
                         . " FROM departamento t_d,"
@@ -35,8 +36,8 @@ class dt_departamento extends toba_datos_tabla
                 //obtengo el perfil de datos del usuario logueado
             $con="select sigla,descripcion from unidad_acad ";
             $con = toba::perfil_de_datos()->filtrar($con);
-            $resul=toba::db('designa')->consultar($con);
-            
+            $resul=toba::db('extension')->consultar($con);
+         
             $unidades=array('FAIF','FATU','FACE','FAEA','ASMA','FAHU','FATA','FAAS','CUZA','FADE','FACA','FALE','FAME','AUZA','FAIN','ESCM','CRUB');
             if( in_array (trim($resul[0]['sigla']),$unidades)){
               if((trim($resul[0]['sigla'])<>'FAHU') && (trim($resul[0]['sigla'])<>'AUZA') && (trim($resul[0]['sigla'])<>'ESCM')&& (trim($resul[0]['sigla'])<>'CRUB') && (trim($resul[0]['sigla'])<>'FACA') && (trim($resul[0]['sigla'])<>'ASMA') && (trim($resul[0]['sigla'])<>'CUZA')&& (trim($resul[0]['sigla'])<>'FAAS')){
@@ -44,9 +45,8 @@ class dt_departamento extends toba_datos_tabla
                 }  
             }else{//perfil de datos de departamento
                 $sql = toba::perfil_de_datos()->filtrar($sql);
-            }    
-            // print_r($sql);               
-	    $resul = toba::db('designa')->consultar($sql);
+            }                 
+	    $resul = toba::db('extension')->consultar($sql);
             return $resul;
         }
 	function get_listado($filtro=array())
@@ -68,7 +68,7 @@ class dt_departamento extends toba_datos_tabla
 		if (count($where)>0) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
 
         function get_listado_filtro($where=null)
@@ -87,12 +87,12 @@ class dt_departamento extends toba_datos_tabla
                     . " LEFT OUTER JOIN docente doc ON (doc.id_docente=dr.id_docente)"
                     . "order by sub.descripcion"; 
             
-            return toba::db('designa')->consultar($sql);
+            return toba::db('extension')->consultar($sql);
         }
         //retorna true si el departamento que ingresa como parametro tiene areas y false en caso contrario
         function tiene_areas($id_dpto){
             $sql = "select * from area where iddepto=".$id_dpto;  
-            $res = toba::db('designa')->consultar($sql);
+            $res = toba::db('extension')->consultar($sql);
             if(count($res)>0){
                 return true;
             }else{
@@ -117,15 +117,15 @@ class dt_departamento extends toba_datos_tabla
                         area character(100),
                         orientacion character(100)
                     );";
-            toba::db('designa')->consultar($sql2);
-            $res=toba::db('designa')->consultar($sql);
+            toba::db('extension')->consultar($sql2);
+            $res=toba::db('extension')->consultar($sql);
            
             $i=1;
             $dep=$res[0]['departamento'];
             $area=$res[0]['area'];
             $orien=$res[0]['orientacion'];
             $sql3=" insert into auxi values ('".$dep."','".$area."','".$orien."')";
-            toba::db('designa')->consultar($sql3);
+            toba::db('extension')->consultar($sql3);
             
             while ($i<count($res)) {
                 if($res[$i]['departamento']==$dep){
@@ -148,11 +148,11 @@ class dt_departamento extends toba_datos_tabla
                // }
                 
                 $sql3=" insert into auxi values ('".$depi."','".$areai."','".$orieni."')";
-                toba::db('designa')->consultar($sql3);
+                toba::db('extension')->consultar($sql3);
                 $i=$i+1;
             }
             $sql4="select * from auxi";
-            $res=toba::db('designa')->consultar($sql4);
+            $res=toba::db('extension')->consultar($sql4);
             
             return $res;
             

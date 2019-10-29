@@ -6,10 +6,11 @@ class dt_rubro_presup_extension extends extension_datos_tabla
     
 
     function get_listado_filtro($filtro = array()) {
-        
+    
         $where = array();
-		if (isset($filtro['tipo'])) {
-			$where[] = "tipo ILIKE ".quote("%{$filtro['tipo']}%");
+		if (isset($filtro)) {
+			//$where[] = "tipo ILIKE ".quote("%{$filtro['tipo']}%");
+                        $where[]= $filtro;
 		}
 		
         $sql = "SELECT

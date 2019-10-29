@@ -1,29 +1,32 @@
 <?php
 
-require_once 'dt_mocovi_periodo_presupuestario.php';
-require_once 'consultas_mapuche.php';
+#require_once 'dt_mocovi_periodo_presupuestario.php';
+#require_once 'consultas_mapuche.php';
 
 class dt_integrante_interno_pe extends extension_datos_tabla {
     
      function get_listado($id_p = null) {
         $sql = "select "
                 . "id_pext,"
-                . "trim(apellido)||', '||trim(nombre) as nombre,"
+                . "trim(dc.apellido)||', '||trim(dc.nombre) as nombre,"
                 . "t_i.id_designacion,"
                 . "dc.tipo_docum,"
                 . "dc.nro_docum,"
-                . "fec_nacim,"
-                . "tipo_sexo,"
-                . "pais_nacim,"
-                . "funcion_p,"
+                . "dc.fec_nacim,"
+                . "dc.tipo_sexo,"
+                . "dc.pais_nacim,"
+                . "t_i.funcion_p,"
                 . "carga_horaria,"
                 . "t_i.desde,"
                 . "t_i.hasta,"
                 . "rescd,"
                 . "tipo "
                 . "from integrante_interno_pe as t_i "
-                . "INNER JOIN designacion as d ON (t_i.id_designacion = d.id_designacion ) "
-                . "LEFT OUTER JOIN docente as dc ON ( dc.id_docente = d.id_docente )  "
+                . "INNER JOIN  ( SELECT d.* FROM dblink('dbname=designa', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
+                . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('dbname=designa',
+                    'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim 
+                    FROM docente as dc ') as dc 
+                    ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as dc ON (d.id_docente = dc.id_docente)  "
                 . "where id_pext=" . $id_p
                 . "order by nombre,desde"
         ;

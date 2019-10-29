@@ -33,5 +33,13 @@ class dt_bases_convocatoria extends extension_datos_tabla
 		return toba::db('extension')->consultar($sql);
 	}
 
+	function get_titulo()
+	{
+		$sql = "SELECT id_bases, bases_titulo "
+                        . "FROM bases_convocatoria as b_c "
+                        . "ORDER BY convocatoria";
+		return toba::db('extension')->consultar($sql);
+	}
+
 }
 ?>

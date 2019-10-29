@@ -76,7 +76,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'id_bases', --columna
 	'E', --tipo
 	'1', --pk
-	'', --secuencia
+	'bases_convocatoria_seq', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db

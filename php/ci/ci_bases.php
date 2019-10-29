@@ -23,8 +23,7 @@ class ci_bases extends abm_ci {
         //print_r($salida); exit();
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
-            print_r($bases);
-            exit();
+         
             //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Bases_Convocatoria.pdf");
 
