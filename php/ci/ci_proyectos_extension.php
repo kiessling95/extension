@@ -6,6 +6,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__mostrar;
     protected $s__mostrar_e;
     protected $s__mostrar_presup;
+    protected $s__mostrar_org;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
@@ -60,7 +61,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_presupuesto")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_objetivos")->desactivar();
-        $this->pantalla()->tab("pant_impacto")->desactivar();
+        //$this->pantalla()->tab("pant_impacto")->desactivar();
 
 
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
@@ -70,7 +71,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_presupuesto")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_objetivos")->ocultar();
-        $this->pantalla()->tab("pant_impacto")->ocultar();
+        //$this->pantalla()->tab("pant_impacto")->ocultar();
 
         if (isset($this->s__datos_filtro)) {
             $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__datos_filtro));
@@ -256,6 +257,10 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__mostrar_presup = 1;
                 $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
+            case 'pant_organizaciones':
+                $this->s__mostrar_org = 1;
+                $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+                break;
             case 'pant_edicion':
                 $this->set_pantalla('pant_formulario');
 
@@ -265,7 +270,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_presupuesto")->desactivar();
                 $this->pantalla()->tab("pant_organizaciones")->desactivar();
                 $this->pantalla()->tab("pant_objetivos")->desactivar();
-                $this->pantalla()->tab("pant_impacto")->desactivar();
+                //$this->pantalla()->tab("pant_impacto")->desactivar();
 
 
                 $this->pantalla()->tab("pant_integrantesi")->ocultar();
@@ -274,7 +279,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_presupuesto")->ocultar();
                 $this->pantalla()->tab("pant_organizaciones")->ocultar();
                 $this->pantalla()->tab("pant_objetivos")->ocultar();
-                $this->pantalla()->tab("pant_impacto")->ocultar();
+                //$this->pantalla()->tab("pant_impacto")->ocultar();
 
                 $this->dep('datos')->tabla('pextension')->resetear();
                 break;
@@ -292,8 +297,11 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
                 break;
             case 'pant_presup':
-
                 $this->set_pantalla('pant_formulario');
+                break;
+            case 'pant_organizaciones':
+                $this->set_pantalla('pant_planilla');
+                $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
                 break;
             case 'pant_planilla':
                 $this->set_pantalla('pant_formulario');
@@ -307,6 +315,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
         $this->s__mostrar_presup = 0;
+        $thiis->s__mostrar_org = 0;
     }
 
     function evt__integrantesi() {
@@ -315,6 +324,10 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__integrantese() {
         $this->set_pantalla('pant_integrantese');
+    }
+    
+     function evt__organizaciones() {
+        $this->set_pantalla('pant_organizaciones');
     }
 
     //-----------------------------------------------------------------------------------
@@ -438,6 +451,83 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_presup = 0;
         $this->dep('datos')->tabla('presupuesto_extension')->resetear();
     }
+    
+    
+        //---- Filtro Organizacion-----------------------------------------------------------------------
+/*
+    function conf__filtro_organizacion(toba_ei_filtro $filtro) {
+        //print_r($this->s__datos_filtro);        exit();
+        if (isset($this->s__datos_filtro)) {
+            $filtro->set_datos($this->s__datos_filtro);
+        }
+    }
+
+    function evt__filtro_organizacion__filtrar($datos) {
+        print_r($datos);        exit();
+        $this->s__datos_filtro = $datos;
+    }
+
+    function evt__filtro_organizacion__cancelar() {
+        unset($this->s__datos_filtro);
+    }
+ 
+ */
+    
+    //-----------------------------------------------------------------------------------
+    //---- formulario de organizaciones-------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+
+    function conf__form_organizacion(toba_ei_formulario $form) {
+        
+        if ($this->s__mostrar_org == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
+            $this->dep('form_organizacion')->descolapsar();
+            $form->ef('nombre')->set_obligatorio('true');
+            $form->ef('localidad')->set_obligatorio('true');
+            $form->ef('provincia')->set_obligatorio('true');
+            $form->ef('telefono')->set_obligatorio('true');
+            $form->ef('email')->set_obligatorio('true');
+            $form->ef('referencia_vinculacion_inst')->set_obligatorio('true');
+        } else {
+            $this->dep('form_organizacion')->colapsar();
+        }
+
+        if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
+
+            $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
+
+
+            //print_r($datos);
+            $form->set_datos($datos);
+        }
+    }
+
+    function evt__form_organizacion__guardar($datos) {
+        //print_r($datos);        exit();
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+
+        $datos[id_pext] = $pe['id_pext'];
+
+        $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
+        $this->dep('datos')->tabla('organizaciones_participantes')->sincronizar();
+        $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+    }
+
+    function evt__form_organizacion__baja($datos) {
+        $this->dep('datos')->tabla('organizaciones_participantes')->eliminar_todo();
+        $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+        toba::notificacion()->agregar('La organizacion se ha eliminado  correctamente.', 'info');
+        $this->s__mostrar_org = 0;
+    }
+
+    function evt__form_organizacion__modificacion($datos) {
+        $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
+        $this->dep('datos')->tabla('organizaciones_participantes')->sincronizar();
+    }
+
+    function evt__form_organizacion__cancelar() {
+        $this->s__mostrar_org = 0;
+        $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+    }
 
     //-----------------------------------------------------------------------------------
     //---- Configuraciones --------------------------------------------------------------
@@ -487,11 +577,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
+        //$this->pantalla()->tab("pant_integrantese")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
-        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        //$this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
@@ -513,14 +603,14 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_organizaciones";
 
         $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        //$this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
-        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        //$this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
     function conf__pant_objetivos(toba_ei_pantalla $pantalla) {
@@ -537,7 +627,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
-    function conf__pant_impacto(toba_ei_pantalla $pantalla) {
+  /*  function conf__pant_impacto(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_impacto";
 
         $this->pantalla()->tab("pant_edicion")->desactivar();
@@ -549,7 +639,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
-    }
+    }*/
 
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_presup";
@@ -600,6 +690,34 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $pe['id_pext'];
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
+    
+    
+    //-----------------------------------------------------------------------------------
+    //---- cuadro_organizaciones  -------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+    
+    function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
+        //$cuadro->desactivar_modo_clave_segura();
+       // print_r($this->s__datos_filtro);        exit();
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        //print_r($pe['id_pext']);
+        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
+//        if (isset($this->s__datos_filtro)) {
+//            
+//            $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($this->s__datos_filtro));
+//        }
+//        else
+//        {
+            $cuadro->set_datos($datos);
+//        }
+    }
+
+    function evt__cuadro_organizaciones__seleccion($datos) {
+        //print_r($datos);
+        $this->s__mostrar_org = 1;
+        $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
+    }
+
 
     //-----------------------------------------------------------------------------------
     //---- cuadro_presup  -------------------------------------------------------------------
