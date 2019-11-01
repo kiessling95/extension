@@ -73,6 +73,7 @@ class ci_personas extends extension_ci {
     }
 
     function evt__formulario__alta($datos) {
+        
         $inser = true;
         if ($datos['tipo_docum'] == 'EXTR') {
             $num = $this->dep('datos')->tabla('persona')->minimo_docum();
