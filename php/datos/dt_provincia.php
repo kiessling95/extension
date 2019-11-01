@@ -8,11 +8,7 @@ class dt_provincia extends extension_datos_tabla
 		return toba::db('extension')->consultar($sql);
 	}
 
-
-
-
-
-
+        
 
 }
 ?>

@@ -51,3 +51,4 @@ ALTER TABLE ONLY public.presupuesto_extension ALTER COLUMN id_presupuesto SET DE
 
 INSERT INTO rubro_presup_extension ( tipo ) VALUES ('pantalla')
 
+ALTER TABLE organizaciones_participantes ADD COLUMN domicilio character varying;
