@@ -487,8 +487,8 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s__mostrar_org == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
-            $form->ef('localidad')->set_obligatorio('true');
-            $form->ef('provincia')->set_obligatorio('true');
+            $form->ef('domicilio')->set_obligatorio('true');
+           // $form->ef('provincia')->set_obligatorio('true');
             $form->ef('telefono')->set_obligatorio('true');
             $form->ef('email')->set_obligatorio('true');
             $form->ef('referencia_vinculacion_inst')->set_obligatorio('true');
