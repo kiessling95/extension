@@ -1,15 +1,13 @@
 <?php
 
 class dt_pextension extends extension_datos_tabla {
-    
+
     function get_datos($filtro = array() ) {
         $where = array();
-        //print_r($filtro);
         if (isset($filtro['uni_acad'])) {
             $where[] = "t_p.uni_acad = " . quote($filtro['uni_acad']);
             $where[] = "t_p.id_pext = " . quote($filtro['id_pext']);
         }
-        //rint_r($where);
         $sql = "SELECT
 			t_p.id_pext,
                         t_p.codigo,
@@ -44,7 +42,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.antecedente_participacion,
                         t_p.importancia_necesidad,
                         b_c.id_bases,
-                        t_c.id_conv
+                        t_c.id_conv,
+                        t_p.responsable_carga
                     FROM
                         pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
@@ -64,12 +63,21 @@ class dt_pextension extends extension_datos_tabla {
     }
 
     function get_listado($where = null) {
- 
+        $this->s__perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
+
+        
         if (!is_null($where)) {
             $where = ' WHERE ' . $where;
         } else {
             $where = '';
         }
+        $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
+        
+        $p = array_search('formulador', $this->s__perfil);
+        if($p !== false){ 
+            $where = $where . "AND responsable_carga= '".$usr. "' ";
+        }
+        
         
         $sql = "SELECT
                         t_p.id_pext,
@@ -90,10 +98,12 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)"
                     .$where
-                    ."ORDER BY codigo";
+                    ." ORDER BY codigo";
         $sql = toba::perfil_de_datos()->filtrar($sql);
+
         // buscar usuario y rol
         //si rol formulador agrego al filtro que solo muestre los proyectos que el formulo 
+        
         return toba::db('extension')->consultar($sql);
     }
 

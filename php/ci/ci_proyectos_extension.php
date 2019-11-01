@@ -35,6 +35,7 @@ class ci_proyectos_extension extends extension_ci {
         return $datos['nro_resol'];
     }
 
+
     //---- Filtro -----------------------------------------------------------------------
 
     function conf__filtro(toba_ei_filtro $filtro) {
@@ -139,7 +140,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::usuario()->get_perfil_datos();
         if ($perfil != null) {//si esta asociado a un perfil de datos entonces no permito que toquen los sig campos
-            $form->ef('uni_acad')->set_solo_lectura(true);
+            //$form->ef('uni_acad')->set_solo_lectura(true);
             $form->ef('area')->set_solo_lectura(true);
             $form->ef('codigo')->set_solo_lectura(true);
             $form->ef('nro_ord_cs')->set_solo_lectura(true);
@@ -161,7 +162,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__formulario__alta($datos) {
         //print_r($datos);
-        $perfil = toba::usuario()->get_perfil_datos();
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
+        print_r($perfil[0]);
         if ($perfil != null) {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
             $datos['uni_acad'] = $ua[0]['sigla'];
@@ -177,7 +179,8 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[departamento]);
         unset($datos[area]);
         unset($datos[tipo_convocatoria]);
-    
+        $datos[responsable_carga] = $perfil[0];
+
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
         $this->dep('datos')->tabla('pextension')->cargar($datos);
@@ -328,8 +331,8 @@ class ci_proyectos_extension extends extension_ci {
     function evt__integrantese() {
         $this->set_pantalla('pant_integrantese');
     }
-    
-     function evt__organizaciones() {
+
+    function evt__organizaciones() {
         $this->set_pantalla('pant_organizaciones');
     }
 
@@ -454,34 +457,33 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_presup = 0;
         $this->dep('datos')->tabla('presupuesto_extension')->resetear();
     }
-    
-    
-        //---- Filtro Organizacion-----------------------------------------------------------------------
-/*
-    function conf__filtro_organizacion(toba_ei_filtro $filtro) {
-        //print_r($this->s__datos_filtro);        exit();
-        if (isset($this->s__datos_filtro)) {
-            $filtro->set_datos($this->s__datos_filtro);
-        }
-    }
 
-    function evt__filtro_organizacion__filtrar($datos) {
-        print_r($datos);        exit();
-        $this->s__datos_filtro = $datos;
-    }
+    //---- Filtro Organizacion-----------------------------------------------------------------------
+    /*
+      function conf__filtro_organizacion(toba_ei_filtro $filtro) {
+      //print_r($this->s__datos_filtro);        exit();
+      if (isset($this->s__datos_filtro)) {
+      $filtro->set_datos($this->s__datos_filtro);
+      }
+      }
 
-    function evt__filtro_organizacion__cancelar() {
-        unset($this->s__datos_filtro);
-    }
- 
- */
-    
+      function evt__filtro_organizacion__filtrar($datos) {
+      print_r($datos);        exit();
+      $this->s__datos_filtro = $datos;
+      }
+
+      function evt__filtro_organizacion__cancelar() {
+      unset($this->s__datos_filtro);
+      }
+
+     */
+
     //-----------------------------------------------------------------------------------
     //---- formulario de organizaciones-------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
     function conf__form_organizacion(toba_ei_formulario $form) {
-        
+
         if ($this->s__mostrar_org == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
@@ -626,19 +628,19 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
     }
 
-  /*  function conf__pant_impacto(toba_ei_pantalla $pantalla) {
-        $this->s__pantalla = "pant_impacto";
+    /*  function conf__pant_impacto(toba_ei_pantalla $pantalla) {
+      $this->s__pantalla = "pant_impacto";
 
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_organizaciones")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
+      $this->pantalla()->tab("pant_edicion")->desactivar();
+      $this->pantalla()->tab("pant_organizaciones")->desactivar();
+      $this->pantalla()->tab("pant_integrantesi")->desactivar();
+      $this->pantalla()->tab("pant_integrantese")->desactivar();
 
-        $this->pantalla()->tab("pant_edicion")->ocultar();
-        $this->pantalla()->tab("pant_integrantesi")->ocultar();
-        $this->pantalla()->tab("pant_integrantese")->ocultar();
-        $this->pantalla()->tab("pant_organizaciones")->ocultar();
-    }*/
+      $this->pantalla()->tab("pant_edicion")->ocultar();
+      $this->pantalla()->tab("pant_integrantesi")->ocultar();
+      $this->pantalla()->tab("pant_integrantese")->ocultar();
+      $this->pantalla()->tab("pant_organizaciones")->ocultar();
+      } */
 
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_presup";
@@ -689,15 +691,14 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $pe['id_pext'];
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
-    
-    
+
     //-----------------------------------------------------------------------------------
     //---- cuadro_organizaciones  -------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
-    
+
     function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
         //$cuadro->desactivar_modo_clave_segura();
-       // print_r($this->s__datos_filtro);        exit();
+        // print_r($this->s__datos_filtro);        exit();
         $pe = $this->dep('datos')->tabla('pextension')->get();
         //print_r($pe['id_pext']);
         $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
@@ -707,7 +708,7 @@ class ci_proyectos_extension extends extension_ci {
 //        }
 //        else
 //        {
-            $cuadro->set_datos($datos);
+        $cuadro->set_datos($datos);
 //        }
     }
 
@@ -716,7 +717,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_org = 1;
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
-
 
     //-----------------------------------------------------------------------------------
     //---- cuadro_presup  -------------------------------------------------------------------
