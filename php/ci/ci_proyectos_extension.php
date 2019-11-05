@@ -8,6 +8,8 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__mostrar_e;
     protected $s__mostrar_presup;
     protected $s__mostrar_org;
+    protected $s__mostrar_obj;
+    protected $s__mostrar_activ;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
@@ -267,6 +269,14 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__mostrar_org = 1;
                 $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
                 break;
+            case 'pant_objetivos':
+                $this->s__mostrar_obj = 1;
+                $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+                break;
+            case 'pant_actividad':
+                $this->s__mostrar_activ = 1;
+                $this->dep('datos')->tabla('plan_actividades')->resetear();
+                break;
             case 'pant_edicion':
                 $this->set_pantalla('pant_formulario');
 
@@ -309,8 +319,15 @@ class ci_proyectos_extension extends extension_ci {
                 $this->set_pantalla('pant_planilla');
                 $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
                 break;
+            case 'pant_objetivos':
+                $this->set_pantalla('pant_formulario');
+                break;
             case 'pant_planilla':
                 $this->set_pantalla('pant_formulario');
+                break;
+            case 'pant_actividad':
+                $this->set_pantalla('pant_objetivos');
+                $this->dep('datos')->tabla('plan_actividades')->resetear();
                 break;
             default :
                 $this->set_pantalla('pant_edicion');
@@ -321,7 +338,9 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
         $this->s__mostrar_presup = 0;
-        $thiis->s__mostrar_org = 0;
+        $this->s__mostrar_org = 0;
+        $this->s__mostrar_obj = 0;
+        $this->s__mostrar_activ = 0;
     }
 
     function evt__integrantesi() {
@@ -334,6 +353,11 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__organizaciones() {
         $this->set_pantalla('pant_organizaciones');
+    }
+    
+    function evt__actividades()
+    {
+        $this->set_pantalla('pant_actividad');
     }
 
     //-----------------------------------------------------------------------------------
@@ -621,11 +645,29 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
+        $this->pantalla()->tab("pant_actividad")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+    }
+    
+    function conf__pant_actividad(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_actividad";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+        //$this->pantalla()->tab("pant_actividad")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        
     }
 
     /*  function conf__pant_impacto(toba_ei_pantalla $pantalla) {
@@ -737,11 +779,177 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->dep('datos')->tabla('presupuesto_extension')->cargar($presup[0]);
     }
+    
+    //-----------------------------------------------------------------------------------
+    //---- formulario_pext de objetivos--------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
 
+    function conf__formulario_pext(toba_ei_formulario $form) {
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
+    }
+    
+    //-----------------------------------------------------------------------------------
+    //---- cuadro_objetivo  -------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+   
+    function conf__cuadro_objetivo(toba_ei_cuadro $cuadro) {
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
+    }
+
+    function evt__cuadro_objetivo__seleccion($datos) {
+
+        $this->s__mostrar_obj = 1;
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        $this->dep('datos')->tabla('objetivo_especifico')->cargar($datos);
+    }
+    
+    //-----------------------------------------------------------------------------------
+    //---- formulario de objetivos-------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+
+    function conf__form_objetivos_esp(toba_ei_formulario $form) {
+        
+        if ($this->s__mostrar_obj == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
+            $this->dep('form_objetivos_esp')->descolapsar();
+            $form->ef('descripcion')->set_obligatorio('true');
+            $form->ef('meta')->set_obligatorio('true');
+            
+        } else {
+            $this->dep('form_objetivos_esp')->colapsar();
+        }
+
+        if ($this->dep('datos')->tabla('objetivo_especifico')->esta_cargada()) {
+
+            $datos = $this->dep('datos')->tabla('objetivo_especifico')->get();
+
+
+            //print_r($datos);
+            $form->set_datos($datos);
+        }
+    }
+
+    function evt__form_objetivos_esp__guardar($datos) {
+        //print_r($datos);        exit();
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+
+        $datos[id_pext] = $pe['id_pext'];
+
+        $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
+        $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+        $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+    }
+
+    function evt__form_objetivos_esp__baja($datos) {
+        $this->dep('datos')->tabla('objetivo_especifico')->eliminar_todo();
+        $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+        toba::notificacion()->agregar('El objetivo se ha eliminado  correctamente.', 'info');
+        $this->s__mostrar_obj = 0;
+    }
+
+    function evt__form_objetivos_esp__modificacion($datos) {
+        $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
+        $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+    }
+
+    function evt__form_objetivos_esp__cancelar() {
+        $this->s__mostrar_obj = 0;
+        $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+    }
+
+    
+    //-----------------------------------------------------------------------------------
+    //---- cuadro_objetivo  -------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+   
+    
+    /*
+     * * Posiblemente haya que modificar el cuadro una vez que esté bien definido el plan
+     */
+    function conf__cuadro_plan(toba_ei_cuadro $cuadro) {
+
+        $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado());
+        
+    }
+
+    function evt__cuadro_plan__seleccion($datos) {
+        
+        $this->s__mostrar_activ = 1;
+        
+//        $plan = $this->dep('datos')->tabla('plan_actividades')->get($datos);
+//        print_r($plan);        exit();
+        $this->dep('datos')->tabla('plan_actividades')->cargar($datos);
+    }
+    
+    
+    //-----------------------------------------------------------------------------------
+    //---- formulario de objetivos-------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
+
+    function conf__form_actividad(toba_ei_formulario $form) {
+        
+        if ($this->s__mostrar_activ == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
+            $this->dep('form_actividad')->descolapsar();
+            //***** este campo de rubro va a cambiar ******
+            $form->ef('id_rubro_extension')->set_obligatorio('true');
+            //**************************************************
+            
+            $form->ef('detalle')->set_obligatorio('true');
+            $form->ef('meta')->set_obligatorio('true');
+            $form->ef('fecha')->set_obligatorio('true');
+            $form->ef('destinatarios')->set_obligatorio('true');
+            //***** este campo de localizacion va a cambiar ******
+            $form->ef('localizacion')->set_obligatorio('true');
+            //*************************************************
+        } else {
+            $this->dep('form_actividad')->colapsar();
+        }
+
+        if ($this->dep('datos')->tabla('plan_actividades')->esta_cargada()) {
+
+            $datos = $this->dep('datos')->tabla('plan_actividades')->get();
+
+
+            //print_r($datos);
+            $form->set_datos($datos);
+        }
+    }
+
+    function evt__form_actividad__guardar($datos) {
+        //print_r($datos);        exit();
+
+        $this->dep('datos')->tabla('plan_actividades')->set($datos);
+        $this->dep('datos')->tabla('plan_actividades')->sincronizar();
+        $this->dep('datos')->tabla('plan_actividades')->resetear();
+    }
+
+    function evt__form_actividadp__baja($datos) {
+        $this->dep('datos')->tabla('plan_actividades')->eliminar_todo();
+        $this->dep('datos')->tabla('plan_actividades')->resetear();
+        toba::notificacion()->agregar('El plan de actividades se ha eliminado  correctamente.', 'info');
+        $this->s__mostrar_activ = 0;
+    }
+
+    function evt__form_actividad__modificacion($datos) {
+        $this->dep('datos')->tabla('plan_actividades')->set($datos);
+        $this->dep('datos')->tabla('plan_actividades')->sincronizar();
+    }
+
+    function evt__form_actividad__cancelar() {
+        $this->s__mostrar_activ = 0;
+        $this->dep('datos')->tabla('plan_actividades')->resetear();
+    }
+
+    
+    
     //-----------------------------------------------------------------------------------
     //---- Formulario Integrante Externo ------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
+    
     function conf__form_integrante_e(toba_ei_formulario $form) {
         if ($this->s__mostrar_e == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_integrante_e')->descolapsar();
