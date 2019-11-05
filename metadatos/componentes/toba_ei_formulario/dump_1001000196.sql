@@ -235,7 +235,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000196', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'id_docente', --identificador
-	'ef_combo', --elemento_formulario
+	'ef_popup', --elemento_formulario
 	'id_docente', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -253,10 +253,10 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_descripciones', --carga_metodo
+	NULL, --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	'1001000171', --carga_dt
+	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'extension', --carga_fuente
@@ -281,14 +281,14 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_ajustable
 	NULL, --edit_confirmar_clave
 	NULL, --edit_expreg
-	NULL, --popup_item
-	NULL, --popup_proyecto
-	NULL, --popup_editable
+	'1001000061', --popup_item
+	'extension', --popup_proyecto
+	'0', --popup_editable
 	NULL, --popup_ventana
-	NULL, --popup_carga_desc_metodo
+	'get_id_docente', --popup_carga_desc_metodo
 	NULL, --popup_carga_desc_clase
 	NULL, --popup_carga_desc_include
-	NULL, --popup_puede_borrar_estado
+	'0', --popup_puede_borrar_estado
 	NULL, --fieldset_fin
 	NULL, --check_valor_si
 	NULL, --check_valor_no
