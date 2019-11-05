@@ -628,7 +628,7 @@ class dt_designacion extends extension_datos_tabla {
             $where = ' Where id_docente= ' . $id_doc;
             $sql = $sql = "SELECT t_d.id_designacion,(t_d.id_designacion||'-'||t_d.cat_estat||t_d.dedic||'-'||t_d.carac||'('||extract(year from t_d.desde)||'-'||case when (extract (year from case when t_d.hasta is null then '1800-01-11' else t_d.hasta end) )=1800 then '' else cast (extract (year from t_d.hasta) as text) end||')'||t_d.uni_acad )as categoria  
                             FROM 
-                            ( SELECT t_d.* FROM dblink ('dbname=designa', '
+                            ( SELECT t_d.* FROM dblink ('".$this->dblink_designa()."', '
                                                         SELECT t_d.id_designacion,
                                                                 t_d.cat_estat,
                                                                 t_d.dedic,

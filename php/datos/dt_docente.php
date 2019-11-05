@@ -15,7 +15,7 @@ class dt_docente extends extension_datos_tabla {
 
     function get_nombre($id_desig) {
         $sql = "SELECT n.nombre "
-                . "FROM dlink('dbname=designa', 'SELECT apellido||', '||nombre as nombre from docente t_do,designacion t_d "
+                . "FROM dlink('".$this->dblink_designa()."', 'SELECT apellido||', '||nombre as nombre from docente t_do,designacion t_d "
                 . "           WHERE t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig . ")";
         $res = toba::db('extension')->consultar($sql);
         return $res[0]['nombre'];
@@ -235,34 +235,24 @@ class dt_docente extends extension_datos_tabla {
         } else {
             $where = '';
         }
-        $sql = "select * from 
-                    (SELECT
-			t_d.id_docente,
-			t_d.legajo,
-			t_d.apellido,
-			t_d.nombre,
-			t_d.nro_tabla,
-			t_d.tipo_docum,
-			t_d.nro_docum,
-			t_d.fec_nacim,
-			t_d.nro_cuil1,
-			t_d.nro_cuil,
-			t_d.nro_cuil2,
-			t_d.tipo_sexo,
-			t_p.nombre as pais_nacim_nombre,
-			t_d.porcdedicdocente,
-			t_d.porcdedicinvestig,
-			t_d.porcdedicagestion,
-			t_d.porcdedicaextens,
-			t_p1.descripcion_pcia as pcia_nacim_nombre,
-			t_d.fec_ingreso,
-                        t_d.situacion_docente
-		FROM
-			docente as t_d	LEFT OUTER JOIN pais as t_p ON (t_d.pais_nacim = t_p.codigo_pais)
-			LEFT OUTER JOIN provincia as t_p1 ON (t_d.pcia_nacim = t_p1.codigo_pcia))a
-		$where ORDER BY nombre";
-
+        $sql = "SELECT "
+                . "t_d.id_docente,"
+                . "t_d.legajo,"
+                . "t_d.apellido,"
+                . "t_d.nombre,"
+                . "t_d.legajo,"
+                . "t_d.tipo_docum,"
+                . "t_d.nro_docum "
+                . "FROM "
+                . "(SELECT t_d.* "
+                . "FROM dblink('".$this->dblink_designa()."',"
+                . "'SELECT t_d.id_docente,t_d.nombre, t_d.apellido, t_d.tipo_docum,t_d.nro_docum, t_d.legajo "
+                . "FROM docente as t_d ') as t_d ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER, legajo INTEGER) ) as t_d "
+                . "$where "
+                . "ORDER BY nombre";
+   
         return toba::db('extension')->consultar($sql);
+        
     }
 
     //docentes que tienen designacion en la facultad correspondiente al usuario logueado
@@ -326,7 +316,7 @@ class dt_docente extends extension_datos_tabla {
  */
     function get_descripciones() {
         $sql = "SELECT d.id_docente , d.nombre "
-                . "FROM dblink('dbname=designa', 'SELECT id_docente, (trim(apellido),nombre) as nombre "
+                . "FROM dblink('".$this->dblink_designa()."', 'SELECT id_docente, (trim(apellido),nombre) as nombre "
                 . "                              FROM docente ORDER BY nombre')  "
                 . "as d (id_docente INTEGER, nombre CHARACTER VARYING)";
         return toba::db('extension')->consultar($sql);

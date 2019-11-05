@@ -22,8 +22,8 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                 . "rescd,"
                 . "tipo "
                 . "from integrante_interno_pe as t_i "
-                . "INNER JOIN  ( SELECT d.* FROM dblink('dbname=designa', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
-                . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('dbname=designa',
+                . "INNER JOIN  ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
+                . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('".$this->dblink_designa()."',
                     'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim 
                     FROM docente as dc ') as dc 
                     ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as dc ON (d.id_docente = dc.id_docente)  "
