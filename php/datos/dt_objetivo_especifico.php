@@ -7,7 +7,6 @@ class dt_objetivo_especifico extends extension_datos_tabla
         $sql = "SELECT
                
                 o_e.id_objetivo ,
-                o_e.id_plan_actividad ,
                 o_e.descripcion ,
                 o_e.id_pext
                 
