@@ -45,7 +45,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_c.id_conv,
                         t_p.responsable_carga
                     FROM
-                        pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
+                        pextension as t_p INNER JOIN (SELECT t_ua.* FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad ') as t_ua (sigla CHARACTER(5), descripcion CHARACTER(60)  )) as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
                         LEFT OUTER JOIN (SELECT d.* FROM  dblink('".$this->dblink_designa()."', 
                                     'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre 
@@ -91,7 +91,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.fec_desde,
                         t_p.fec_hasta                 
                     FROM
-                        pextension as t_p INNER JOIN unidad_acad as t_ua ON (t_p.uni_acad = t_ua.sigla)
+                        pextension as t_p INNER JOIN
+                        (SELECT t_ua.* FROM dblink('".$this->dblink_designa()."','SELECT sigla FROM unidad_acad ') as t_ua (sigla CHARACTER(5) )) as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
                         LEFT OUTER JOIN ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (i.id_designacion = d.id_designacion)
                         LEFT OUTER JOIN ( SELECT dc.* FROM dblink('".$this->dblink_designa()."', 'SELECT dc.id_docente,dc.nombre, dc.apellido FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING)) as dc ON (d.id_docente = dc.id_docente)
