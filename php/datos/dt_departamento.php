@@ -55,6 +55,24 @@ class dt_departamento extends toba_datos_tabla
 		if (isset($filtro['iddepto'])) {
 			$where[] = "iddepto = ".quote($filtro['iddepto']);
 		}
+//                $sql = "SELECT "
+//                . "t_d.iddepto,"
+//                . "t_d.idunidad_academica_nombre,"
+//                . "t_d.descripcion"
+//                
+//                . "FROM "
+//                . "(SELECT t_d.* "
+//                . "FROM dblink('".$this->dblink_designa()."',"
+//                . "'SELECT t_d.iddepto,t_d.descripcion,t_d.idunidad_academica "
+//                . "FROM departamento departamento as t_d,
+//			unidad_acad as t_ua
+//		WHERE
+//				t_d.idunidad_academica = t_ua.sigla
+//		ORDER BY descripcion ') as t_d ( iddepto INTEGER,descripcion CHARACTER VARYING,idunidad_academica CHARACTER(5)) ) as t_d "
+
+                
+                
+                
 		$sql = "SELECT
 			t_d.iddepto,
 			t_ua.descripcion as idunidad_academica_nombre,
