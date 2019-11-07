@@ -7,8 +7,11 @@ class dt_area extends toba_datos_tabla
             if(isset($id_nro_dpto)){
                 $where=" where iddepto=$id_nro_dpto";
             }
-            $sql = "SELECT idarea, descripcion FROM area $where ORDER BY descripcion";
-
+            $sql= "SELECT a.idarea,a.descripcion "
+                    . "FROM dblink('". $this->dblink_designa() ."',"
+                    . "'SELECT idarea, descripcion FROM area $where') as a (idarea INTEGER, descripcion CHARAPTER VARYING)"
+                    . "ORDER BY descripcion";
+           
             return toba::db('extension')->consultar($sql);
            
 	}
