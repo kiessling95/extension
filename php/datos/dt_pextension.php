@@ -59,7 +59,9 @@ class dt_pextension extends extension_datos_tabla {
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where);
         }
+        
         return toba::db('extension')->consultar($sql);
+        
     }
 
     function get_listado($where = null) {
