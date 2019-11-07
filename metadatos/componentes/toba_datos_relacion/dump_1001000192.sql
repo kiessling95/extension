@@ -128,6 +128,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
+	'1002000035', --dep_id
+	'1001000192', --objeto_consumidor
+	'1002000060', --objeto_proveedor
+	'objetivo_especifico', --identificador
+	'1', --parametros_a
+	'1', --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
 	'1002000029', --dep_id
 	'1001000192', --objeto_consumidor
 	'1002000054', --objeto_proveedor
@@ -168,6 +180,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 --- FIN Grupo de desarrollo 1001
 
 --- INICIO Grupo de desarrollo 1002
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
+	'1002000034', --dep_id
+	'1001000192', --objeto_consumidor
+	'1002000059', --objeto_proveedor
+	'plan_actividades', --identificador
+	'1', --parametros_a
+	'1', --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
 	'1002000020', --dep_id
