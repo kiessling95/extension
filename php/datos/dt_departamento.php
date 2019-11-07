@@ -27,15 +27,26 @@ class dt_departamento extends toba_datos_tabla
             if(isset($id_ua)){
               $where=" and idunidad_academica='".$id_ua."'";  
              }
-            $sql = "SELECT distinct t_d.iddepto, t_d.descripcion ||'('||t_u.sigla||')' as descripcion "
-                        . " FROM departamento t_d,"
-                        . " unidad_acad t_u "
-                        . " WHERE t_u.sigla=t_d.idunidad_academica"
-                        . "  $where"
-                        . " order by descripcion";
+             
+             $sql = "SELECT DISTINCT t_d.iddepto, t_d.descripcion, t_d.idunidad_academica ||'('||t_d.sigla||')' as descripcion "
+                     . "FROM dblink('user= postgres password= postgres dbname= designa',"
+                     . "'SELECT t_d.iddepto,t_d.descripcion,t_u.sigla, t_d.idunidad_academica "
+                     . "FROM departamento as t_d, unidad_acad as t_u') as t_d (iddepto INTEGER, descripcion CHARACTER VARYING, sigla CHARACTER(5), idunidad_academica CHARACTER(5)) "
+                     . "WHERE t_d.sigla=t_d.idunidad_academica and idunidad_academica='ASMA'";
+             
+             
+//            $sql = "SELECT distinct t_d.iddepto, t_d.descripcion ||'('||t_u.sigla||')' as descripcion "
+//                        . " FROM departamento t_d,"
+//                        . " unidad_acad t_u "
+//                        . " WHERE t_u.sigla=t_d.idunidad_academica"
+//                        . "  $where"
+//                        . " order by descripcion";
+            
                 //obtengo el perfil de datos del usuario logueado
-            $con="select sigla,descripcion from unidad_acad ";
+            $con="SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad ') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
+            
             $con = toba::perfil_de_datos()->filtrar($con);
+            
             $resul=toba::db('extension')->consultar($con);
          
             $unidades=array('FAIF','FATU','FACE','FAEA','ASMA','FAHU','FATA','FAAS','CUZA','FADE','FACA','FALE','FAME','AUZA','FAIN','ESCM','CRUB');
@@ -46,15 +57,35 @@ class dt_departamento extends toba_datos_tabla
             }else{//perfil de datos de departamento
                 $sql = toba::perfil_de_datos()->filtrar($sql);
             }                 
+            
 	    $resul = toba::db('extension')->consultar($sql);
             return $resul;
         }
 	function get_listado($filtro=array())
 	{
+            
 		$where = array();
 		if (isset($filtro['iddepto'])) {
 			$where[] = "iddepto = ".quote($filtro['iddepto']);
 		}
+//                $sql = "SELECT "
+//                . "t_d.iddepto,"
+//                . "t_d.idunidad_academica_nombre,"
+//                . "t_d.descripcion"
+//                
+//                . "FROM "
+//                . "(SELECT t_d.* "
+//                . "FROM dblink('".$this->dblink_designa()."',"
+//                . "'SELECT t_d.iddepto,t_d.descripcion,t_d.idunidad_academica "
+//                . "FROM departamento departamento as t_d,
+//			unidad_acad as t_ua
+//		WHERE
+//				t_d.idunidad_academica = t_ua.sigla
+//		ORDER BY descripcion ') as t_d ( iddepto INTEGER,descripcion CHARACTER VARYING,idunidad_academica CHARACTER(5)) ) as t_d "
+
+                
+                
+                
 		$sql = "SELECT
 			t_d.iddepto,
 			t_ua.descripcion as idunidad_academica_nombre,
