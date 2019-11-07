@@ -103,7 +103,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
 
-        print_r($datos);
+        //print_r($datos);
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
