@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000210]--  provincia 
+--[1001000210]--  DT - provincia 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,12 +20,12 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'datos/dt_provincia.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'provincia', --nombre
+	'DT - provincia', --nombre
 	NULL, --titulo
 	NULL, --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
-	'extension', --fuente_datos
+	'designa', --fuente_datos
 	NULL, --solicitud_registrar
 	NULL, --solicitud_obj_obs_tipo
 	NULL, --solicitud_obj_observacion
@@ -49,19 +49,19 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 	'1001000210', --objeto
 	NULL, --max_registros
 	NULL, --min_registros
-	NULL, --punto_montaje
+	'1001000004', --punto_montaje
 	'1', --ap
 	NULL, --ap_clase
 	NULL, --ap_archivo
 	'provincia', --tabla
 	NULL, --tabla_ext
 	NULL, --alias
-	NULL, --modificar_claves
+	'0', --modificar_claves
 	'extension', --fuente_datos_proyecto
-	'extension', --fuente_datos
+	'designa', --fuente_datos
 	'1', --permite_actualizacion_automatica
-	NULL, --esquema
-	NULL  --esquema_ext
+	'public', --esquema
+	'public'  --esquema_ext
 );
 
 ------------------------------------------------------------
@@ -72,7 +72,7 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000210', --objeto
-	'1001000444', --col_id
+	'1001000551', --col_id
 	'descripcion_pcia', --columna
 	'C', --tipo
 	'0', --pk
@@ -86,7 +86,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000210', --objeto
-	'1001000445', --col_id
+	'1001000552', --col_id
 	'cod_pais', --columna
 	'C', --tipo
 	'0', --pk
@@ -100,7 +100,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000210', --objeto
-	'1001000446', --col_id
+	'1001000553', --col_id
 	'codigo_pcia', --columna
 	'E', --tipo
 	'1', --pk

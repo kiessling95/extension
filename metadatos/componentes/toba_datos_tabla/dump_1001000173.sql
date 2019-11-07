@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000173]--  designacion 
+--[1001000173]--  DT - designacion 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,12 +20,12 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'datos/dt_designacion.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'designacion', --nombre
+	'DT - designacion', --nombre
 	NULL, --titulo
 	NULL, --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
-	'extension', --fuente_datos
+	'designa', --fuente_datos
 	NULL, --solicitud_registrar
 	NULL, --solicitud_obj_obs_tipo
 	NULL, --solicitud_obj_observacion
@@ -58,9 +58,9 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 	NULL, --alias
 	'0', --modificar_claves
 	'extension', --fuente_datos_proyecto
-	'extension', --fuente_datos
+	'designa', --fuente_datos
 	'1', --permite_actualizacion_automatica
-	NULL, --esquema
+	'public', --esquema
 	'public'  --esquema_ext
 );
 
@@ -72,7 +72,7 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000378', --col_id
+	'1001000478', --col_id
 	'id_designacion', --columna
 	'E', --tipo
 	'1', --pk
@@ -86,7 +86,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000379', --col_id
+	'1001000479', --col_id
 	'id_docente', --columna
 	'E', --tipo
 	'0', --pk
@@ -100,7 +100,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000380', --col_id
+	'1001000480', --col_id
 	'nro_cargo', --columna
 	'E', --tipo
 	'0', --pk
@@ -114,7 +114,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000381', --col_id
+	'1001000481', --col_id
 	'anio_acad', --columna
 	'E', --tipo
 	'0', --pk
@@ -128,7 +128,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000382', --col_id
+	'1001000482', --col_id
 	'desde', --columna
 	'F', --tipo
 	'0', --pk
@@ -142,7 +142,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000383', --col_id
+	'1001000483', --col_id
 	'hasta', --columna
 	'F', --tipo
 	'0', --pk
@@ -156,7 +156,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000384', --col_id
+	'1001000484', --col_id
 	'cat_mapuche', --columna
 	'C', --tipo
 	'0', --pk
@@ -170,7 +170,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000385', --col_id
+	'1001000485', --col_id
 	'cat_estat', --columna
 	'C', --tipo
 	'0', --pk
@@ -184,7 +184,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000386', --col_id
+	'1001000486', --col_id
 	'dedic', --columna
 	'E', --tipo
 	'0', --pk
@@ -198,7 +198,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000387', --col_id
+	'1001000487', --col_id
 	'carac', --columna
 	'C', --tipo
 	'0', --pk
@@ -212,7 +212,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000388', --col_id
+	'1001000488', --col_id
 	'uni_acad', --columna
 	'C', --tipo
 	'0', --pk
@@ -226,7 +226,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000389', --col_id
+	'1001000489', --col_id
 	'id_departamento', --columna
 	'E', --tipo
 	'0', --pk
@@ -240,7 +240,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000390', --col_id
+	'1001000490', --col_id
 	'id_area', --columna
 	'E', --tipo
 	'0', --pk
@@ -254,7 +254,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000391', --col_id
+	'1001000491', --col_id
 	'id_orientacion', --columna
 	'E', --tipo
 	'0', --pk
@@ -268,7 +268,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000392', --col_id
+	'1001000492', --col_id
 	'id_norma', --columna
 	'E', --tipo
 	'0', --pk
@@ -282,7 +282,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000393', --col_id
+	'1001000493', --col_id
 	'id_expediente', --columna
 	'E', --tipo
 	'0', --pk
@@ -296,7 +296,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000394', --col_id
+	'1001000494', --col_id
 	'tipo_incentivo', --columna
 	'E', --tipo
 	'0', --pk
@@ -310,7 +310,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000395', --col_id
+	'1001000495', --col_id
 	'dedi_incen', --columna
 	'E', --tipo
 	'0', --pk
@@ -324,7 +324,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000396', --col_id
+	'1001000496', --col_id
 	'cic_con', --columna
 	'C', --tipo
 	'0', --pk
@@ -338,7 +338,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000397', --col_id
+	'1001000497', --col_id
 	'cargo_gestion', --columna
 	'C', --tipo
 	'0', --pk
@@ -352,7 +352,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000398', --col_id
+	'1001000498', --col_id
 	'ord_gestion', --columna
 	'C', --tipo
 	'0', --pk
@@ -366,7 +366,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000399', --col_id
+	'1001000499', --col_id
 	'emite_cargo_gestion', --columna
 	'C', --tipo
 	'0', --pk
@@ -380,7 +380,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000400', --col_id
+	'1001000500', --col_id
 	'nro_gestion', --columna
 	'C', --tipo
 	'0', --pk
@@ -394,7 +394,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000401', --col_id
+	'1001000501', --col_id
 	'observaciones', --columna
 	'C', --tipo
 	'0', --pk
@@ -408,7 +408,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000402', --col_id
+	'1001000502', --col_id
 	'check_presup', --columna
 	'E', --tipo
 	'0', --pk
@@ -422,7 +422,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000403', --col_id
+	'1001000503', --col_id
 	'nro_540', --columna
 	'E', --tipo
 	'0', --pk
@@ -436,7 +436,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000404', --col_id
+	'1001000504', --col_id
 	'concursado', --columna
 	'E', --tipo
 	'0', --pk
@@ -450,7 +450,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000405', --col_id
+	'1001000505', --col_id
 	'check_academica', --columna
 	'E', --tipo
 	'0', --pk
@@ -464,7 +464,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000406', --col_id
+	'1001000506', --col_id
 	'tipo_desig', --columna
 	'E', --tipo
 	'0', --pk
@@ -478,7 +478,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000407', --col_id
+	'1001000507', --col_id
 	'id_reserva', --columna
 	'E', --tipo
 	'0', --pk
@@ -492,7 +492,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000408', --col_id
+	'1001000508', --col_id
 	'estado', --columna
 	'C', --tipo
 	'0', --pk
@@ -506,7 +506,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000409', --col_id
+	'1001000509', --col_id
 	'id_norma_cs', --columna
 	'E', --tipo
 	'0', --pk
@@ -520,7 +520,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000173', --objeto
-	'1001000410', --col_id
+	'1001000510', --col_id
 	'por_permuta', --columna
 	'E', --tipo
 	'0', --pk
