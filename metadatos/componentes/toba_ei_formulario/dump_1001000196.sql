@@ -285,10 +285,10 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'extension', --popup_proyecto
 	'0', --popup_editable
 	NULL, --popup_ventana
-	'get_id_docente', --popup_carga_desc_metodo
+	'get_docente', --popup_carga_desc_metodo
 	NULL, --popup_carga_desc_clase
 	NULL, --popup_carga_desc_include
-	'0', --popup_puede_borrar_estado
+	'1', --popup_puede_borrar_estado
 	NULL, --fieldset_fin
 	NULL, --check_valor_si
 	NULL, --check_valor_no
@@ -802,7 +802,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'2', --orden
 	'categoría', --etiqueta
 	NULL, --etiqueta_estilo
-	'-- en desarrollo esto sera un ef combo--', --descripcion
+	NULL, --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo

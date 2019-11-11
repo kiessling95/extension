@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1002000058]--  Proyectos Extensión - DR - localidad 
+--[1002000058]--  DT - localidad 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,12 +20,12 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'datos/dt_localidad.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'Proyectos Extensión - DR - localidad', --nombre
+	'DT - localidad', --nombre
 	NULL, --titulo
 	NULL, --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
-	'extension', --fuente_datos
+	'designa', --fuente_datos
 	NULL, --solicitud_registrar
 	NULL, --solicitud_obj_obs_tipo
 	NULL, --solicitud_obj_observacion
@@ -58,9 +58,9 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 	NULL, --alias
 	'0', --modificar_claves
 	'extension', --fuente_datos_proyecto
-	'extension', --fuente_datos
+	'designa', --fuente_datos
 	'1', --permite_actualizacion_automatica
-	NULL, --esquema
+	'public', --esquema
 	'public'  --esquema_ext
 );
 
@@ -68,11 +68,11 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 -- apex_objeto_db_registros_col
 ------------------------------------------------------------
 
---- INICIO Grupo de desarrollo 1002
+--- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1002000058', --objeto
-	'1002000102', --col_id
+	'1001000554', --col_id
 	'id', --columna
 	'E', --tipo
 	'1', --pk
@@ -80,13 +80,13 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	NULL, --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db
-	'0', --externa
+	NULL, --externa
 	'localidad'  --tabla
 );
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1002000058', --objeto
-	'1002000103', --col_id
+	'1001000555', --col_id
 	'id_provincia', --columna
 	'E', --tipo
 	'0', --pk
@@ -94,13 +94,13 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	NULL, --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db
-	'0', --externa
+	NULL, --externa
 	'localidad'  --tabla
 );
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1002000058', --objeto
-	'1002000104', --col_id
+	'1001000556', --col_id
 	'localidad', --columna
 	'C', --tipo
 	'0', --pk
@@ -108,7 +108,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'255', --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db
-	'0', --externa
+	NULL, --externa
 	'localidad'  --tabla
 );
---- FIN Grupo de desarrollo 1002
+--- FIN Grupo de desarrollo 1001
