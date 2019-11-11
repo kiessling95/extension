@@ -250,6 +250,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $form->set_datos($this->dep('datos')->tabla('pextension')->get());
     }
+    
 
     //-----------------------------------------------------------------------------------
     //---- Eventos ----------------------------------------------------------------------
@@ -504,6 +505,10 @@ class ci_proyectos_extension extends extension_ci {
       }
 
      */
+    function conf__form_pexten(toba_ei_formulario $form) {
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
+    }
 
     //-----------------------------------------------------------------------------------
     //---- formulario de organizaciones-------------------------------------------------------------
@@ -515,7 +520,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('domicilio')->set_obligatorio('true');
-           // $form->ef('provincia')->set_obligatorio('true');
+//            $form->ef('provincia')->set_obligatorio('true');
             $form->ef('telefono')->set_obligatorio('true');
             $form->ef('email')->set_obligatorio('true');
             $form->ef('referencia_vinculacion_inst')->set_obligatorio('true');
@@ -756,14 +761,15 @@ class ci_proyectos_extension extends extension_ci {
        
         $pe = $this->dep('datos')->tabla('pextension')->get();
        
- 
-        $cuadro->set_datos($datos);
+        $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']));
 
     }
 
     function evt__cuadro_organizaciones__seleccion($datos) {
         
         $this->s__mostrar_org = 1;
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
 
@@ -810,10 +816,10 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__mostrar_obj = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-                   
-        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($datos);
-        
+        $datos[id_pext] = $pe['id_pext'];
+          
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($datos['id_pext']);
+         
         $this->dep('datos')->tabla('objetivo_especifico')->cargar($obj_esp[0]);
     }
     
