@@ -245,6 +245,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $form->set_datos($this->dep('datos')->tabla('pextension')->get());
     }
+    
 
     //-----------------------------------------------------------------------------------
     //---- Eventos ----------------------------------------------------------------------
@@ -496,6 +497,10 @@ class ci_proyectos_extension extends extension_ci {
       }
 
      */
+    function conf__form_pexten(toba_ei_formulario $form) {
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
+    }
 
     //-----------------------------------------------------------------------------------
     //---- formulario de organizaciones-------------------------------------------------------------
@@ -507,7 +512,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('domicilio')->set_obligatorio('true');
-            // $form->ef('provincia')->set_obligatorio('true');
+//            $form->ef('provincia')->set_obligatorio('true');
             $form->ef('telefono')->set_obligatorio('true');
             $form->ef('email')->set_obligatorio('true');
             $form->ef('referencia_vinculacion_inst')->set_obligatorio('true');
@@ -745,19 +750,16 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
         //$cuadro->desactivar_modo_clave_segura();
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
-//        if (isset($this->s__datos_filtro)) {
-//            
-//            $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($this->s__datos_filtro));
-//        }
-//        else
-//        {
-        $cuadro->set_datos($datos);
-//        }
+       
+        $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']));
+
     }
 
     function evt__cuadro_organizaciones__seleccion($datos) {
+        
         $this->s__mostrar_org = 1;
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
 
@@ -802,11 +804,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__mostrar_obj = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-
-
-
-        $this->dep('datos')->tabla('objetivo_especifico')->cargar($datos);
+        $datos[id_pext] = $pe['id_pext'];
+          
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($datos['id_pext']);
+         
+        $this->dep('datos')->tabla('objetivo_especifico')->cargar($obj_esp[0]);
     }
 
     //-----------------------------------------------------------------------------------
@@ -870,17 +872,25 @@ class ci_proyectos_extension extends extension_ci {
      * * Posiblemente haya que modificar el cuadro una vez que esté bien definido el plan
      */
     function conf__cuadro_plan(toba_ei_cuadro $cuadro) {
-
-        $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado());
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
+//        print_r($obj_esp[0]['id_objetivo']);        exit();
+        $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp[0]['id_objetivo']));
+        
     }
 
     function evt__cuadro_plan__seleccion($datos) {
 
         $this->s__mostrar_activ = 1;
-
-//        $plan = $this->dep('datos')->tabla('plan_actividades')->get($datos);
-//        print_r($plan);        exit();
-        $this->dep('datos')->tabla('plan_actividades')->cargar($datos);
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
+        
+        $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
+        
+        $plan = $this->dep('datos')->tabla('plan_actividades')->get_datos($datos);
+       
+        $this->dep('datos')->tabla('plan_actividades')->cargar($plan[0]);
     }
 
     //-----------------------------------------------------------------------------------
@@ -916,9 +926,13 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
-    function evt__form_actividad__guardar($datos) {
-        //print_r($datos);        exit();
-
+    function evt__form_actividad__guardar($datos) 
+    {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
+        
+        $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
+//        print_r($datos);        exit();
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
         $this->dep('datos')->tabla('plan_actividades')->resetear();
