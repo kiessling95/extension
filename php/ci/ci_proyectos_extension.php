@@ -138,6 +138,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos['financiacion'] == false) {
                 $datos['financiacion'] = 'NO';
             };
+
             $form->set_datos($datos);
         }
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
