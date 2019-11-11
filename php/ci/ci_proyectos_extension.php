@@ -103,7 +103,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
 
-        print_r($datos);
+        //print_r($datos);
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
@@ -138,6 +138,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos['financiacion'] == false) {
                 $datos['financiacion'] = 'NO';
             };
+
             $form->set_datos($datos);
         }
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
