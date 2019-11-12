@@ -361,10 +361,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->set_pantalla('pant_organizaciones');
     }
     
-    function evt__actividades()
+    /*function evt__actividades()
     {
         $this->set_pantalla('pant_actividad');
-    }
+    } */
 
     //-----------------------------------------------------------------------------------
     //---- form_integrantes internos-------------------------------------------------------------
@@ -814,17 +814,21 @@ class ci_proyectos_extension extends extension_ci {
         $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
     }
 
-    function evt__cuadro_objetivo__seleccion($datos) {
+    function evt__cuadro_objetivo__seleccion() {
 
+        $this->set_pantalla('pant_actividad');
+    }
+    
+    function evt__cuadro_objetivo__modificar($datos)
+    {
         $this->s__mostrar_obj = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos[id_pext] = $pe['id_pext'];
           
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($datos['id_pext']);
-         
+        
         $this->dep('datos')->tabla('objetivo_especifico')->cargar($obj_esp[0]);
     }
-    
     //-----------------------------------------------------------------------------------
     //---- formulario de objetivos-------------------------------------------------------------
     //-----------------------------------------------------------------------------------
@@ -891,7 +895,6 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
-//        print_r($obj_esp[0]['id_objetivo']);        exit();
         $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp[0]['id_objetivo']));
         
     }
