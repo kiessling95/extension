@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - form_pexten', --nombre
-	NULL, --titulo
+	'Proyecto de Extensión', --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto

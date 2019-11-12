@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - formulario_pext', --nombre
-	NULL, --titulo
+	'Proyecto de Extensión', --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
@@ -181,7 +181,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
-	'Objetivo', --etiqueta
+	'Objetivo General', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
 	'0', --colapsado
