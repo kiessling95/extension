@@ -18,9 +18,6 @@ class ci_proyectos_extension extends extension_ci {
         
     }
 
-    function get_docente($id) {
-    }
-
     function get_rubro($id) {
         
     }
@@ -39,6 +36,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos = $this->dep('datos')->tabla('pextension')->get();
         return $datos['nro_resol'];
     }
+
 
     //---- Filtro -----------------------------------------------------------------------
 
@@ -105,6 +103,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
 
+        //print_r($datos);
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
@@ -125,9 +124,11 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
+            //print_r($datos);
             $where = array();
             $where['uni_acad'] = $datos[uni_acad];
             $where['id_pext'] = $datos[id_pext];
+            //print_r($where);
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $datos = $datos[0];
 
@@ -161,10 +162,13 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('estado_informe_a')->set_solo_lectura(true);
             $form->ef('estado_informe_f')->set_solo_lectura(true);
         }
+        //print_r($perfil);
     }
 
     function evt__formulario__alta($datos) {
+        //print_r($datos);
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
+        print_r($perfil[0]);
         if ($perfil != null) {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
             $datos['uni_acad'] = $ua[0]['sigla'];
@@ -195,6 +199,7 @@ class ci_proyectos_extension extends extension_ci {
         if (trim($datos['financiacion']) == 'NO') {
             $datos['financiacion'] = false;
         };
+        //print_r($datos); exit();
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
     }
@@ -353,8 +358,9 @@ class ci_proyectos_extension extends extension_ci {
     function evt__organizaciones() {
         $this->set_pantalla('pant_organizaciones');
     }
-
-    function evt__actividades() {
+    
+    function evt__actividades()
+    {
         $this->set_pantalla('pant_actividad');
     }
 
@@ -388,6 +394,7 @@ class ci_proyectos_extension extends extension_ci {
             if (count($docente) > 0) {
                 $datos['id_docente'] = $docente;
             }
+            print_r($datos);
             $form->set_datos($datos);
         }
         //$form->set_datos($res);
@@ -446,6 +453,7 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('presupuesto_extension')->get();
 
 
+            ///print_r($datos);
             $form->set_datos($datos);
         }
     }
@@ -525,11 +533,13 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
 
 
+            //print_r($datos);
             $form->set_datos($datos);
         }
     }
 
     function evt__form_organizacion__guardar($datos) {
+        //print_r($datos);        exit();
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $datos[id_pext] = $pe['id_pext'];
@@ -660,7 +670,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
     }
-
+    
     function conf__pant_actividad(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_actividad";
 
@@ -674,6 +684,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
+        
     }
 
     /*  function conf__pant_impacto(toba_ei_pantalla $pantalla) {
@@ -697,13 +708,13 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
+         $this->pantalla()->tab("pant_actividad")->desactivar();
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
-        $this->pantalla()->tab("pant_actividad")->ocultar();
+         $this->pantalla()->tab("pant_actividad")->ocultar();
     }
 
     // creo que todas estas conf ya no son necesarias 
@@ -736,7 +747,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__cuadro_ii__seleccion($datos) {
         //habilito formulario
- 
         $this->s__mostrar = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
@@ -748,7 +758,7 @@ class ci_proyectos_extension extends extension_ci {
     //-----------------------------------------------------------------------------------
 
     function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
-        //$cuadro->desactivar_modo_clave_segura();
+       
         $pe = $this->dep('datos')->tabla('pextension')->get();
        
         $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']));
@@ -778,9 +788,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_presup = 1;
         $presup = $this->dep('datos')->tabla('presupuesto_extension')->get_datos($datos);
 
+        //print_r($presup[0]);        exit();
+
         $this->dep('datos')->tabla('presupuesto_extension')->cargar($presup[0]);
     }
-
+    
     //-----------------------------------------------------------------------------------
     //---- formulario_pext de objetivos--------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
@@ -789,11 +801,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $form->set_datos($this->dep('datos')->tabla('pextension')->get());
     }
-
+    
     //-----------------------------------------------------------------------------------
     //---- cuadro_objetivo  -------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
-
+   
     function conf__cuadro_objetivo(toba_ei_cuadro $cuadro) {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
@@ -810,17 +822,18 @@ class ci_proyectos_extension extends extension_ci {
          
         $this->dep('datos')->tabla('objetivo_especifico')->cargar($obj_esp[0]);
     }
-
+    
     //-----------------------------------------------------------------------------------
     //---- formulario de objetivos-------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
     function conf__form_objetivos_esp(toba_ei_formulario $form) {
-
+        
         if ($this->s__mostrar_obj == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_objetivos_esp')->descolapsar();
             $form->ef('descripcion')->set_obligatorio('true');
             $form->ef('meta')->set_obligatorio('true');
+            
         } else {
             $this->dep('form_objetivos_esp')->colapsar();
         }
@@ -863,11 +876,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('objetivo_especifico')->resetear();
     }
 
+    
     //-----------------------------------------------------------------------------------
     //---- cuadro_objetivo  -------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
-
-
+   
+    
     /*
      * * Posiblemente haya que modificar el cuadro una vez que esté bien definido el plan
      */
@@ -881,7 +895,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__cuadro_plan__seleccion($datos) {
-
+        
         $this->s__mostrar_activ = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
@@ -892,19 +906,20 @@ class ci_proyectos_extension extends extension_ci {
        
         $this->dep('datos')->tabla('plan_actividades')->cargar($plan[0]);
     }
-
+    
+    
     //-----------------------------------------------------------------------------------
     //---- formulario de objetivos-------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
     function conf__form_actividad(toba_ei_formulario $form) {
-
+        
         if ($this->s__mostrar_activ == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_actividad')->descolapsar();
             //***** este campo de rubro va a cambiar ******
             $form->ef('id_rubro_extension')->set_obligatorio('true');
             //**************************************************
-
+            
             $form->ef('detalle')->set_obligatorio('true');
             $form->ef('meta')->set_obligatorio('true');
             $form->ef('fecha')->set_obligatorio('true');
@@ -955,11 +970,13 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('plan_actividades')->resetear();
     }
 
+    
+    
     //-----------------------------------------------------------------------------------
     //---- Formulario Integrante Externo ------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
-
+    
     function conf__form_integrante_e(toba_ei_formulario $form) {
         if ($this->s__mostrar_e == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_integrante_e')->descolapsar();
@@ -989,6 +1006,7 @@ class ci_proyectos_extension extends extension_ci {
 
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__guardar($datos) {
+        print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         $datos['tipo'] = 'externo';
