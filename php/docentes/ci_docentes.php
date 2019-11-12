@@ -26,6 +26,7 @@ class ci_docentes extends extension_ci {
     //---- Cuadro -----------------------------------------------------------------------
 
     function conf__cuadro(toba_ei_cuadro $cuadro) {
+        $cuadro->desactivar_modo_clave_segura();
         if (isset($this->s__datos_filtro)) {
             $cuadro->set_datos($this->dep('datos')->tabla('docente')->get_listado($this->s__where));
         } else {
