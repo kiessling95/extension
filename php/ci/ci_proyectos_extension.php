@@ -488,7 +488,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_org_filtro(toba_ei_cuadro $cuadro)
     {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($pe['id_pext'], $this->s__datos_filtro);
+        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($pe['id_pext'], $this->s__where);
         
         $cuadro->set_datos($datos);
     }
@@ -515,6 +515,7 @@ class ci_proyectos_extension extends extension_ci {
       function evt__filtro_organizaciones__filtrar($datos) {
 //      print_r($datos);        exit();
       $this->s__datos_filtro = $datos;
+      $this->s__where = $this->dep('filtro')->get_sql_where();
       }
 
       function evt__filtro_organizaciones__cancelar() {

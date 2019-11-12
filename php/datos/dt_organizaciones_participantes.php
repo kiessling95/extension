@@ -10,7 +10,7 @@ class dt_organizaciones_participantes extends extension_datos_tabla
 			//$where[] = "tipo ILIKE ".quote("%{$filtro['tipo']}%");
                         $where[]= $filtro;
 		}
-	//print_r($where);	
+	print_r($where);	
         $sql = "SELECT
                     o_p.id_organizacion ,
                     o_p.id_tipo_organizacion ,
