@@ -144,9 +144,11 @@ class ci_proyectos_extension extends extension_ci {
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
 
         $perfil = toba::usuario()->get_perfil_datos();
+
+        
         if ($perfil != null) {//si esta asociado a un perfil de datos entonces no permito que toquen los sig campos
             //$form->ef('uni_acad')->set_solo_lectura(true);
-            $form->ef('area')->set_solo_lectura(true);
+            //$form->ef('area')->set_solo_lectura(true);
             $form->ef('codigo')->set_solo_lectura(true);
             $form->ef('nro_ord_cs')->set_solo_lectura(true);
             $form->ef('res_rect')->set_solo_lectura(true);
@@ -168,7 +170,6 @@ class ci_proyectos_extension extends extension_ci {
     function evt__formulario__alta($datos) {
         //print_r($datos);
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
-        print_r($perfil[0]);
         if ($perfil != null) {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
             $datos['uni_acad'] = $ua[0]['sigla'];
@@ -184,11 +185,12 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[departamento]);
         unset($datos[area]);
         unset($datos[tipo_convocatoria]);
-        $datos[responsable_carga] = $perfil[0];
+        $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
 
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
         $this->dep('datos')->tabla('pextension')->cargar($datos);
+        
         toba::notificacion()->agregar('El proyecto ha sido guardado exitosamente', 'info');
     }
 

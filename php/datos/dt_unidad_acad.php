@@ -53,16 +53,20 @@ class dt_unidad_acad extends extension_datos_tabla {
         
         //primero veo si esta asociado a un perfil de datos departamento y obtengo la ua del departamento
         $sql = "SELECT d.iddepto,d.idunidad_academica FROM dblink('".$this->dblink_designa()."','SELECT iddepto,idunidad_academica FROM departamento') as d (iddepto INTEGER, idunidad_academica CHARACTER(5))";
-        $sql = toba::perfil_de_datos()->filtrar($sql);
         
-        $resul = toba::db('extension')->consultar($sql);
-        if (count($resul) == 1) {//si solo tiene un registro entonces esta asociado a un perfil de datos departamento
-            $condicion = " WHERE sigla='" . $resul[0]['idunidad_academica'] . "'";
+        $sql = toba::perfil_de_datos()->filtrar($sql);
+
+        $perfil = toba::perfil_de_datos('designa')->get_restricciones_dimension('designa','unidad_acad');
+  
+        #$resul = toba::db('extension')->consultar($sql);
+
+        if (count($perfil) == 1) {//si solo tiene un registro entonces esta asociado a un perfil de datos departamento
+            $condicion = " WHERE sigla='" . $perfil[0] . "'";
         } else {
             $condicion = "";
         }
         
-        $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad $condicion') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )"
+        $sql = "SELECT ua.sigla,ua.descripcion FROM (SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad ') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )) as ua $condicion"
                 . "ORDER BY ua.descripcion";
         $sql = toba::perfil_de_datos()->filtrar($sql);
         $resul = toba::db('extension')->consultar($sql);

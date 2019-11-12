@@ -28,8 +28,6 @@ class dt_departamento extends extension_datos_tabla {
             $where = " and idunidad_academica='" . $id_ua . "'";
         }
 
-
-
         $sql = "SELECT DISTINCT t_d.iddepto, t_d.descripcion ||'('||t_d.sigla||')' as descripcion "
                 . "FROM dblink('" . $this->dblink_designa() . "',"
                 . "'SELECT t_d.iddepto,t_d.descripcion,t_u.sigla, t_d.idunidad_academica "
@@ -37,24 +35,26 @@ class dt_departamento extends extension_datos_tabla {
                 . "WHERE t_d.sigla=t_d.idunidad_academica "
                 . " $where"
                 . " order by descripcion";
-
+        
         //obtengo el perfil de datos del usuario logueado
         $con = "SELECT ua.sigla,ua.descripcion FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad ') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
-
+        
         $con = toba::perfil_de_datos()->filtrar($con);
-
+        
         $resul = toba::db('extension')->consultar($con);
-
+        /*
         $unidades = array('FAIF', 'FATU', 'FACE', 'FAEA', 'ASMA', 'FAHU', 'FATA', 'FAAS', 'CUZA', 'FADE', 'FACA', 'FALE', 'FAME', 'AUZA', 'FAIN', 'ESCM', 'CRUB');
         if (in_array(trim($resul[0]['sigla']), $unidades)) {
             if ((trim($resul[0]['sigla']) <> 'FAHU') && (trim($resul[0]['sigla']) <> 'AUZA') && (trim($resul[0]['sigla']) <> 'ESCM') && (trim($resul[0]['sigla']) <> 'CRUB') && (trim($resul[0]['sigla']) <> 'FACA') && (trim($resul[0]['sigla']) <> 'ASMA') && (trim($resul[0]['sigla']) <> 'CUZA') && (trim($resul[0]['sigla']) <> 'FAAS')) {
                 $sql = toba::perfil_de_datos()->filtrar($sql); //aplico el perfil para que solo aparezcan los departamentos de su facultad
+                print_r($sql);
             }
         } else {//perfil de datos de departamento
             $sql = toba::perfil_de_datos()->filtrar($sql);
-        }
+        }*/
 
         $resul = toba::db('extension')->consultar($sql);
+        
 
         return $resul;
     }
