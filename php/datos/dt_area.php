@@ -1,5 +1,5 @@
 <?php
-class dt_area extends toba_datos_tabla
+class dt_area extends extension_datos_tabla
 {
 	function get_descripciones($id_nro_dpto=null)
 	{
@@ -9,9 +9,9 @@ class dt_area extends toba_datos_tabla
             }
             $sql= "SELECT a.idarea,a.descripcion "
                     . "FROM dblink('". $this->dblink_designa() ."',"
-                    . "'SELECT idarea, descripcion FROM area $where') as a (idarea INTEGER, descripcion CHARAPTER VARYING)"
+                    . "'SELECT idarea, descripcion FROM area $where') as a (idarea INTEGER, descripcion CHARACTER VARYING)"
                     . "ORDER BY descripcion";
-           
+
             return toba::db('extension')->consultar($sql);
            
 	}
@@ -28,7 +28,7 @@ class dt_area extends toba_datos_tabla
 		WHERE
 				t_a.iddepto = t_d.iddepto
 		ORDER BY descripcion";
-		return toba::db('designa')->consultar($sql);
+		return toba::db('extension')->consultar($sql);
 	}
         function tiene_orientaciones($idarea){
             $sql = "select * from orientacion where idarea=".$idarea;  

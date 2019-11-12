@@ -6,7 +6,7 @@
 --- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_dimension (proyecto, dimension, nombre, descripcion, schema, tabla, col_id, col_desc, col_desc_separador, multitabla_col_tabla, multitabla_id_tabla, fuente_datos_proyecto, fuente_datos) VALUES (
 	'extension', --proyecto
-	'1001000001', --dimension
+	'1001000004', --dimension
 	'unidad_acad', --nombre
 	'UA', --descripcion
 	NULL, --schema
@@ -17,11 +17,11 @@ INSERT INTO apex_dimension (proyecto, dimension, nombre, descripcion, schema, ta
 	NULL, --multitabla_col_tabla
 	NULL, --multitabla_id_tabla
 	'extension', --fuente_datos_proyecto
-	'extension'  --fuente_datos
+	'designa'  --fuente_datos
 );
 INSERT INTO apex_dimension (proyecto, dimension, nombre, descripcion, schema, tabla, col_id, col_desc, col_desc_separador, multitabla_col_tabla, multitabla_id_tabla, fuente_datos_proyecto, fuente_datos) VALUES (
 	'extension', --proyecto
-	'1001000002', --dimension
+	'1001000005', --dimension
 	'departamento', --nombre
 	NULL, --descripcion
 	NULL, --schema
@@ -32,11 +32,11 @@ INSERT INTO apex_dimension (proyecto, dimension, nombre, descripcion, schema, ta
 	NULL, --multitabla_col_tabla
 	NULL, --multitabla_id_tabla
 	'extension', --fuente_datos_proyecto
-	'extension'  --fuente_datos
+	'designa'  --fuente_datos
 );
 INSERT INTO apex_dimension (proyecto, dimension, nombre, descripcion, schema, tabla, col_id, col_desc, col_desc_separador, multitabla_col_tabla, multitabla_id_tabla, fuente_datos_proyecto, fuente_datos) VALUES (
 	'extension', --proyecto
-	'1001000003', --dimension
+	'1001000006', --dimension
 	'mocovi_programa', --nombre
 	NULL, --descripcion
 	NULL, --schema
@@ -47,6 +47,6 @@ INSERT INTO apex_dimension (proyecto, dimension, nombre, descripcion, schema, ta
 	NULL, --multitabla_col_tabla
 	NULL, --multitabla_id_tabla
 	'extension', --fuente_datos_proyecto
-	'extension'  --fuente_datos
+	'designa'  --fuente_datos
 );
 --- FIN Grupo de desarrollo 1001

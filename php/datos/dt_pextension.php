@@ -77,6 +77,7 @@ class dt_pextension extends extension_datos_tabla {
             $where = '';
         }
         $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
+
         
         $p = array_search('formulador', $this->s__perfil);
         if($p !== false){ 
