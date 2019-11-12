@@ -52,9 +52,7 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.referencia_vinculacion_inst
                     
                 FROM
-                   organizaciones_participantes as o_p 
-                   INNER JOIN (SELECT p_e.id_pext FROM dblink('".$this->dblink_designa()."','SELECT id_pext  FROM pextension') as p_e (id_pext INTEGER)) as p_e"
-                   ." ON (o_p.id_pext = p_e.id_pext)"   
+                   organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"   
                    ."LEFT OUTER JOIN (SELECT l.id FROM dblink('".$this->dblink_designa()."','SELECT id  FROM localidad') as l (id INTEGER , localidad CHARACTER VARYING(255))) as l"
                    ." ON (o_p.id_localidad = l.id)"
                    ."LEFT OUTER JOIN (SELECT t_o.id_tipo_organizacion FROM dblink('".$this->dblink_designa()."','SELECT id_tipo_organizacion  FROM tipo_organizacion') as t_o (id_tipo_organizacion INTEGER)) as t_o"
