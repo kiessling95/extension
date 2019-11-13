@@ -289,7 +289,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_organizaciones")->desactivar();
                 $this->pantalla()->tab("pant_objetivos")->desactivar();
                 $this->pantalla()->tab("pant_actividad")->desactivar();
-
+                $this->pantalla()->tab("pant_org_participantes")->desactivar();
 
                 $this->pantalla()->tab("pant_integrantesi")->ocultar();
                 $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -298,6 +298,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_organizaciones")->ocultar();
                 $this->pantalla()->tab("pant_objetivos")->ocultar();
                 $this->pantalla()->tab("pant_actividad")->ocultar();
+                $this->pantalla()->tab("pant_org_participantes")->ocultar();
 
                 $this->dep('datos')->tabla('pextension')->resetear();
                 break;
@@ -318,9 +319,12 @@ class ci_proyectos_extension extends extension_ci {
                 $this->set_pantalla('pant_formulario');
                 break;
             case 'pant_organizaciones':
-                $this->set_pantalla('pant_planilla');
+                $this->set_pantalla('pant_org_participantes');
                 $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
                 break;
+            case 'pant_org_participantes':
+                $this->set_pantalla('pant_planilla');
+                $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
             case 'pant_objetivos':
                 $this->set_pantalla('pant_formulario');
                 break;
@@ -355,10 +359,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__organizaciones() {
         $this->set_pantalla('pant_org_participantes');
-    }
-
-    function evt__actividades() {
-        $this->set_pantalla('pant_actividad');
     }
 
     //-----------------------------------------------------------------------------------
@@ -846,8 +846,13 @@ class ci_proyectos_extension extends extension_ci {
         $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
     }
 
-    function evt__cuadro_objetivo__seleccion($datos) {
-
+    function evt__cuadro_objetivo__seleccion() 
+    {
+        $this->set_pantalla('pant_actividad');
+    }
+    
+    function evt__cuadro_objetivo__modificacion($datos)
+    {
         $this->s__mostrar_obj = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos[id_pext] = $pe['id_pext'];
