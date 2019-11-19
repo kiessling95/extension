@@ -186,13 +186,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1002000040', --evento_id
 	'1001000186', --objeto
 	'organizaciones', --identificador
-	'Organizacion Participantes', --etiqueta
+	'Organizacion Participante', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'nucleo/agregar.gif', --imagen
+	'instanciar.gif', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'5', --orden
@@ -664,8 +664,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000087', --pantalla
 	'pant_organizaciones', --identificador
-	'6', --orden
-	'2-3- Organizaciones Participantes', --etiqueta
+	'7', --orden
+	'2-3-1 Organizaciones Participantes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -683,7 +683,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000088', --pantalla
 	'pant_objetivos', --identificador
-	'7', --orden
+	'8', --orden
 	'3- Objetivos y Metas a alcanzar', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -705,7 +705,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000009', --pantalla
 	'pant_presupuesto', --identificador
-	'9', --orden
+	'10', --orden
 	'5-Presupuesto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -724,7 +724,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000011', --pantalla
 	'pant_actividad', --identificador
-	'8', --orden
+	'9', --orden
 	'3-1-Plan de Actividad', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -743,8 +743,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000012', --pantalla
 	'pant_org_participantes', --identificador
-	'10', --orden
-	'6- Organizaciones que participan en el proyecto', --etiqueta
+	'6', --orden
+	'2-3- Organizaciones que participan en el proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -864,15 +864,8 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'extension', --proyecto
 	'1001000088', --pantalla
 	'1001000186', --objeto_ci
-	'0', --orden
-	'1002000036'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'extension', --proyecto
-	'1001000088', --pantalla
-	'1001000186', --objeto_ci
 	'1', --orden
-	'1002000037'  --dep_id
+	'1002000036'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
@@ -880,6 +873,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1001000186', --objeto_ci
 	'2', --orden
 	'1002000038'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1001000088', --pantalla
+	'1001000186', --objeto_ci
+	'0', --orden
+	'1002000041'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
@@ -913,14 +913,14 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'extension', --proyecto
 	'1002000012', --pantalla
 	'1001000186', --objeto_ci
-	'0', --orden
+	'1', --orden
 	'1002000042'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
 	'1002000012', --pantalla
 	'1001000186', --objeto_ci
-	'1', --orden
+	'0', --orden
 	'1002000043'  --dep_id
 );
 
@@ -1033,6 +1033,12 @@ INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VAL
 	'1002000011', --pantalla
 	'1001000186', --objeto_ci
 	'1001000231', --evento_id
+	'extension'  --proyecto
+);
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1002000012', --pantalla
+	'1001000186', --objeto_ci
+	'1001000230', --evento_id
 	'extension'  --proyecto
 );
 INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (

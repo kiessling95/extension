@@ -267,7 +267,15 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__mostrar_presup = 1;
                 $this->dep('datos')->tabla('presupuesto_extension')->resetear();
                 break;
+            case 'pant_org_participantes':
+                $this->set_pantalla('pant_organizaciones');
+//                $this->s__mostrar_org = 1;
+//                $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+                break;
             case 'pant_organizaciones':
+                $this->s__mostrar_org = 1;
+                $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+            case 'pant_presup':
                 $this->s__mostrar_org = 1;
                 $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
                 break;
@@ -325,6 +333,7 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_org_participantes':
                 $this->set_pantalla('pant_planilla');
                 $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
+                break;
             case 'pant_objetivos':
                 $this->set_pantalla('pant_formulario');
                 break;
@@ -487,9 +496,11 @@ class ci_proyectos_extension extends extension_ci {
     
     function conf__cuadro_org_filtro(toba_ei_cuadro $cuadro)
     {
+        //print_r($this->s__where);        exit();
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($pe['id_pext'], $this->s__where);
         
+        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($pe['id_pext'], $this->s__where);
+//        print_r($datos);        exit();
         $cuadro->set_datos($datos);
     }
     
@@ -516,6 +527,7 @@ class ci_proyectos_extension extends extension_ci {
 //      print_r($datos);        exit();
       $this->s__datos_filtro = $datos;
       $this->s__where = $this->dep('filtro')->get_sql_where();
+      
       }
 
       function evt__filtro_organizaciones__cancelar() {
@@ -541,7 +553,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('domicilio')->set_obligatorio('true');
-//            $form->ef('provincia')->set_obligatorio('true');
             $form->ef('telefono')->set_obligatorio('true');
             $form->ef('email')->set_obligatorio('true');
             $form->ef('referencia_vinculacion_inst')->set_obligatorio('true');
@@ -560,9 +571,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_organizacion__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-
+        
         $datos[id_pext] = $pe['id_pext'];
-
+//        print_r($datos);        exit();
         $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
         $this->dep('datos')->tabla('organizaciones_participantes')->sincronizar();
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
@@ -796,7 +807,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
         //$cuadro->desactivar_modo_clave_segura();
         $pe = $this->dep('datos')->tabla('pextension')->get();
-       
+//        print_r($this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']));        exit();
         $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']));
 
     }
@@ -806,6 +817,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_org = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
 
