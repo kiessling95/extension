@@ -231,10 +231,6 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				<span style="font-size:16px;"><strong>[ef id=co-director]</strong></span></td>
-		</tr>
-		<tr>
-			<td>
 				&nbsp;</td>
 		</tr>
 		<tr>
@@ -367,7 +363,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 			<td>
 				&nbsp;</td>
 		</tr>
-                <tr>
+		<tr>
 			<td>
 				[ef id=impacto]</td>
 			<td>
