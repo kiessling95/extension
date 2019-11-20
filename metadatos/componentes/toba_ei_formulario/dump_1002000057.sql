@@ -343,7 +343,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_lista
 	'id', --carga_col_clave
 	'localidad', --carga_col_desc
-	'id_provincia', --carga_maestros
+	'provincia', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -394,9 +394,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000019', --objeto_ei_formulario_fila
 	'1002000057', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
-	'id_provincia', --identificador
+	'provincia', --identificador
 	'ef_combo', --elemento_formulario
-	'id_provincia', --columnas
+	'provincia', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'3', --orden
@@ -423,7 +423,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_lista
 	'codigo_pcia', --carga_col_clave
 	'descripcion_pcia', --carga_col_desc
-	'id_pais', --carga_maestros
+	'pais', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -794,9 +794,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000024', --objeto_ei_formulario_fila
 	'1002000057', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
-	'id_pais', --identificador
+	'pais', --identificador
 	'ef_combo', --elemento_formulario
-	'id_pais', --columnas
+	'pais', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
