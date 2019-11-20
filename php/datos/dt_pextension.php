@@ -15,6 +15,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.nro_resol,
                         t_p.fecha_resol,
                         t_ua.descripcion as uni_acad_nombre,
+                        t_p.departamento,
+                        t_p.area,
                         t_p.fec_desde,
                         t_p.fec_hasta,
                         t_p.nro_ord_cs,
