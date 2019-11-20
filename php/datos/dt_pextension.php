@@ -34,7 +34,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.estado_informe_a,
                         t_p.estado_informe_f,
                         t_p.uni_acad,
-                        d.apellido || ' '|| d.nombre as director,
+                        d.apellido || ' '|| d.nombre || ' '|| d.tipo_docum || ' '|| d.nro_docum as director,
                         t_p.eje_tematico,
                         t_p.descripcion_situacion,
                         t_p.caracterizacion_poblacion,
@@ -49,10 +49,10 @@ class dt_pextension extends extension_datos_tabla {
                         ."(SELECT t_ua.* FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as t_ua (sigla CHARACTER(5), descripcion CHARACTER(60))) as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
                         LEFT OUTER JOIN (SELECT d.* FROM  dblink('".$this->dblink_designa()."', 
-                                    'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre 
-                                     FROM designacion as d LEFT OUTER JOIN docente as dc 
+                                    'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre, dc.tipo_docum, dc.nro_docum
+                                     FROM designacion as d LEFT OUTER JOIN docente as dc
                                             ON(dc.id_docente = d.id_docente)') as d 
-                                            ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING)) as d ON (i.id_designacion=d.id_designacion)
+                                            ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER)) as d ON (i.id_designacion=d.id_designacion)
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)
                         
@@ -89,7 +89,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.id_pext,
                         t_p.codigo,
                         t_c.descripcion,
-                        dc.apellido || ' '|| dc.nombre as director,
+                        dc.apellido || ' '|| dc.nombre || ' '|| dc.tipo_docum || ' '|| dc.nro_docum as director,
                         t_p.denominacion,
                         t_p.nro_resol,
                         t_p.fecha_resol,
@@ -101,7 +101,7 @@ class dt_pextension extends extension_datos_tabla {
                         (SELECT t_ua.* FROM dblink('".$this->dblink_designa()."','SELECT sigla FROM unidad_acad ') as t_ua (sigla CHARACTER(5) )) as t_ua ON (t_p.uni_acad = t_ua.sigla)
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
                         LEFT OUTER JOIN ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (i.id_designacion = d.id_designacion)
-                        LEFT OUTER JOIN ( SELECT dc.* FROM dblink('".$this->dblink_designa()."', 'SELECT dc.id_docente,dc.nombre, dc.apellido FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING)) as dc ON (d.id_docente = dc.id_docente)
+                        LEFT OUTER JOIN ( SELECT dc.* FROM dblink('".$this->dblink_designa()."', 'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum, dc.nro_docum FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER)) as dc ON (d.id_docente = dc.id_docente)
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)"
                     .$where

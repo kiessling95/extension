@@ -121,6 +121,8 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('fec_hasta')->set_obligatorio('true');
             $form->ef('palabras_clave')->set_obligatorio('true');
             $form->ef('objetivo')->set_obligatorio('true');
+            $form->ef('email')->set_obligatorio('true');
+            $form->ef('telefono')->set_obligatorio('true');
         }
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
