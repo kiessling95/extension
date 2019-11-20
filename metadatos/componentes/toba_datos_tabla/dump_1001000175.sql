@@ -142,34 +142,6 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000175', --objeto
-	'1001000425', --col_id
-	'desde', --columna
-	'F', --tipo
-	'1', --pk
-	'', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'1', --no_nulo_db
-	'0', --externa
-	'integrante_interno_pe'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000175', --objeto
-	'1001000426', --col_id
-	'hasta', --columna
-	'F', --tipo
-	'0', --pk
-	'', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'integrante_interno_pe'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000175', --objeto
 	'1001000427', --col_id
 	'rescd', --columna
 	'C', --tipo
@@ -201,6 +173,34 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000431', --col_id
 	'tipo', --columna
 	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'integrante_interno_pe'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000175', --objeto
+	'1001000562', --col_id
+	'desde', --columna
+	'F', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'integrante_interno_pe'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000175', --objeto
+	'1001000563', --col_id
+	'hasta', --columna
+	'F', --tipo
 	'0', --pk
 	'', --secuencia
 	NULL, --largo
