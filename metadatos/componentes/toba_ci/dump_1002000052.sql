@@ -228,21 +228,21 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'extension', --proyecto
 	'1002000010', --pantalla
 	'1002000052', --objeto_ci
-	'2', --orden
+	'1', --orden
 	'1002000025'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
 	'1002000010', --pantalla
 	'1002000052', --objeto_ci
-	'0', --orden
+	'2', --orden
 	'1002000026'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
 	'1002000010', --pantalla
 	'1002000052', --objeto_ci
-	'1', --orden
+	'0', --orden
 	'1002000028'  --dep_id
 );
 

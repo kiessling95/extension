@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - cuadro_organizaciones', --nombre
-	NULL, --titulo
+	'Listado de Organizaciones Participantes', --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	NULL, --fuente_datos_proyecto
@@ -165,7 +165,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1002000056', --objeto_cuadro
 	'1002000044', --objeto_cuadro_col
-	'localidad', --clave
+	'id_localidad', --clave
 	'2', --orden
 	'Localidad', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
@@ -196,7 +196,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1002000056', --objeto_cuadro
 	'1002000045', --objeto_cuadro_col
-	'provincia', --clave
+	'id_provincia', --clave
 	'3', --orden
 	'Provincia', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo

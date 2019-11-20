@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - form_organizacion', --nombre
-	'Formulario de Organizaciones Participantes', --titulo
+	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
@@ -343,7 +343,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_lista
 	'id', --carga_col_clave
 	'localidad', --carga_col_desc
-	'provincia', --carga_maestros
+	'id_provincia', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -394,9 +394,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000019', --objeto_ei_formulario_fila
 	'1002000057', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
-	'provincia', --identificador
+	'id_provincia', --identificador
 	'ef_combo', --elemento_formulario
-	'provincia', --columnas
+	'id_provincia', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'3', --orden
@@ -423,7 +423,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_lista
 	'codigo_pcia', --carga_col_clave
 	'descripcion_pcia', --carga_col_desc
-	'pais', --carga_maestros
+	'id_pais', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -794,9 +794,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000024', --objeto_ei_formulario_fila
 	'1002000057', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
-	'pais', --identificador
+	'id_pais', --identificador
 	'ef_combo', --elemento_formulario
-	'pais', --columnas
+	'id_pais', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden

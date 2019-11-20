@@ -9,8 +9,7 @@ class dt_organizaciones_participantes extends extension_datos_tabla
 		if (isset($filtro)) {
 			//$where[] = "tipo ILIKE ".quote("%{$filtro['tipo']}%");
                         $where[]= $filtro;
-		}
-	print_r($where);	
+		}	
         $sql = "SELECT
                     o_p.id_organizacion ,
                     o_p.id_tipo_organizacion ,
@@ -19,11 +18,13 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.id_localidad ,
                     o_p.telefono ,
                     o_p.email ,
-                    o_p.referencia_vinculacion_inst
+                    o_p.referencia_vinculacion_inst,
+                    o_p.id_pais,
+                    o_p.id_provincia
                     
                 FROM
                    organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"
-                   ."LEFT OUTER JOIN (SELECT l.id FROM dblink('".$this->dblink_designa()."','SELECT id  FROM localidad') as l (id INTEGER , localidad CHARACTER VARYING(255))) as l"
+                   ."LEFT OUTER JOIN (SELECT l.id FROM dblink('".$this->dblink_designa()."','SELECT id  FROM localidad') as l (id INTEGER)) as l"
                    ." ON (o_p.id_localidad = l.id)
                    LEFT OUTER JOIN tipo_organizacion as t_o ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)"
                    
@@ -35,7 +36,7 @@ class dt_organizaciones_participantes extends extension_datos_tabla
             //print_r($sql);
 	}
        
-        
+        print_r($sql);        exit();
         return toba::db('extension')->consultar($sql);
     }
     
@@ -49,14 +50,15 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.id_localidad ,
                     o_p.telefono ,
                     o_p.email ,
-                    o_p.referencia_vinculacion_inst
+                    o_p.referencia_vinculacion_inst,
+                    o_p.id_pais,
+                    o_p.id_provincia
                     
-                FROM
-                   organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"   
-                   ."LEFT OUTER JOIN (SELECT l.id FROM dblink('".$this->dblink_designa()."','SELECT id  FROM localidad') as l (id INTEGER , localidad CHARACTER VARYING(255))) as l"
+                FROM "
+                   ." organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"   
+                   ." LEFT OUTER JOIN (SELECT l.id FROM dblink('".$this->dblink_designa()."','SELECT id, localidad  FROM localidad') as l (id INTEGER , localidad CHARACTER VARYING(255))) as l"
                    ." ON (o_p.id_localidad = l.id)"
-                   ."LEFT OUTER JOIN (SELECT t_o.id_tipo_organizacion FROM dblink('".$this->dblink_designa()."','SELECT id_tipo_organizacion  FROM tipo_organizacion') as t_o (id_tipo_organizacion INTEGER)) as t_o"
-                   ." ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)
+                   ." LEFT OUTER JOIN tipo_organizacion as t_o ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)
                    
                 WHERE o_p.id_pext = ".$id
                 ;
