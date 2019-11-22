@@ -142,48 +142,6 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000174', --objeto
-	'1001000416', --col_id
-	'desde', --columna
-	'F', --tipo
-	'1', --pk
-	'', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'1', --no_nulo_db
-	'0', --externa
-	'integrante_externo_pe'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000174', --objeto
-	'1001000417', --col_id
-	'hasta', --columna
-	'F', --tipo
-	'0', --pk
-	'', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'integrante_externo_pe'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000174', --objeto
-	'1001000418', --col_id
-	'rescd', --columna
-	'C', --tipo
-	'0', --pk
-	'', --secuencia
-	'10', --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'integrante_externo_pe'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000174', --objeto
 	'1001000419', --col_id
 	'ad_honorem', --columna
 	'E', --tipo
@@ -204,6 +162,48 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --pk
 	'', --secuencia
 	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'integrante_externo_pe'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000174', --objeto
+	'1001000557', --col_id
+	'desde', --columna
+	'F', --tipo
+	'1', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'integrante_externo_pe'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000174', --objeto
+	'1001000558', --col_id
+	'hasta', --columna
+	'F', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'integrante_externo_pe'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000174', --objeto
+	'1001000559', --col_id
+	'rescd', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'10', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa

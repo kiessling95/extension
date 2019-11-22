@@ -300,18 +300,6 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
-	'1002000042', --dep_id
-	'1001000186', --objeto_consumidor
-	'1002000067', --objeto_proveedor
-	'cuadro_org_filtro', --identificador
-	NULL, --parametros_a
-	NULL, --parametros_b
-	NULL, --parametros_c
-	NULL, --inicializar
-	NULL  --orden
-);
-INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
-	'extension', --proyecto
 	'1002000031', --dep_id
 	'1001000186', --objeto_consumidor
 	'1002000056', --objeto_proveedor
@@ -408,18 +396,6 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 --- INICIO Grupo de desarrollo 1002
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
-	'1002000043', --dep_id
-	'1001000186', --objeto_consumidor
-	'1002000068', --objeto_proveedor
-	'filtro_organizaciones', --identificador
-	NULL, --parametros_a
-	NULL, --parametros_b
-	NULL, --parametros_c
-	NULL, --inicializar
-	NULL  --orden
-);
-INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
-	'extension', --proyecto
 	'1002000040', --dep_id
 	'1001000186', --objeto_consumidor
 	'1002000065', --objeto_proveedor
@@ -504,18 +480,6 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 --- INICIO Grupo de desarrollo 1002
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
-	'1002000041', --dep_id
-	'1001000186', --objeto_consumidor
-	'1002000066', --objeto_proveedor
-	'form_pexten', --identificador
-	NULL, --parametros_a
-	NULL, --parametros_b
-	NULL, --parametros_c
-	NULL, --inicializar
-	NULL  --orden
-);
-INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
-	'extension', --proyecto
 	'1002000022', --dep_id
 	'1001000186', --objeto_consumidor
 	'1002000047', --objeto_proveedor
@@ -542,21 +506,6 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	NULL  --orden
 );
 --- FIN Grupo de desarrollo 1001
-
---- INICIO Grupo de desarrollo 1002
-INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
-	'extension', --proyecto
-	'1002000037', --dep_id
-	'1001000186', --objeto_consumidor
-	'1002000062', --objeto_proveedor
-	'formulario_pext', --identificador
-	NULL, --parametros_a
-	NULL, --parametros_b
-	NULL, --parametros_c
-	NULL, --inicializar
-	NULL  --orden
-);
---- FIN Grupo de desarrollo 1002
 
 ------------------------------------------------------------
 -- apex_objeto_ci_pantalla
@@ -824,6 +773,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'extension', --proyecto
 	'1001000087', --pantalla
 	'1001000186', --objeto_ci
+	'0', --orden
+	'1001000153'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1001000087', --pantalla
+	'1001000186', --objeto_ci
 	'1', --orden
 	'1002000031'  --dep_id
 );
@@ -833,13 +789,6 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1001000186', --objeto_ci
 	'2', --orden
 	'1002000032'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'extension', --proyecto
-	'1001000087', --pantalla
-	'1001000186', --objeto_ci
-	'0', --orden
-	'1002000041'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
@@ -854,13 +803,6 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1001000186', --objeto_ci
 	'2', --orden
 	'1002000038'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'extension', --proyecto
-	'1001000088', --pantalla
-	'1001000186', --objeto_ci
-	'0', --orden
-	'1002000041'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto

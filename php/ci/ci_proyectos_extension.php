@@ -237,8 +237,8 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('fec_hasta')->set_obligatorio('true');
             $form->ef('palabras_clave')->set_obligatorio('true');
             $form->ef('objetivo')->set_obligatorio('true');
-            $form->ef('email')->set_obligatorio('true');
-            $form->ef('telefono')->set_obligatorio('true');
+            #$form->ef('email')->set_obligatorio('true');
+            #$form->ef('telefono')->set_obligatorio('true');
         }
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
@@ -298,6 +298,8 @@ class ci_proyectos_extension extends extension_ci {
             $datos['financiacion'] = false;
         };
         unset($datos[director]);
+        unset($datos[email]);
+        unset($datos[telefono]);
         unset($datos[departamento]);
         unset($datos[area]);
         unset($datos[tipo_convocatoria]);
@@ -482,16 +484,16 @@ class ci_proyectos_extension extends extension_ci {
     function conf__form_integrantes(toba_ei_formulario $form) {
         if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_integrantes')->descolapsar();
-            $form->ef('id_docente')->set_obligatorio('true');
-            $form->ef('id_designacion')->set_obligatorio('true');
-            $form->ef('funcion_p')->set_obligatorio('true');
-            $form->ef('carga_horaria')->set_obligatorio('true');
-            $form->ef('ua')->set_obligatorio('true');
-            $form->ef('tipo')->set_obligatorio('true');
+            #$form->ef('id_docente')->set_obligatorio('true');
+            #$form->ef('id_designacion')->set_obligatorio('true');
+            #$form->ef('funcion_p')->set_obligatorio('true');
+            #$form->ef('carga_horaria')->set_obligatorio('true');
+            #$form->ef('ua')->set_obligatorio('true');
+            #$form->ef('tipo')->set_obligatorio('true');
             //$form->ef('desde')->set_obligatorio('true');
             //$form->ef('hasta')->set_obligatorio('true');
             //$form->ef('rescd')->set_obligatorio('true');
-            $form->ef('ad_honorem')->set_obligatorio('true');
+            #$form->ef('ad_honorem')->set_obligatorio('true');
         } else {
             $this->dep('form_integrantes')->colapsar();
         }
