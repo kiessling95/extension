@@ -45,7 +45,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.importancia_necesidad,
                         b_c.id_bases,
                         t_c.id_conv,
-                        t_p.responsable_carga
+                        t_p.responsable_carga,
+                        t_p.impacto
                     FROM
                         pextension as t_p INNER JOIN" 
                         ."(SELECT t_ua.* FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as t_ua (sigla CHARACTER(5), descripcion CHARACTER(60))) as t_ua ON (t_p.uni_acad = t_ua.sigla)
