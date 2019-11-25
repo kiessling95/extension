@@ -93,7 +93,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -107,21 +107,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
-	'0', --externa
-	'bases_convocatoria'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000156', --objeto
-	'1001000304', --col_id
-	'eje_tematico', --columna
-	'C', --tipo
-	'0', --pk
-	'', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -135,7 +121,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -149,7 +135,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -163,7 +149,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -177,7 +163,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -191,7 +177,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -205,7 +191,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -219,7 +205,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -233,7 +219,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -247,7 +233,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -261,7 +247,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'bases_convocatoria'  --tabla
 );
@@ -270,6 +256,76 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000156', --objeto
 	'1001000315', --col_id
 	'tipo_convocatoria', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'bases_convocatoria'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000156', --objeto
+	'1001000568', --col_id
+	'fecha_desde', --columna
+	'F', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'bases_convocatoria'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000156', --objeto
+	'1001000569', --col_id
+	'fecha_hasta', --columna
+	'F', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'bases_convocatoria'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000156', --objeto
+	'1001000572', --col_id
+	'duracion_convocatoria', --columna
+	'E', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'bases_convocatoria'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000156', --objeto
+	'1001000573', --col_id
+	'eje_tematico', --columna
+	'E', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'bases_convocatoria'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000156', --objeto
+	'1001000574', --col_id
+	'eje_tematico_txt', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia

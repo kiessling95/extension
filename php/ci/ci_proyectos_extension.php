@@ -249,14 +249,15 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $datos = $datos[0];
             
-
+/*
             if ($datos['financiacion'] == true) {
                 $datos['financiacion'] = 'SI';
             };
             if ($datos['financiacion'] == false) {
                 $datos['financiacion'] = 'NO';
-            };
-
+            };*/
+            
+            //print_r($datos);
             $form->set_datos($datos);
         }
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
@@ -298,8 +299,11 @@ class ci_proyectos_extension extends extension_ci {
             $datos['financiacion'] = false;
         };
         unset($datos[director]);
-        unset($datos[email]);
-        unset($datos[telefono]);
+        unset($datos[dir_email]);
+        unset($datos[dir_telefono]);
+        unset($datos[co_director]);
+        unset($datos[co_email]);
+        unset($datos[co_telefono]);
         unset($datos[departamento]);
         unset($datos[area]);
         unset($datos[tipo_convocatoria]);
@@ -516,7 +520,7 @@ class ci_proyectos_extension extends extension_ci {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos[id_pext] = $pe['id_pext'];
-        //$datos['tipo'] = 'interno';
+        $datos['tipo'] = 'interno';
         //verifico que las fechas correspondan (FALTA)
 
         $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
@@ -581,7 +585,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        #$datos['tipo'] = 'externo';
+        $datos['tipo'] = 'externo';
         $datos['nro_tabla'] = 1;
         //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
         //$personas=$this->dep('datos')->tabla('persona')->get_listado();           

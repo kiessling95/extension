@@ -3,7 +3,17 @@
 class ci_bases extends abm_ci {
 
     protected $nombre_tabla = 'bases_convocatoria';
-
+/*
+    function evt__formulario__alta($datos) {
+        //
+   
+        $this->dep('datos')->tabla('bases_convocatoria')->set($datos);
+        $this->dep('datos')->tabla('bases_convocatoria')->sincronizar();
+        $this->dep('datos')->tabla('bases_convocatoria')->cargar($datos);
+        
+        toba::notificacion()->agregar('El proyecto ha sido guardado exitosamente', 'info');
+    }
+*/
     function evt__cuadro__pdf($datos) {
 
         $this->dep('datos')->tabla($this->nombre_tabla)->cargar($datos);
@@ -23,7 +33,7 @@ class ci_bases extends abm_ci {
         //print_r($salida); exit();
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
-         
+
             //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Bases_Convocatoria.pdf");
 

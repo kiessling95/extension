@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000155]--  ci_Alta Convocatoria - datos 
+--[1001000230]--  DT - eje_tematico_conv 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -9,18 +9,18 @@
 --- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, clase_proyecto, clase, punto_montaje, subclase, subclase_archivo, objeto_categoria_proyecto, objeto_categoria, nombre, titulo, colapsable, descripcion, fuente_datos_proyecto, fuente_datos, solicitud_registrar, solicitud_obj_obs_tipo, solicitud_obj_observacion, parametro_a, parametro_b, parametro_c, parametro_d, parametro_e, parametro_f, usuario, creacion, posicion_botonera) VALUES (
 	'extension', --proyecto
-	'1001000155', --objeto
+	'1001000230', --objeto
 	NULL, --anterior
 	NULL, --identificador
 	NULL, --reflexivo
 	'toba', --clase_proyecto
-	'toba_datos_relacion', --clase
+	'toba_datos_tabla', --clase
 	'1001000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'dt_eje_tematico_conv', --subclase
+	'datos/dt_eje_tematico_conv.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'ci_Alta Convocatoria - datos', --nombre
+	'DT - eje_tematico_conv', --nombre
 	NULL, --titulo
 	NULL, --colapsable
 	NULL, --descripcion
@@ -36,55 +36,65 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --parametro_e
 	NULL, --parametro_f
 	NULL, --usuario
-	'2019-09-03 09:47:36', --creacion
+	'2019-11-25 10:07:34', --creacion
 	NULL  --posicion_botonera
 );
 --- FIN Grupo de desarrollo 1001
 
 ------------------------------------------------------------
--- apex_objeto_datos_rel
+-- apex_objeto_db_registros
 ------------------------------------------------------------
-INSERT INTO apex_objeto_datos_rel (proyecto, objeto, debug, clave, ap, punto_montaje, ap_clase, ap_archivo, sinc_susp_constraints, sinc_orden_automatico, sinc_lock_optimista) VALUES (
-	'extension', --proyecto
-	'1001000155', --objeto
-	'0', --debug
-	NULL, --clave
-	'2', --ap
+INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, min_registros, punto_montaje, ap, ap_clase, ap_archivo, tabla, tabla_ext, alias, modificar_claves, fuente_datos_proyecto, fuente_datos, permite_actualizacion_automatica, esquema, esquema_ext) VALUES (
+	'extension', --objeto_proyecto
+	'1001000230', --objeto
+	NULL, --max_registros
+	NULL, --min_registros
 	'1001000004', --punto_montaje
+	'1', --ap
 	NULL, --ap_clase
 	NULL, --ap_archivo
-	'0', --sinc_susp_constraints
-	'1', --sinc_orden_automatico
-	'1'  --sinc_lock_optimista
+	'eje_tematico_conv', --tabla
+	NULL, --tabla_ext
+	NULL, --alias
+	'0', --modificar_claves
+	'extension', --fuente_datos_proyecto
+	'extension', --fuente_datos
+	'1', --permite_actualizacion_automatica
+	'public', --esquema
+	'public'  --esquema_ext
 );
 
 ------------------------------------------------------------
--- apex_objeto_dependencias
+-- apex_objeto_db_registros_col
 ------------------------------------------------------------
 
 --- INICIO Grupo de desarrollo 1001
-INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
-	'extension', --proyecto
-	'1001000107', --dep_id
-	'1001000155', --objeto_consumidor
-	'1001000156', --objeto_proveedor
-	'bases_convocatoria', --identificador
-	'1', --parametros_a
-	'1', --parametros_b
-	NULL, --parametros_c
-	NULL, --inicializar
-	'1'  --orden
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000230', --objeto
+	'1001000566', --col_id
+	'id_eje', --columna
+	'E', --tipo
+	'1', --pk
+	'eje_tematico_seq', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'eje_tematico_conv'  --tabla
 );
-INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
-	'extension', --proyecto
-	'1001000189', --dep_id
-	'1001000155', --objeto_consumidor
-	'1001000230', --objeto_proveedor
-	'eje_tematico_conv', --identificador
-	'1', --parametros_a
-	'1', --parametros_b
-	NULL, --parametros_c
-	NULL, --inicializar
-	'2'  --orden
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000230', --objeto
+	'1001000567', --col_id
+	'descripcion', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'eje_tematico_conv'  --tabla
 );
 --- FIN Grupo de desarrollo 1001
