@@ -1178,6 +1178,12 @@ class ci_proyectos_extension extends extension_ci {
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
 //        print_r($obj_esp);        exit();
         $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
+        if($datos[anio] > date('Y')+1)
+        {
+            toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
+            $datos[anio] = date('Y')+1;
+        }
+        
 //        print_r($datos);        exit();
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
@@ -1192,6 +1198,11 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_actividad__modificacion($datos) {
+        if($datos[anio] > date('Y')+1)
+        {
+            toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
+            $datos[anio] = date('Y')+1;
+        }
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
     }
