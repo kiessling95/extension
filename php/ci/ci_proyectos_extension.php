@@ -615,7 +615,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_plantilla(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
+//        print_r($pe);        exit();
         $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'], $this->s__datos_filtro);
+//        print_r($datos);        exit();
         $duracion = '';
         $fecha = date('d-m-Y', strtotime($pe['fecha_resol']));
 
@@ -1065,6 +1067,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('form_objetivos_esp')->descolapsar();
             $form->ef('descripcion')->set_obligatorio('true');
             $form->ef('meta')->set_obligatorio('true');
+            $form->ef('ponderacion')->set_obligatorio('true');
         } else {
             $this->dep('form_objetivos_esp')->colapsar();
         }
@@ -1151,6 +1154,7 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('detalle')->set_obligatorio('true');
             $form->ef('meta')->set_obligatorio('true');
             $form->ef('fecha')->set_obligatorio('true');
+            $form->ef('anio')->set_obligatorio('true');
             $form->ef('destinatarios')->set_obligatorio('true');
             //***** este campo de localizacion va a cambiar ******
             $form->ef('localizacion')->set_obligatorio('true');
@@ -1172,7 +1176,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_actividad__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
-
+//        print_r($obj_esp);        exit();
         $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
 //        print_r($datos);        exit();
         $this->dep('datos')->tabla('plan_actividades')->set($datos);

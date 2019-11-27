@@ -9,7 +9,8 @@ class dt_objetivo_especifico extends extension_datos_tabla
                 o_e.id_objetivo ,
                 o_e.descripcion ,
                 o_e.id_pext ,
-                o_e.meta 
+                o_e.meta ,
+                o_e.ponderacion
                 
                 FROM objetivo_especifico as o_e INNER JOIN pextension as p_e ON (o_e.id_pext = p_e.id_pext)
                 WHERE o_e.id_pext = ".$id .
@@ -25,7 +26,8 @@ class dt_objetivo_especifico extends extension_datos_tabla
                 o_e.id_objetivo ,
                 o_e.descripcion ,
                 o_e.id_pext ,
-                o_e.meta
+                o_e.meta ,
+                o_e.ponderacion
                 
                 FROM objetivo_especifico as o_e INNER JOIN pextension as p_e ON (o_e.id_pext = p_e.id_pext)
                 WHERE o_e.id_pext = ".$id;
