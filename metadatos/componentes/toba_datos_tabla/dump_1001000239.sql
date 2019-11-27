@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000230]--  DT - eje_tematico_conv 
+--[1001000239]--  DT - eje_tematico_conv 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -9,7 +9,7 @@
 --- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, clase_proyecto, clase, punto_montaje, subclase, subclase_archivo, objeto_categoria_proyecto, objeto_categoria, nombre, titulo, colapsable, descripcion, fuente_datos_proyecto, fuente_datos, solicitud_registrar, solicitud_obj_obs_tipo, solicitud_obj_observacion, parametro_a, parametro_b, parametro_c, parametro_d, parametro_e, parametro_f, usuario, creacion, posicion_botonera) VALUES (
 	'extension', --proyecto
-	'1001000230', --objeto
+	'1001000239', --objeto
 	NULL, --anterior
 	NULL, --identificador
 	NULL, --reflexivo
@@ -36,7 +36,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --parametro_e
 	NULL, --parametro_f
 	NULL, --usuario
-	'2019-11-25 10:07:34', --creacion
+	'2019-11-27 09:07:34', --creacion
 	NULL  --posicion_botonera
 );
 --- FIN Grupo de desarrollo 1001
@@ -46,7 +46,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 ------------------------------------------------------------
 INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, min_registros, punto_montaje, ap, ap_clase, ap_archivo, tabla, tabla_ext, alias, modificar_claves, fuente_datos_proyecto, fuente_datos, permite_actualizacion_automatica, esquema, esquema_ext) VALUES (
 	'extension', --objeto_proyecto
-	'1001000230', --objeto
+	'1001000239', --objeto
 	NULL, --max_registros
 	NULL, --min_registros
 	'1001000004', --punto_montaje
@@ -71,22 +71,22 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 --- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
-	'1001000230', --objeto
-	'1001000566', --col_id
+	'1001000239', --objeto
+	'1001000582', --col_id
 	'id_eje', --columna
 	'E', --tipo
 	'1', --pk
-	'eje_tematico_seq', --secuencia
+	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db
-	'0', --externa
+	NULL, --externa
 	'eje_tematico_conv'  --tabla
 );
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
-	'1001000230', --objeto
-	'1001000567', --col_id
+	'1001000239', --objeto
+	'1001000583', --col_id
 	'descripcion', --columna
 	'C', --tipo
 	'0', --pk
@@ -94,7 +94,21 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	NULL, --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
-	'0', --externa
+	NULL, --externa
+	'eje_tematico_conv'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000239', --objeto
+	'1001000584', --col_id
+	'id_bases', --columna
+	'E', --tipo
+	'1', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	NULL, --externa
 	'eje_tematico_conv'  --tabla
 );
 --- FIN Grupo de desarrollo 1001

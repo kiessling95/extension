@@ -23,11 +23,11 @@ class dt_docente extends extension_datos_tabla {
 
     function get_id_docente($id_desig) {
         #print_r($id_desig);
-        $sql = "SELECT t_do.id_docente FROM dblink('" . $this->dblink_designa() . "','SELECT t_do.id_docente FROM docente as t_do,designacion as t_d"
-                . " WHERE t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig . "') as t_do (id_docente INTEGER)";
+        $sql = "SELECT t_do.apellido||', '||t_do.nombre as nombre,t_do.id_docente FROM dblink('" . $this->dblink_designa() . "','SELECT t_do.apellido,t_do.nombre,t_do.id_docente FROM docente as t_do,designacion as t_d"
+                . " WHERE t_do.id_docente=t_d.id_docente and t_d.id_designacion=" . $id_desig . "') as t_do (nombre CHARACTER VARYING, apellido CHARACTER VARYING, id_docente INTEGER)";
         $res = toba::db('extension')->consultar($sql);
         #print_r($res[0]['id_docente']);
-        return $res[0]['id_docente'];
+        return $res[0];
     }
 
     function get_agente($id_doc) {
@@ -50,6 +50,7 @@ class dt_docente extends extension_datos_tabla {
         if (isset($filtro['id_docente'])) {
             $where .= " WHERE id_docente = " . $filtro['id_docente'];
         }
+        
         $sql = "SELECT id_docente, apellido, nombre,legajo FROM docente $where ORDER BY nombre";
         return toba::db('extension')->consultar($sql);
     }
