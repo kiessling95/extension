@@ -42,6 +42,20 @@ class dt_bases_convocatoria extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
+    function get_duracion($id_bases = null) {
+
+        if (!is_null($id_bases)) {
+            $sql = "SELECT duracion_convocatoria ,id_bases FROM bases_convocatoria as b_c "
+                    . "Where b_c.id_bases= " . $id_bases;
+          
+            $res = toba::db('extension')->consultar($sql);
+        } else {
+            $res = array();
+        }
+
+        return $res;
+    }
+
     function get_datos($where = null) {
         $sql = "SELECT
 			t_bc.id_bases,
