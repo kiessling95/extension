@@ -243,12 +243,22 @@ class ci_proyectos_extension extends extension_ci {
         // Si esta cargado, traigo los datos de la base de datos
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
+
             $where = array();
             $where['uni_acad'] = $datos[uni_acad];
             $where['id_pext'] = $datos[id_pext];
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $datos = $datos[0];
 
+            $ejes = array();
+            #print_r($ejes);
+            $aux = $datos['eje_tematico'];
+            for ($i = 0; $i < strlen($aux); $i++) {
+                if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
+                    $ejes.array_push($ejes, $aux[$i]);
+                } 
+            }
+            $datos['eje_tematico']=$ejes;
             $form->set_datos($datos);
         }
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
@@ -283,6 +293,15 @@ class ci_proyectos_extension extends extension_ci {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
             $datos['uni_acad'] = $ua[0]['sigla'];
         }
+        $ejes = $datos['eje_tematico'];
+        $array = '{' . $ejes[0];
+        unset($ejes[0]);
+        foreach ($ejes as $eje) {
+            $array = $array . ',' . $eje;
+        }
+        $array = $array . '}';
+        $datos['eje_tematico'] = $array;
+        #print_r($datos['eje_tematico']);
         // Solo se muestran, no se guardan directamente en la tabla pextension
         unset($datos[director]);
         unset($datos[dir_email]);
@@ -306,12 +325,16 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario__modificacion($datos) {
-        if (trim($datos['financiacion']) == 'SI') {
-            $datos['financiacion'] = true;
-        };
-        if (trim($datos['financiacion']) == 'NO') {
-            $datos['financiacion'] = false;
-        };
+        
+        $ejes = $datos['eje_tematico'];
+        $array = '{' . $ejes[0];
+        unset($ejes[0]);
+        foreach ($ejes as $eje) {
+            $array = $array . ',' . $eje;
+        }
+        $array = $array . '}';
+        $datos['eje_tematico'] = $array;
+
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
     }
@@ -497,7 +520,7 @@ class ci_proyectos_extension extends extension_ci {
 
             $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
             $docente = $this->dep('datos')->tabla('docente')->get_id_docente($datos['id_designacion']);
- 
+
             if (count($docente) > 0) {
                 $datos['id_docente'] = $docente['id_docente'];
             }
@@ -564,7 +587,6 @@ class ci_proyectos_extension extends extension_ci {
 
             if (count($persona) > 0) {
                 $datos['integrante'] = $persona[0]['nombre'];
-                
             }
             print_r($datos);
             $form->set_datos($datos);

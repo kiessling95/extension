@@ -298,17 +298,17 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				[ef id=eje_tematico]</td>
+				En desarrollo para que el eje tematico se multi - opcion</td>
 			<td>
 				[ef id=fec_hasta]</td>
 		</tr>
 		<tr>
 			<td>
-				[ef id=palabras_clave]</td>
+				[ef id=eje_tematico]</td>
 		</tr>
 		<tr>
 			<td>
-				&nbsp;</td>
+				[ef id=palabras_clave]</td>
 			<td>
 				&nbsp;</td>
 		</tr>
@@ -1254,7 +1254,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000190', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'eje_tematico', --identificador
-	'ef_combo', --elemento_formulario
+	'ef_multi_seleccion_check', --elemento_formulario
 	'eje_tematico', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -1280,7 +1280,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_sql
 	'designa', --carga_fuente
 	NULL, --carga_lista
-	'id_bases', --carga_col_clave
+	'id_eje', --carga_col_clave
 	'descripcion', --carga_col_desc
 	'id_bases', --carga_maestros
 	'0', --carga_cascada_relaj
@@ -1320,10 +1320,10 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --editor_botonera
 	NULL, --selec_cant_minima
 	NULL, --selec_cant_maxima
-	NULL, --selec_utilidades
+	'0', --selec_utilidades
 	NULL, --selec_tamano
 	NULL, --selec_ancho
-	NULL, --selec_serializar
+	'0', --selec_serializar
 	NULL, --selec_cant_columnas
 	NULL, --upload_extensiones
 	'1001000004', --punto_montaje
