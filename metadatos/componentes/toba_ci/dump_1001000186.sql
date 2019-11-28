@@ -216,6 +216,42 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 );
 --- FIN Grupo de desarrollo 1002
 
+--- INICIO Grupo de desarrollo 1001
+INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
+	'extension', --proyecto
+	'1001000300', --evento_id
+	'1001000186', --objeto
+	'enviar', --identificador
+	'&Enviar', --etiqueta
+	'0', --maneja_datos
+	NULL, --sobre_fila
+	NULL, --confirmacion
+	NULL, --estilo
+	'apex', --imagen_recurso_origen
+	'mensajeria/enviar.gif', --imagen
+	'1', --en_botonera
+	NULL, --ayuda
+	'6', --orden
+	NULL, --ci_predep
+	'0', --implicito
+	'0', --defecto
+	NULL, --display_datos_cargados
+	NULL, --grupo
+	NULL, --accion
+	NULL, --accion_imphtml_debug
+	NULL, --accion_vinculo_carpeta
+	NULL, --accion_vinculo_item
+	NULL, --accion_vinculo_objeto
+	NULL, --accion_vinculo_popup
+	NULL, --accion_vinculo_popup_param
+	NULL, --accion_vinculo_target
+	NULL, --accion_vinculo_celda
+	NULL, --accion_vinculo_servicio
+	'0', --es_seleccion_multiple
+	'0'  --es_autovinculo
+);
+--- FIN Grupo de desarrollo 1001
+
 ------------------------------------------------------------
 -- apex_objeto_mt_me
 ------------------------------------------------------------
@@ -536,7 +572,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000074', --pantalla
 	'pant_integrantesi', --identificador
-	'4', --orden
+	'5', --orden
 	'2-1-Integrantes Docentes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -555,7 +591,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000075', --pantalla
 	'pant_integrantese', --identificador
-	'5', --orden
+	'6', --orden
 	'2-2-Integrantes Externos', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -574,7 +610,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000076', --pantalla
 	'pant_planilla', --identificador
-	'3', --orden
+	'4', --orden
 	'2-Planilla de Personal Afectado', --etiqueta
 	'Muestra todos los integrantes cuya fecha "HASTA" coincide con la fecha hasta del proyecto correspondiente. <br>
 Los integrantes que no tienen esa fecha se han dado de baja previo a la finalización del mismo.', --descripcion
@@ -594,7 +630,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
-	'2', --orden
+	'3', --orden
 	'1-Identificación del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -613,7 +649,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000087', --pantalla
 	'pant_organizaciones', --identificador
-	'6', --orden
+	'7', --orden
 	'2-3-1 Organizaciones Participantes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -632,7 +668,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000088', --pantalla
 	'pant_objetivos', --identificador
-	'7', --orden
+	'8', --orden
 	'3- Objetivos y Metas a alcanzar', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -646,6 +682,25 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	NULL, --template_impresion
 	'1001000004'  --punto_montaje
 );
+INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, identificador, orden, etiqueta, descripcion, tip, imagen_recurso_origen, imagen, objetos, eventos, subclase, subclase_archivo, template, template_impresion, punto_montaje) VALUES (
+	'extension', --objeto_ci_proyecto
+	'1001000186', --objeto_ci
+	'1001000094', --pantalla
+	'pant_seguimiento', --identificador
+	'2', --orden
+	'Seguimiento del Proyecto', --etiqueta
+	NULL, --descripcion
+	NULL, --tip
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	NULL, --objetos
+	NULL, --eventos
+	NULL, --subclase
+	NULL, --subclase_archivo
+	NULL, --template
+	NULL, --template_impresion
+	NULL  --punto_montaje
+);
 --- FIN Grupo de desarrollo 1001
 
 --- INICIO Grupo de desarrollo 1002
@@ -654,7 +709,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000009', --pantalla
 	'pant_presupuesto', --identificador
-	'9', --orden
+	'10', --orden
 	'4-Presupuesto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -673,7 +728,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000011', --pantalla
 	'pant_actividad', --identificador
-	'8', --orden
+	'9', --orden
 	'3-1-Plan de Actividad', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -894,6 +949,12 @@ INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VAL
 	'1001000078', --pantalla
 	'1001000186', --objeto_ci
 	'1001000231', --evento_id
+	'extension'  --proyecto
+);
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000078', --pantalla
+	'1001000186', --objeto_ci
+	'1001000300', --evento_id
 	'extension'  --proyecto
 );
 INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (

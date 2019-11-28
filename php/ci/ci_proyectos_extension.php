@@ -198,7 +198,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
 
         if (isset($this->s__where)) {
             $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__where));
@@ -219,7 +219,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
 
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
@@ -409,7 +409,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_organizaciones")->ocultar();
                 $this->pantalla()->tab("pant_objetivos")->ocultar();
                 $this->pantalla()->tab("pant_actividad")->ocultar();
-                ////$this->pantalla()->tab("pant_seguimiento")->ocultar();
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
 
                 $this->dep('datos')->tabla('pextension')->resetear();
                 break;
@@ -812,7 +812,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_formulario(toba_ei_pantalla $pantalla) {
@@ -828,7 +828,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_integrantesi(toba_ei_pantalla $pantalla) {
@@ -842,7 +842,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_integrantese(toba_ei_pantalla $pantalla) {
@@ -856,7 +856,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_planilla(toba_ei_pantalla $pantalla) {
@@ -873,7 +873,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_organizaciones(toba_ei_pantalla $pantalla) {
@@ -888,7 +888,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_objetivos(toba_ei_pantalla $pantalla) {
@@ -905,7 +905,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_actividad(toba_ei_pantalla $pantalla) {
@@ -920,7 +920,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
@@ -937,7 +937,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     // creo que todas estas conf ya no son necesarias 
