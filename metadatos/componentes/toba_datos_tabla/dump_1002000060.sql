@@ -125,4 +125,18 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --externa
 	'objetivo_especifico'  --tabla
 );
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000060', --objeto
+	'1002000119', --col_id
+	'ponderacion', --columna
+	'N', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'objetivo_especifico'  --tabla
+);
 --- FIN Grupo de desarrollo 1002

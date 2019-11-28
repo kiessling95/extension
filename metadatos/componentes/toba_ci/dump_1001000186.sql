@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000186]--  Proyectos Extensión - CI 
+--[1001000186]--  Proyectos Extensiï¿½n - CI 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,7 +20,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'ci/ci_proyectos_extension.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'Proyectos Extensión - CI', --nombre
+	'Proyectos Extensiï¿½n - CI', --nombre
 	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
@@ -554,8 +554,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000073', --pantalla
 	'pant_edicion', --identificador
 	'1', --orden
-	'Proyectos de Extensión', --etiqueta
-	'Proyectos de Extensión de la diferentes Unidades Académicas', --descripcion
+	'Proyectos de Extensiï¿½n', --etiqueta
+	'Proyectos de Extensiï¿½n de la diferentes Unidades Acadï¿½micas', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
@@ -613,7 +613,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'4', --orden
 	'2-Planilla de Personal Afectado', --etiqueta
 	'Muestra todos los integrantes cuya fecha "HASTA" coincide con la fecha hasta del proyecto correspondiente. <br>
-Los integrantes que no tienen esa fecha se han dado de baja previo a la finalización del mismo.', --descripcion
+Los integrantes que no tienen esa fecha se han dado de baja previo a la finalizaciï¿½n del mismo.', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
@@ -631,7 +631,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
 	'3', --orden
-	'1-Identificación del Proyecto', --etiqueta
+	'1-Identificaciï¿½n del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
