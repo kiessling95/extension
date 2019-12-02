@@ -227,6 +227,7 @@ class ci_proyectos_extension extends extension_ci {
     //---- Formulario -------------------------------------------------------------------
 
     function conf__formulario(toba_ei_formulario $form) {
+        
         if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('formulario')->descolapsar();
             $form->ef('uni_acad')->set_obligatorio('true');

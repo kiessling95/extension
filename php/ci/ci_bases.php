@@ -156,34 +156,39 @@ class ci_bases extends extension_ci {
 
         $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
         $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
+        $this->dep('datos')->tabla('eje_tematico_conv')->cargar($datos);
+        
         $this->s__mostrar = 0;
-        $this->dep('datos')->resetear();
-        $this->set_pantalla('pant_ejes');
+        //$this->dep('datos')->resetear();
+        //$this->set_pantalla('pant_ejes');
     }
 
     function evt__form_ejes__modificacion($datos) {
         $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
         $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
         $this->s__mostrar = 0;
-        $this->resetear();
     }
 
     function evt__form_ejes__baja() {
         $this->dep('datos')->tabla('eje_tematico_conv')->eliminar_todo();
         toba::notificacion()->agregar('El registro se ha eliminado correctamente', 'info');
-        $this->s__mostrar = 0;
-        $this->dep('datos')->resetear();
+        
+        $this->dep('datos')->tabla('eje_tematico_conv')->resetear();
         $this->set_pantalla('pant_ejes');
+        $this->s__mostrar = 0;
     }
 
     function evt__form_ejes__cancelar() {
-        $this->dep('datos')->resetear();
-        $this->set_pantalla('pant_ediccion');
+        
+        $this->dep('datos')->tabla('eje_tematico_conv')->resetear();
+        $this->set_pantalla('pant_ejes');
+        $this->s__mostrar = 0;
     }
 
     function conf__formulario(toba_ei_formulario $form) {
         if ($this->dep('datos')->tabla($this->nombre_tabla)->esta_cargada()) {
-            $form->set_datos($this->dep('datos')->tabla($this->nombre_tabla)->get());
+            $datos=$this->dep('datos')->tabla($this->nombre_tabla)->get();
+            $form->set_datos($datos);
         }
     }
 
@@ -319,8 +324,8 @@ class ci_bases extends extension_ci {
             $id = 7;
             $pdf->reopenObject($id); //definimos el path a la imagen de logo de la organizacion 
 //agregamos al documento la imagen y definimos su posición a través de las coordenadas (x,y) y el ancho y el alto.
-            $imagen = toba::proyecto()->get_path() . '/www/img/logo_uc.jpg';
-            $imagen2 = toba::proyecto()->get_path() . '/www/img/ext.jpeg';
+            $imagen = toba::proyecto()->get_path() . '/www/img/logo.png';
+            $imagen2 = toba::proyecto()->get_path() . '/www/img/logo.png';
             $pdf->addJpegFromFile($imagen, 40, 715, 70, 66);
             $pdf->addJpegFromFile($imagen2, 480, 715, 70, 66);
             $pdf->closeObject();

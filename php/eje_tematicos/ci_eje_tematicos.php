@@ -14,8 +14,9 @@ class ci_eje_tematicos extends extension_ci {
     }
 
     //---- Formulario -------------------------------------------------------------------
-
+/*
     function conf__formulario(toba_ei_formulario $form) {
+        
         if ($this->dep('datos')->esta_cargada()) {
             $form->set_datos($this->dep('datos')->tabla('tipos_ejes_tematicos')->get());
         } else {
@@ -26,7 +27,7 @@ class ci_eje_tematicos extends extension_ci {
     function evt__formulario__modificacion($datos) {
         $this->dep('datos')->tabla('tipos_ejes_tematicos')->set($datos);
     }
-
+*/
     function resetear() {
         $this->dep('datos')->resetear();
         $this->set_pantalla('pant_seleccion');

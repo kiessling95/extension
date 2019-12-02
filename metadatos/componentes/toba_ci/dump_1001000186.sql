@@ -554,8 +554,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000073', --pantalla
 	'pant_edicion', --identificador
 	'1', --orden
-	'Proyectos de Extensiï¿½n', --etiqueta
-	'Proyectos de Extensiï¿½n de la diferentes Unidades Acadï¿½micas', --descripcion
+	'Proyectos de Extensión', --etiqueta
+	'Proyectos de Extensión de la diferentes Unidades Académicas', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
@@ -631,7 +631,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
 	'3', --orden
-	'1-Identificaciï¿½n del Proyecto', --etiqueta
+	'1-Identificación del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
