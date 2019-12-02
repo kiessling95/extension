@@ -69,7 +69,7 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	'1001000231', --objeto_consumidor
 	'1001000238', --objeto_proveedor
 	'tipos_ejes_tematicos', --identificador
-	'1', --parametros_a
+	'0', --parametros_a
 	'1', --parametros_b
 	NULL, --parametros_c
 	NULL, --inicializar
