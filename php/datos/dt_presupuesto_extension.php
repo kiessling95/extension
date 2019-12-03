@@ -8,6 +8,7 @@ class dt_presupuesto_extension extends extension_datos_tabla
                 . "p_e.id_pext,"
 		. "p_e.id_presupuesto,"
                 . "p_e.id_rubro_extension,"
+                . "r.tipo as rubro,"
                 . "p_e.concepto,"
                 . "p_e.cantidad,"
                 . "p_e.monto "
