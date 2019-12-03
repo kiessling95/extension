@@ -17,13 +17,14 @@ class dt_eje_tematico_conv extends extension_datos_tabla {
         return $res;
     }
 
-    function get_listado() {
+    function get_listado($id_bases = null) {
         $sql = "SELECT
 			t_etc.id_eje,
                         t_etc.id_bases,
 			t_etc.descripcion
 		FROM
 			eje_tematico_conv as t_etc
+                WHERE   t_etc.id_bases = $id_bases
 		ORDER BY descripcion";
         return toba::db('extension')->consultar($sql);
     }

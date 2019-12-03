@@ -31,12 +31,14 @@ class ci_bases extends extension_ci {
     }
 
     function conf__cuadro_ejes(toba_ei_cuadro $cuadro) {
-        $cuadro->set_datos($this->dep('datos')->tabla('eje_tematico_conv')->get_listado());
+        if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
+            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        }
+        $cuadro->set_datos($this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']));
     }
 
     function evt__cuadro_ejes__seleccion($datos) {
-        $this->s__mostrar=1;
-        print_r("hola"); 
+        $this->s__mostrar = 1;
         $this->set_pantalla('pant_ejes');
         $this->dep('datos')->tabla('eje_tematico_conv')->cargar($datos);
     }
@@ -87,18 +89,19 @@ class ci_bases extends extension_ci {
 
     function evt__agregar() {
         $this->s__mostrar = 1;
-#$this->resetear();
+        $this->dep('datos')->tabla('eje_tematico_conv')->resetear();
+        $this->set_pantalla('pant_ejes');
     }
 
     function evt__volver() {
-        #print_r($datos);        exit();
+
         $this->set_pantalla('pant_edicion');
         $this->dep('datos')->tabla($this->nombre_tabla)->resetear();
     }
 
     function conf__pant_edicion(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_edicion";
-        
+
         $this->pantalla()->tab("pant_cuadro")->desactivar();
         #$this->pantalla()->tab("pant_ejes")->desactivar();
 
@@ -108,7 +111,7 @@ class ci_bases extends extension_ci {
 
     function conf__pant_cuadro(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_cuadro";
-        
+
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_ejes")->desactivar();
 
@@ -118,7 +121,7 @@ class ci_bases extends extension_ci {
 
     function conf__pant_ejes(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_ejes";
-        
+
         $this->pantalla()->tab("pant_cuadro")->desactivar();
         #$this->pantalla()->tab("pant_ejes")->desactivar();
 
@@ -157,7 +160,7 @@ class ci_bases extends extension_ci {
         $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
         $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
         $this->dep('datos')->tabla('eje_tematico_conv')->cargar($datos);
-        
+
         $this->s__mostrar = 0;
         //$this->dep('datos')->resetear();
         //$this->set_pantalla('pant_ejes');
@@ -172,14 +175,14 @@ class ci_bases extends extension_ci {
     function evt__form_ejes__baja() {
         $this->dep('datos')->tabla('eje_tematico_conv')->eliminar_todo();
         toba::notificacion()->agregar('El registro se ha eliminado correctamente', 'info');
-        
+
         $this->dep('datos')->tabla('eje_tematico_conv')->resetear();
         $this->set_pantalla('pant_ejes');
         $this->s__mostrar = 0;
     }
 
     function evt__form_ejes__cancelar() {
-        
+
         $this->dep('datos')->tabla('eje_tematico_conv')->resetear();
         $this->set_pantalla('pant_ejes');
         $this->s__mostrar = 0;
@@ -187,7 +190,7 @@ class ci_bases extends extension_ci {
 
     function conf__formulario(toba_ei_formulario $form) {
         if ($this->dep('datos')->tabla($this->nombre_tabla)->esta_cargada()) {
-            $datos=$this->dep('datos')->tabla($this->nombre_tabla)->get();
+            $datos = $this->dep('datos')->tabla($this->nombre_tabla)->get();
             $form->set_datos($datos);
         }
     }
@@ -224,7 +227,7 @@ class ci_bases extends extension_ci {
 
     function vista_pdf(toba_vista_pdf $salida) {
 
-//print_r($salida); exit();
+
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
 
