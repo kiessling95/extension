@@ -24,14 +24,14 @@ class ci_proyectos_extension extends extension_ci {
             $where['uni_acad'] = $pextension[uni_acad];
             $where['id_pext'] = $pextension[id_pext];
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
-            $datos=$datos[0];
+            $datos = $datos[0];
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pextension[id_bases]);
-            $bases=$bases[0];
+            $bases = $bases[0];
             //print_r($bases);            exit();
-            $datos[id_bases]=$bases['bases_titulo'];
-            $datos[id_conv]=$bases[descripcion];
-            
-            
+            $datos[id_bases] = $bases['bases_titulo'];
+            $datos[id_conv] = $bases[descripcion];
+
+
             //print_r($datos);            exit(); 
             //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Formulario Convocatoria.pdf");
@@ -66,52 +66,50 @@ class ci_proyectos_extension extends extension_ci {
 
             $pdf->ezText("\n\n\n\n", 10, ['justification' => 'full']);
             //Pantalla Principal Formulario
-            
             //Director 
-            $pdf->ezText('' . utf8_d_seguro('<b>Director </b>').' : '. chr(10) . $datos['director'] , 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('<b>Director </b>') . ' : ' . chr(10) . $datos['director'], 10, ['justification' => 'full']);
             //Co-Director 
-            
             //Indentificacion del Proyecto
-            $pdf->ezText(''. utf8_d_seguro('<b>Descripción del Proyecto </b>'), 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('<b>Descripción del Proyecto </b>'), 10, ['justification' => 'full']);
             //unidad academica
-            $pdf->ezText('Unidad Academica :  '.$datos['uni_acad'], 10, ['justification' => 'full']);
+            $pdf->ezText('Unidad Academica :  ' . $datos['uni_acad'], 10, ['justification' => 'full']);
             //departamento
-            $pdf->ezText('Departamento :  '.$datos['departamento'], 10, ['justification' => 'full']);
+            $pdf->ezText('Departamento :  ' . $datos['departamento'], 10, ['justification' => 'full']);
             //area
-            $pdf->ezText('Area :  '.$datos['area'], 10, ['justification' => 'full']);
+            $pdf->ezText('Area :  ' . $datos['area'], 10, ['justification' => 'full']);
             //denominacion
-            $pdf->ezText(utf8_d_seguro('Titulo :  ').$datos['denominacion'], 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Titulo :  ') . $datos['denominacion'], 10, ['justification' => 'full']);
             //eje tematico
-            $pdf->ezText('Ejes Tematicos :  '.$datos['eje_tematico'], 10, ['justification' => 'full']);
+            $pdf->ezText('Ejes Tematicos :  ' . $datos['eje_tematico'], 10, ['justification' => 'full']);
             //palabras claves
-            $pdf->ezText('Palabras Claves:  '.$datos['palabras_clave'], 10, ['justification' => 'full']);
+            $pdf->ezText('Palabras Claves:  ' . $datos['palabras_clave'], 10, ['justification' => 'full']);
             //id bases 
-            $pdf->ezText('Titulo Bases :  '.$datos['id_bases'], 10, ['justification' => 'full']);
+            $pdf->ezText('Titulo Bases :  ' . $datos['id_bases'], 10, ['justification' => 'full']);
             //Tipo convocatoria
-            $pdf->ezText(utf8_d_seguro('Tipo Convocatoria :  ').$datos['tipo_convocatoria'], 10, ['justification' => 'full']);
-            
-            
+            $pdf->ezText(utf8_d_seguro('Tipo Convocatoria :  ') . $datos['tipo_convocatoria'], 10, ['justification' => 'full']);
+
+
             //salto linea
-            $pdf->ezText(utf8_d_seguro('').$datos[''], 10, ['justification' => 'full']);
-            
+            $pdf->ezText(utf8_d_seguro('') . $datos[''], 10, ['justification' => 'full']);
+
             $pdf->ezText('<b>' . utf8_d_seguro('Fundamentación del origen del proyecto: ') . '</b>', 10, ['justification' => 'full']);
             //descripcion situalcion
-            $pdf->ezText(utf8_d_seguro('Descripción de la situación :  ').$datos['descripcion_situacion'], 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Descripción de la situación :  ') . $datos['descripcion_situacion'], 10, ['justification' => 'full']);
             //caracteristica poblacion
-            $pdf->ezText(utf8_d_seguro('Destinatarios del proyecto:  ').$datos['caracterizacion_poblacion'], 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Destinatarios del proyecto:  ') . $datos['caracterizacion_poblacion'], 10, ['justification' => 'full']);
             //localizacion geografica
-            $pdf->ezText(utf8_d_seguro('Localización geográfica :  ').$datos['localizacion_geo'], 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Localización geográfica :  ') . $datos['localizacion_geo'], 10, ['justification' => 'full']);
             //antecedentes participantes
-            $pdf->ezText(utf8_d_seguro('Antecedentes del equipo :  ').$datos['antecedente_participacion'], 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Antecedentes del equipo :  ') . $datos['antecedente_participacion'], 10, ['justification' => 'full']);
             // importancia/necesidad
-            $pdf->ezText(utf8_d_seguro('Justificación del proyecto :  ').$datos['importancia_necesidad'], 10, ['justification' => 'full']);
-            
+            $pdf->ezText(utf8_d_seguro('Justificación del proyecto :  ') . $datos['importancia_necesidad'], 10, ['justification' => 'full']);
+
             /*
-            //
-            $pdf->ezText(utf8_d_seguro('').$datos[''], 10, ['justification' => 'full']);
-           
-            */
-          
+              //
+              $pdf->ezText(utf8_d_seguro('').$datos[''], 10, ['justification' => 'full']);
+
+             */
+
             //salto de linea
             $pdf->ezText('  ', 10, ['justification' => 'full']);
 
@@ -145,11 +143,13 @@ class ci_proyectos_extension extends extension_ci {
 
     function fecha_desde_proyecto() {
         $datos = $this->dep('datos')->tabla('pextension')->get();
-        return date("d/m/Y", strtotime($datos['fec_desde']));
+        $date = date("d/m/Y", strtotime($datos['fec_desde']));
+        return $date;
     }
 
     function fecha_hasta_proyecto() {
         $datos = $this->dep('datos')->tabla('pextension')->get();
+
         return date("d/m/Y", strtotime($datos['fec_hasta']));
     }
 
@@ -198,7 +198,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
 
         if (isset($this->s__where)) {
             $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__where));
@@ -219,7 +223,13 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+
+
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
 
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
@@ -227,46 +237,53 @@ class ci_proyectos_extension extends extension_ci {
     //---- Formulario -------------------------------------------------------------------
 
     function conf__formulario(toba_ei_formulario $form) {
+        
         if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('formulario')->descolapsar();
-            $form->ef('uni_acad')->set_obligatorio('true');
-            $form->ef('denominacion')->set_obligatorio('true');
-            $form->ef('nro_resol')->set_obligatorio('true');
-            $form->ef('fecha_resol')->set_obligatorio('true');
-            $form->ef('fec_desde')->set_obligatorio('true');
-            $form->ef('fec_hasta')->set_obligatorio('true');
-            $form->ef('palabras_clave')->set_obligatorio('true');
-            $form->ef('objetivo')->set_obligatorio('true');
+            
+            //$form->ef('uni_acad')->set_obligatorio('true');
+            //$form->ef('denominacion')->set_obligatorio('true');
+            //$form->ef('nro_resol')->set_obligatorio('true');
+            //$form->ef('fecha_resol')->set_obligatorio('true');
+            //$form->ef('fec_desde')->set_obligatorio('true');
+            //$form->ef('fec_hasta')->set_obligatorio('true');
+            //$form->ef('palabras_clave')->set_obligatorio('true');
+            //$form->ef('objetivo')->set_obligatorio('true');
             #$form->ef('email')->set_obligatorio('true');
             #$form->ef('telefono')->set_obligatorio('true');
         }
-
+        // Si esta cargado, traigo los datos de la base de datos
+       
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
+
             $where = array();
             $where['uni_acad'] = $datos[uni_acad];
             $where['id_pext'] = $datos[id_pext];
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $datos = $datos[0];
-            
 
-            if ($datos['financiacion'] == true) {
-                $datos['financiacion'] = 'SI';
-            };
-            if ($datos['financiacion'] == false) {
-                $datos['financiacion'] = 'NO';
-            };
-
+            $ejes = array();
+            #print_r($ejes);
+            $aux = $datos['eje_tematico'];
+            for ($i = 0; $i < strlen($aux); $i++) {
+                if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
+                    $ejes . array_push($ejes, $aux[$i]);
+                }
+            }
+            $datos['eje_tematico'] = $ejes;
             $form->set_datos($datos);
         }
+        
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
 
         $perfil = toba::usuario()->get_perfil_datos();
 
-
+/*
         if ($perfil != null) {//si esta asociado a un perfil de datos entonces no permito que toquen los sig campos
             //$form->ef('uni_acad')->set_solo_lectura(true);
             //$form->ef('area')->set_solo_lectura(true);
+            //REVISAR
             $form->ef('codigo')->set_solo_lectura(true);
             $form->ef('nro_ord_cs')->set_solo_lectura(true);
             $form->ef('res_rect')->set_solo_lectura(true);
@@ -281,7 +298,7 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('observacion')->set_solo_lectura(true);
             $form->ef('estado_informe_a')->set_solo_lectura(true);
             $form->ef('estado_informe_f')->set_solo_lectura(true);
-        }
+        }*/
     }
 
     function evt__formulario__alta($datos) {
@@ -290,20 +307,29 @@ class ci_proyectos_extension extends extension_ci {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
             $datos['uni_acad'] = $ua[0]['sigla'];
         }
-
-        if (trim($datos['financiacion']) == 'SI') {
-            $datos['financiacion'] = true;
-        };
-        if (trim($datos['financiacion']) == 'NO') {
-            $datos['financiacion'] = false;
-        };
+        $ejes = $datos['eje_tematico'];
+        $array = '{' . $ejes[0];
+        unset($ejes[0]);
+        foreach ($ejes as $eje) {
+            $array = $array . ',' . $eje;
+        }
+        $array = $array . '}';
+        $datos['eje_tematico'] = $array;
+        #print_r($datos['eje_tematico']);
+        // Solo se muestran, no se guardan directamente en la tabla pextension
         unset($datos[director]);
-        unset($datos[email]);
-        unset($datos[telefono]);
+        unset($datos[dir_email]);
+        unset($datos[dir_telefono]);
+        unset($datos[co_director]);
+        unset($datos[co_email]);
+        unset($datos[co_telefono]);
         unset($datos[departamento]);
         unset($datos[area]);
         unset($datos[tipo_convocatoria]);
+
         $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
+
+        //control fechas
 
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
@@ -313,12 +339,16 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario__modificacion($datos) {
-        if (trim($datos['financiacion']) == 'SI') {
-            $datos['financiacion'] = true;
-        };
-        if (trim($datos['financiacion']) == 'NO') {
-            $datos['financiacion'] = false;
-        };
+
+        $ejes = $datos['eje_tematico'];
+        $array = '{' . $ejes[0];
+        unset($ejes[0]);
+        foreach ($ejes as $eje) {
+            $array = $array . ',' . $eje;
+        }
+        $array = $array . '}';
+        $datos['eje_tematico'] = $array;
+
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
     }
@@ -400,6 +430,7 @@ class ci_proyectos_extension extends extension_ci {
                 break;
             case 'pant_edicion':
                 $this->set_pantalla('pant_formulario');
+                $this->s__mostrar=1;
 
                 $this->pantalla()->tab("pant_integrantesi")->desactivar();
                 $this->pantalla()->tab("pant_integrantese")->desactivar();
@@ -408,7 +439,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_organizaciones")->desactivar();
                 $this->pantalla()->tab("pant_objetivos")->desactivar();
                 $this->pantalla()->tab("pant_actividad")->desactivar();
-                
+
                 $this->pantalla()->tab("pant_integrantesi")->ocultar();
                 $this->pantalla()->tab("pant_integrantese")->ocultar();
                 $this->pantalla()->tab("pant_planilla")->ocultar();
@@ -416,7 +447,13 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_organizaciones")->ocultar();
                 $this->pantalla()->tab("pant_objetivos")->ocultar();
                 $this->pantalla()->tab("pant_actividad")->ocultar();
-                ////$this->pantalla()->tab("pant_seguimiento")->ocultar();
+
+                $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+
+                if ($perfil == formulador) {
+                    $this->pantalla()->tab("pant_seguimiento")->ocultar();
+                }
+
 
                 $this->dep('datos')->tabla('pextension')->resetear();
                 break;
@@ -504,19 +541,19 @@ class ci_proyectos_extension extends extension_ci {
 
             $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
             $docente = $this->dep('datos')->tabla('docente')->get_id_docente($datos['id_designacion']);
+
             if (count($docente) > 0) {
-                $datos['id_docente'] = $docente;
+                $datos['id_docente'] = $docente['id_docente'];
             }
             $form->set_datos($datos);
         }
-        //$form->set_datos($res);
     }
 
     function evt__form_integrantes__guardar($datos) {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos[id_pext] = $pe['id_pext'];
-        //$datos['tipo'] = 'interno';
+        $datos['tipo'] = 'docente';
         //verifico que las fechas correspondan (FALTA)
 
         $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
@@ -572,7 +609,7 @@ class ci_proyectos_extension extends extension_ci {
             if (count($persona) > 0) {
                 $datos['integrante'] = $persona[0]['nombre'];
             }
-            //print_r($datos);
+
             $form->set_datos($datos);
         }
     }
@@ -581,7 +618,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        #$datos['tipo'] = 'externo';
+        $datos['tipo'] = 'Otro';
         $datos['nro_tabla'] = 1;
         //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
         //$personas=$this->dep('datos')->tabla('persona')->get_listado();           
@@ -709,7 +746,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_org_filtro(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        
+
         $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($pe['id_pext'], $this->s__where);
 
         $cuadro->set_datos($datos);
@@ -759,7 +796,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s__mostrar_org == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_organizacion')->descolapsar();
-            
+
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('domicilio')->set_obligatorio('true');
             $form->ef('telefono')->set_obligatorio('true');
@@ -777,9 +814,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_organizacion__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        
+
         $datos[id_pext] = $pe['id_pext'];
-        
+
         $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
         $this->dep('datos')->tabla('organizaciones_participantes')->sincronizar();
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
@@ -820,11 +857,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
-    function conf__pant_formulario(toba_ei_pantalla $pantalla) {
-        $this->s__pantalla = "pant_formulario";
+    function conf__pant_seguimiento(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_seguimiento";
+
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
@@ -836,7 +874,28 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+    }
+
+    function conf__pant_formulario(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_formulario";
+        
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+        $this->pantalla()->tab("pant_actividad")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     function conf__pant_integrantesi(toba_ei_pantalla $pantalla) {
@@ -850,7 +909,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     function conf__pant_integrantese(toba_ei_pantalla $pantalla) {
@@ -864,7 +927,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     function conf__pant_planilla(toba_ei_pantalla $pantalla) {
@@ -881,7 +948,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     function conf__pant_organizaciones(toba_ei_pantalla $pantalla) {
@@ -896,7 +966,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     function conf__pant_objetivos(toba_ei_pantalla $pantalla) {
@@ -913,7 +986,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     function conf__pant_actividad(toba_ei_pantalla $pantalla) {
@@ -928,9 +1004,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
-
 
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_presup";
@@ -946,7 +1024,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        //$this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
     }
 
     // creo que todas estas conf ya no son necesarias 
@@ -1002,7 +1083,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_org = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
 
@@ -1178,12 +1259,11 @@ class ci_proyectos_extension extends extension_ci {
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
 //        print_r($obj_esp);        exit();
         $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
-        if($datos[anio] > date('Y')+1)
-        {
+        if ($datos[anio] > date('Y') + 1) {
             toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
-            $datos[anio] = date('Y')+1;
+            $datos[anio] = date('Y') + 1;
         }
-        
+
 //        print_r($datos);        exit();
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
@@ -1198,10 +1278,9 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_actividad__modificacion($datos) {
-        if($datos[anio] > date('Y')+1)
-        {
+        if ($datos[anio] > date('Y') + 1) {
             toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
-            $datos[anio] = date('Y')+1;
+            $datos[anio] = date('Y') + 1;
         }
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();

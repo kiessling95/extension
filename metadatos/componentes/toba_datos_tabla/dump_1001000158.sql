@@ -408,12 +408,12 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000454', --col_id
-	'eje_tematico', --columna
+	'1001000587', --col_id
+	'descripcion_situacion', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
-	'20', --largo
+	'4000', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa
@@ -422,8 +422,22 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000455', --col_id
-	'descripcion_situacion', --columna
+	'1001000588', --col_id
+	'caracterizacion_poblacion', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'500', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1001000589', --col_id
+	'localizacion_geo', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
@@ -436,35 +450,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000456', --col_id
-	'caracterizacion_poblacion', --columna
-	'C', --tipo
-	'0', --pk
-	'', --secuencia
-	'150', --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'pextension'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000158', --objeto
-	'1001000457', --col_id
-	'localizacion_geo', --columna
-	'C', --tipo
-	'0', --pk
-	'', --secuencia
-	'20', --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'pextension'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000158', --objeto
-	'1001000458', --col_id
+	'1001000590', --col_id
 	'antecedente_participacion', --columna
 	'C', --tipo
 	'0', --pk
@@ -478,12 +464,12 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000459', --col_id
+	'1001000591', --col_id
 	'importancia_necesidad', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
-	'200', --largo
+	'500', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa
@@ -492,7 +478,21 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000468', --col_id
+	'1001000592', --col_id
+	'id_bases', --columna
+	'E', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1001000593', --col_id
 	'responsable_carga', --columna
 	'C', --tipo
 	'0', --pk
@@ -506,21 +506,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000469', --col_id
-	'id_bases', --columna
-	'N', --tipo
-	'0', --pk
-	'', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'pextension'  --tabla
-);
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1001000158', --objeto
-	'1001000560', --col_id
+	'1001000594', --col_id
 	'departamento', --columna
 	'C', --tipo
 	'0', --pk
@@ -534,7 +520,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000561', --col_id
+	'1001000595', --col_id
 	'area', --columna
 	'C', --tipo
 	'0', --pk
@@ -548,9 +534,23 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000158', --objeto
-	'1001000565', --col_id
+	'1001000596', --col_id
 	'impacto', --columna
 	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1001000597', --col_id
+	'eje_tematico', --columna
+	'E', --tipo
 	'0', --pk
 	'', --secuencia
 	NULL, --largo
