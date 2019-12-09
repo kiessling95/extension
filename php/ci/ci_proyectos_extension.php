@@ -1229,11 +1229,11 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s__mostrar_activ == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('form_actividad')->descolapsar();
             //***** este campo de rubro va a cambiar ******
-            $form->ef('id_rubro_extension')->set_obligatorio('true');
+            //$form->ef('id_rubro_extension')->set_obligatorio('true');
             //**************************************************
 
             $form->ef('detalle')->set_obligatorio('true');
-            $form->ef('meta')->set_obligatorio('true');
+            //$form->ef('meta')->set_obligatorio('true');
             $form->ef('fecha')->set_obligatorio('true');
             $form->ef('anio')->set_obligatorio('true');
             $form->ef('destinatarios')->set_obligatorio('true');
