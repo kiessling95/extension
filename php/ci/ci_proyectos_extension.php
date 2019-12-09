@@ -17,22 +17,63 @@ class ci_proyectos_extension extends extension_ci {
     function vista_pdf(toba_vista_pdf $salida) {
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
-            //$bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+
+            //Proyectos de extension
             $pextension = $this->dep('datos')->tabla('pextension')->get();
-            $datos = $this->dep('datos')->tabla('pextension')->get();
+
+            //$datos = $this->dep('datos')->tabla('pextension')->get();
+            //filtro para obtener solo la que quiero exp a pdf
             $where = array();
             $where['uni_acad'] = $pextension[uni_acad];
             $where['id_pext'] = $pextension[id_pext];
+
+            // datos generales del proyecto
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $datos = $datos[0];
-            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pextension[id_bases]);
+
+            //obtengo las bases correspondientes al proyecto
+            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases]);
             $bases = $bases[0];
-            //print_r($bases);            exit();
+
+            //ejes tematicos 
+            $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_descripciones($datos[id_bases]);
+
+            //print_r($ejes_conv);  
+
+            $ejes = array();
+            $aux = $datos['eje_tematico'];
+            for ($i = 0; $i < strlen($aux); $i++) {
+                if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
+                    $ejes . array_push($ejes, $aux[$i]);
+                }
+            }
+            //print_r($ejes);
+            $aux = array();
+            foreach ($ejes_conv as $eje_conv) {
+                foreach ($ejes as $eje) {
+                    if ($eje == $eje_conv[id_eje]) {
+                        $aux . array_push($aux, $eje_conv[descripcion]);
+                    }
+                }
+            }
+            $ejes_tematicos = $aux;
+
+
+
             $datos[id_bases] = $bases['bases_titulo'];
             $datos[id_conv] = $bases[descripcion];
 
+            //obtengo director 
+            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($datos[id_pext]);
+            $director = $director[0];
 
-            //print_r($datos);            exit(); 
+            //obtengo co-director
+            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($datos[id_pext]);
+            $co_director = $co_director[0];
+
+            print_r($datos);
+            exit();
+
             //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Formulario Convocatoria.pdf");
 
@@ -67,43 +108,61 @@ class ci_proyectos_extension extends extension_ci {
             $pdf->ezText("\n\n\n\n", 10, ['justification' => 'full']);
             //Pantalla Principal Formulario
             //Director 
-            $pdf->ezText('' . utf8_d_seguro('<b>Director </b>') . ' : ' . chr(10) . $datos['director'], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('<b>Director del Proyecto </b>') . ' : ', 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Nombre') . ' :  ' . $director[nombre], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Unidad Académica') . ' :  ' . $director[ua], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Tipo y Nro. de documento') . ' :  ' . $director[tipo_docum] . ' ' . $director[nro_docum], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $director[telefono], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $director[correo_institucional], 10, ['justification' => 'full']);
+            //$pdf->ezText(''.utf8_d_seguro('').' :  ' . $director[], 10, ['justification' => 'full']);
+            //$pdf->ezText(''.utf8_d_seguro('').' :  ' . $director[], 10, ['justification' => 'full']);
             //Co-Director 
+            $pdf->ezText('' . utf8_d_seguro('<b>Co-Director del Proyecto </b>') . ' : ', 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Nombre') . ' :  ' . $co_director[nombre], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Unidad Académica') . ' :  ' . $co_director[ua], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Tipo y Nro. de documento') . ' :  ' . $co_director[tipo_docum] . ' ' . $co_director[nro_docum], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $co_director[telefono], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $co_director[correo_institucional], 10, ['justification' => 'full']);
+            
+            //salto de linea
+            $pdf->ezText(utf8_d_seguro('') . $datos[''], 10, ['justification' => 'full']);
+            
             //Indentificacion del Proyecto
-            $pdf->ezText('' . utf8_d_seguro('<b>Descripción del Proyecto </b>'), 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('<b>Datos generales </b>'), 10, ['justification' => 'full']);
+            //Nombre del Proyecto
+            $pdf->ezText('Nombre del Proyecto :  ' . $datos['denominacion'], 10, ['justification' => 'full']);
+            //Financiamiento Anterior
             //unidad academica
             $pdf->ezText('Unidad Academica :  ' . $datos['uni_acad'], 10, ['justification' => 'full']);
             //departamento
-            $pdf->ezText('Departamento :  ' . $datos['departamento'], 10, ['justification' => 'full']);
+            //$pdf->ezText('Departamento :  ' . $datos['departamento'], 10, ['justification' => 'full']);
             //area
-            $pdf->ezText('Area :  ' . $datos['area'], 10, ['justification' => 'full']);
-            //denominacion
-            $pdf->ezText(utf8_d_seguro('Titulo :  ') . $datos['denominacion'], 10, ['justification' => 'full']);
+            //$pdf->ezText('Area :  ' . $datos['area'], 10, ['justification' => 'full']);
             //eje tematico
-            $pdf->ezText('Ejes Tematicos :  ' . $datos['eje_tematico'], 10, ['justification' => 'full']);
+            $pdf->ezText('' . utf8_d_seguro('Ejes Tematicos : '), 10, ['justification' => 'full']);
+            foreach ($ejes_tematicos as $eje) {
+                $pdf->ezText(' - ' . $eje, 10, ['justification' => 'full']);
+            }
             //palabras claves
             $pdf->ezText('Palabras Claves:  ' . $datos['palabras_clave'], 10, ['justification' => 'full']);
             //id bases 
             $pdf->ezText('Titulo Bases :  ' . $datos['id_bases'], 10, ['justification' => 'full']);
             //Tipo convocatoria
-            $pdf->ezText(utf8_d_seguro('Tipo Convocatoria :  ') . $datos['tipo_convocatoria'], 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Tipo Convocatoria :  ') . $datos['id_conv'], 10, ['justification' => 'full']);
 
 
             //salto linea
             $pdf->ezText(utf8_d_seguro('') . $datos[''], 10, ['justification' => 'full']);
+            
 
             $pdf->ezText('<b>' . utf8_d_seguro('Fundamentación del origen del proyecto: ') . '</b>', 10, ['justification' => 'full']);
-            //descripcion situalcion
-            $pdf->ezText(utf8_d_seguro('Descripción de la situación :  ') . $datos['descripcion_situacion'], 10, ['justification' => 'full']);
-            //caracteristica poblacion
-            $pdf->ezText(utf8_d_seguro('Destinatarios del proyecto:  ') . $datos['caracterizacion_poblacion'], 10, ['justification' => 'full']);
+            //Fundamentación del Proyecto
+            $pdf->ezText(utf8_d_seguro('Fundamentación del Proyecto :  ') . $datos['descripcion_situacion'], 10, ['justification' => 'full']);
+            //Identificar destinatarios 
+            $pdf->ezText(utf8_d_seguro('Identificar destinatarios:  ') . $datos['caracterizacion_poblacion'], 10, ['justification' => 'full']);
             //localizacion geografica
             $pdf->ezText(utf8_d_seguro('Localización geográfica :  ') . $datos['localizacion_geo'], 10, ['justification' => 'full']);
-            //antecedentes participantes
-            $pdf->ezText(utf8_d_seguro('Antecedentes del equipo :  ') . $datos['antecedente_participacion'], 10, ['justification' => 'full']);
-            // importancia/necesidad
-            $pdf->ezText(utf8_d_seguro('Justificación del proyecto :  ') . $datos['importancia_necesidad'], 10, ['justification' => 'full']);
-
+           
             /*
               //
               $pdf->ezText(utf8_d_seguro('').$datos[''], 10, ['justification' => 'full']);
@@ -555,15 +614,15 @@ class ci_proyectos_extension extends extension_ci {
             }
         }
         if (!$boolean) {
-            
+
             $datos[id_pext] = $pe['id_pext'];
             $datos['tipo'] = 'docente';
             //verifico que las fechas correspondan (FALTA)
-            
+
             $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
             $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
             $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-            
+
 
             //$this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
             //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
@@ -728,7 +787,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
         $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
         $this->dep('datos')->tabla('presupuesto_extension')->resetear();
-        
+
         $this->s__mostrar_presup = 0;
     }
 
@@ -1220,7 +1279,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__cuadro_plan__seleccion($datos) {
 
         $this->s__mostrar_activ = 1;
-        
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
 
@@ -1242,14 +1301,13 @@ class ci_proyectos_extension extends extension_ci {
             //***** este campo de rubro va a cambiar ******
             //$form->ef('id_rubro_extension')->set_obligatorio('true');
             //**************************************************
-
-            $form->ef('detalle')->set_obligatorio('true');
+            //$form->ef('detalle')->set_obligatorio('true');
             //$form->ef('meta')->set_obligatorio('true');
-            $form->ef('fecha')->set_obligatorio('true');
-            $form->ef('anio')->set_obligatorio('true');
-            $form->ef('destinatarios')->set_obligatorio('true');
+            //$form->ef('fecha')->set_obligatorio('true');
+            //$form->ef('anio')->set_obligatorio('true');
+            //$form->ef('destinatarios')->set_obligatorio('true');
             //***** este campo de localizacion va a cambiar ******
-            $form->ef('localizacion')->set_obligatorio('true');
+            //$form->ef('localizacion')->set_obligatorio('true');
             //*************************************************
         } else {
             $this->dep('form_actividad')->colapsar();
@@ -1280,14 +1338,13 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
         $this->dep('datos')->tabla('plan_actividades')->resetear();
         $this->s__mostrar_activ = 0;
-        
     }
 
     function evt__form_actividad__baja($datos) {
         $this->dep('datos')->tabla('plan_actividades')->eliminar_todo();
         $this->dep('datos')->tabla('plan_actividades')->resetear();
         toba::notificacion()->agregar('El plan de actividades se ha eliminado  correctamente.', 'info');
-        
+
         $this->s__mostrar_activ = 0;
     }
 

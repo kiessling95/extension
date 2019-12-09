@@ -35,6 +35,72 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
     
+    function get_director($id_p = null) {
+        $sql = "select "
+                . "id_pext,"
+                . "trim(dc.apellido)||', '||trim(dc.nombre) as nombre,"
+                . "t_i.id_designacion,"
+                . "dc.tipo_docum,"
+                . "dc.nro_docum,"
+                . "dc.fec_nacim,"
+                . "dc.tipo_sexo,"
+                . "dc.pais_nacim,"
+                . "f_e.descripcion as funcion_p,"
+                . "carga_horaria,"
+                . "t_i.desde,"
+                . "t_i.hasta,"
+                . "rescd,"
+                . "tipo,"
+                . "t_i.ua,"
+                . "ad_honorem,"
+                . "dc.correo_institucional,"
+                . "dc.telefono "
+                . "from integrante_interno_pe as t_i "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_i.funcion_p = f_e.id_extension) "
+                . "INNER JOIN  ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
+                . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('".$this->dblink_designa()."',
+                    'SELECT dc.correo_institucional,dc.telefono,dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim 
+                    FROM docente as dc ') as dc 
+                    ( correo_institucional CHARACTER(60), telefono INTEGER,id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as dc ON (d.id_docente = dc.id_docente)  "
+                . "where id_pext=" . $id_p. " AND funcion_p='D' "
+                . "order by nombre,desde"
+        ;
+        return toba::db('extension')->consultar($sql);
+    }
+    
+    function get_co_director($id_p = null) {
+        $sql = "select "
+                . "id_pext,"
+                . "trim(dc.apellido)||', '||trim(dc.nombre) as nombre,"
+                . "t_i.id_designacion,"
+                . "dc.tipo_docum,"
+                . "dc.nro_docum,"
+                . "dc.fec_nacim,"
+                . "dc.tipo_sexo,"
+                . "dc.pais_nacim,"
+                . "f_e.descripcion as funcion_p,"
+                . "carga_horaria,"
+                . "t_i.desde,"
+                . "t_i.hasta,"
+                . "rescd,"
+                . "tipo,"
+                . "t_i.ua,"
+                . "ad_honorem, "
+                . "dc.correo_institucional,"
+                . "dc.telefono "
+                . "from integrante_interno_pe as t_i "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_i.funcion_p = f_e.id_extension) "
+                . "INNER JOIN  ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
+                . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('".$this->dblink_designa()."',
+                    'SELECT dc.correo_institucional,dc.telefono,dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim 
+                    FROM docente as dc ') as dc 
+                    ( correo_institucional CHARACTER(60), telefono INTEGER,id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as dc ON (d.id_docente = dc.id_docente)  "
+                . "where id_pext=" . $id_p. " AND funcion_p='CD-Co' "
+                . "order by nombre,desde"
+        ;
+        return toba::db('extension')->consultar($sql);
+    }
+    
 
     //recibe el id_docente
     function sus_proyectos_ext($id_doc) {
