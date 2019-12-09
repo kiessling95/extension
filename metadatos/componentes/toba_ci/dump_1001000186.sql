@@ -698,9 +698,9 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'extension', --objeto_ci_proyecto
 	'1001000186', --objeto_ci
 	'1001000094', --pantalla
-	'pant_seguimiento', --identificador
+	'pant_seguimiento_central', --identificador
 	'2', --orden
-	'Seguimiento del Proyecto', --etiqueta
+	'Seguimiento de Secretaria Central del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -711,7 +711,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	NULL, --subclase_archivo
 	NULL, --template
 	NULL, --template_impresion
-	NULL  --punto_montaje
+	'1001000004'  --punto_montaje
 );
 --- FIN Grupo de desarrollo 1001
 
