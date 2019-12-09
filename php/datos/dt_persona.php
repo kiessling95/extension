@@ -81,16 +81,6 @@ class dt_persona extends extension_datos_tabla {
     //ordenado por apellido y nombre
 	function get_listado($filtro=array())
 	{
-		$where = array();
-		if (isset($filtro['apellido'])) {
-			$where[] = "apellido ILIKE ".quote("%{$filtro['apellido']}%");
-		}
-		if (isset($filtro['nombre'])) {
-			$where[] = "nombre ILIKE ".quote("%{$filtro['nombre']}%");
-		}
-		if (isset($filtro['nro_docum'])) {
-			$where[] = "nro_docum = ".quote($filtro['nro_docum']);
-		}
 		$sql = "SELECT
 			t_p.apellido,
 			t_p.nombre,
@@ -102,24 +92,26 @@ class dt_persona extends extension_datos_tabla {
 			t_p2.descripcion_pcia as pcia_nacim_nombre,
 			t_p.fec_nacim,
 			t_t.codc_nivel as titulog_nombre,
-			t_t3.codc_nivel as titulop_nombre,
+			t_t2.codc_nivel as titulop_nombre,
 			t_p.docum_extran,
                         t_p.telefono
 		FROM
 			persona as t_p	
                         LEFT OUTER JOIN (SELECT t_p1.nombre, t_p1.codigo_pais FROM dblink('".$this->dblink_designa()."','SELECT nombre,codigo_pais FROM pais') as t_p1 (nombre CHARACTER VARYING(40), codigo_pais CHARACTER(2))) as t_p1"
-                        . "ON (t_p.pais_nacim = t_p1.codigo_pais)"
-                        . "LEFT OUTER JOIN (SELECT t_p2.codigo_pcia,t_p2.descripcion_pcia FROM dblink('".$this->dblink_designa()."', 'SELECT codigo_pcia, descripcion_pcia FROM provincia') as t_p2 (codigo_pcia INTEGER,descripcion_pcia CHARACTER(40))) as t_p2"
-                        . "ON (t_p.pcia_nacim = t_p2.codigo_pcia)"
-                        . "LEFT OUTER JOIN (SELECT t_t.codc_titul,t_t.codc_nivel FROM dblink('".$this->dblink_designa()."','SELECT codc_titul,codc_nivel  FROM titulo') as t_t (codc_titul CHARACTER(4),codc_nivel CHARACTER(4) ) ) as t_t"
+                        . " ON (t_p.pais_nacim = t_p1.codigo_pais)"
+                        . " LEFT OUTER JOIN (SELECT t_p2.codigo_pcia,t_p2.descripcion_pcia FROM dblink('".$this->dblink_designa()."', 'SELECT codigo_pcia, descripcion_pcia FROM provincia') as t_p2 (codigo_pcia INTEGER,descripcion_pcia CHARACTER(40))) as t_p2"
+                        . " ON (t_p.pcia_nacim = t_p2.codigo_pcia)"
+                        . " LEFT OUTER JOIN (SELECT t_t.codc_titul,t_t.codc_nivel FROM dblink('".$this->dblink_designa()."','SELECT codc_titul,codc_nivel  FROM titulo') as t_t (codc_titul CHARACTER(4),codc_nivel CHARACTER(4) ) ) as t_t"
                         . " ON (t_p.titulog = t_t.codc_titul) "
-                        . "LEFT OUTER JOIN (SELECT t_t3.codc_titul,t_t3.codc_nivel FROM dblink('".$this->dblink_designa()."','SELECT codc_titul,codc_nivel FROM titulo') as t_p3 (codc_titul CHARACTER(4),codc_nivel CHARACTER(4)) ) as t_p3"
-                        . " ON (t_p.titulop = t_t3.codc_titul)"
+                        . " LEFT OUTER JOIN (SELECT t_t2.codc_titul,t_t2.codc_nivel FROM dblink('".$this->dblink_designa()."','SELECT codc_titul,codc_nivel FROM titulo') as t_t2 (codc_titul CHARACTER(4),codc_nivel CHARACTER(4)) ) as t_t2"
+                        . " ON (t_p.titulop = t_t2.codc_titul)"
+                 ." WHERE ". "t_p.".$filtro
                         
 		."ORDER BY nombre";
+                /*
 		if (count($where)>0) {
 			$sql = sql_concatenar_where($sql, $where);
-		}
+		}*/
 		return toba::db('extension')->consultar($sql);
 	}
 

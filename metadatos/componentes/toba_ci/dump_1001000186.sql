@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000186]--  Proyectos Extensi�n - CI 
+--[1001000186]--  Proyectos Extension - CI 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,7 +20,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'ci/ci_proyectos_extension.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'Proyectos Extensi�n - CI', --nombre
+	'Proyectos Extension - CI', --nombre
 	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
@@ -117,7 +117,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000244', --evento_id
 	'1001000186', --objeto
 	'integrantesi', --identificador
-	'Integrante Interno', --etiqueta
+	'Integrante Docente', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
@@ -150,7 +150,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000245', --evento_id
 	'1001000186', --objeto
 	'integrantese', --identificador
-	'Integrante Externo', --etiqueta
+	'Integrante Otro', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
@@ -604,7 +604,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000075', --pantalla
 	'pant_integrantese', --identificador
 	'6', --orden
-	'2-2-Integrantes Externos', --etiqueta
+	'2-2-Integrantes Otros', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen

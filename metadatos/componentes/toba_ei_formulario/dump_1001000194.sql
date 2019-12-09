@@ -253,7 +253,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_descripciones', --carga_metodo
+	'get_funcion_otros', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
 	'1001000185', --carga_dt

@@ -11,7 +11,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "fec_nacim,"
                 . "tipo_sexo,"
                 . "pais_nacim,"
-                . "funcion_p,"
+                . "f_e.descripcion as funcion_p,"
                 . "carga_horaria,"
                 . "desde,hasta,"
                 . "rescd,"
@@ -19,6 +19,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "t_p.telefono,"
                 . "t_p.mail "
                 . "FROM integrante_externo_pe as t_e "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_e.funcion_p = f_e.id_extension) "
                 . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
                 . " where id_pext=" . $id_p
                 . " order by nombre,desde"

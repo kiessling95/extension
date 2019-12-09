@@ -333,7 +333,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_descripciones', --carga_metodo
+	'get_funcion_docente', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
 	'1001000185', --carga_dt
@@ -475,14 +475,14 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000196', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'ua', --identificador
-	'ef_combo', --elemento_formulario
+	'ef_fijo', --elemento_formulario
 	'ua', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'5', --orden
 	'Ua', --etiqueta
 	NULL, --etiqueta_estilo
-	'en desarrollo', --descripcion
+	NULL, --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -496,14 +496,14 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'get_ua', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	'1001000161', --carga_dt
+	'1001000173', --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'extension', --carga_fuente
 	NULL, --carga_lista
-	'sigla', --carga_col_clave
-	'sigla', --carga_col_desc
-	NULL, --carga_maestros
+	'id_designacion', --carga_col_clave
+	'uni_acad', --carga_col_desc
+	'id_designacion', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
@@ -535,7 +535,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --check_desc_si
 	NULL, --check_desc_no
 	NULL, --check_ml_toggle
-	NULL, --fijo_sin_estado
+	'0', --fijo_sin_estado
 	NULL, --editor_ancho
 	NULL, --editor_alto
 	NULL, --editor_botonera

@@ -237,10 +237,10 @@ class ci_proyectos_extension extends extension_ci {
     //---- Formulario -------------------------------------------------------------------
 
     function conf__formulario(toba_ei_formulario $form) {
-        
+
         if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
             $this->dep('formulario')->descolapsar();
-            
+
             //$form->ef('uni_acad')->set_obligatorio('true');
             //$form->ef('denominacion')->set_obligatorio('true');
             //$form->ef('nro_resol')->set_obligatorio('true');
@@ -253,7 +253,7 @@ class ci_proyectos_extension extends extension_ci {
             #$form->ef('telefono')->set_obligatorio('true');
         }
         // Si esta cargado, traigo los datos de la base de datos
-       
+
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
 
@@ -274,31 +274,31 @@ class ci_proyectos_extension extends extension_ci {
             $datos['eje_tematico'] = $ejes;
             $form->set_datos($datos);
         }
-        
+
         //pregunto si el usuario logueado esta asociado a un perfil para desactivar los campos que no debe completar
 
         $perfil = toba::usuario()->get_perfil_datos();
 
-/*
-        if ($perfil != null) {//si esta asociado a un perfil de datos entonces no permito que toquen los sig campos
-            //$form->ef('uni_acad')->set_solo_lectura(true);
-            //$form->ef('area')->set_solo_lectura(true);
-            //REVISAR
-            $form->ef('codigo')->set_solo_lectura(true);
-            $form->ef('nro_ord_cs')->set_solo_lectura(true);
-            $form->ef('res_rect')->set_solo_lectura(true);
-            $form->ef('expediente')->set_solo_lectura(true);
-            $form->ef('estado')->set_solo_lectura(true);
-            $form->ef('financiacion')->set_solo_lectura(true);
-            $form->ef('monto')->set_solo_lectura(true);
-            $form->ef('fecha_rendicion')->set_solo_lectura(true);
-            $form->ef('rendicion_monto')->set_solo_lectura(true);
-            $form->ef('fecha_prorroga1')->set_solo_lectura(true);
-            $form->ef('fecha_prorroga2')->set_solo_lectura(true);
-            $form->ef('observacion')->set_solo_lectura(true);
-            $form->ef('estado_informe_a')->set_solo_lectura(true);
-            $form->ef('estado_informe_f')->set_solo_lectura(true);
-        }*/
+        /*
+          if ($perfil != null) {//si esta asociado a un perfil de datos entonces no permito que toquen los sig campos
+          //$form->ef('uni_acad')->set_solo_lectura(true);
+          //$form->ef('area')->set_solo_lectura(true);
+          //REVISAR
+          $form->ef('codigo')->set_solo_lectura(true);
+          $form->ef('nro_ord_cs')->set_solo_lectura(true);
+          $form->ef('res_rect')->set_solo_lectura(true);
+          $form->ef('expediente')->set_solo_lectura(true);
+          $form->ef('estado')->set_solo_lectura(true);
+          $form->ef('financiacion')->set_solo_lectura(true);
+          $form->ef('monto')->set_solo_lectura(true);
+          $form->ef('fecha_rendicion')->set_solo_lectura(true);
+          $form->ef('rendicion_monto')->set_solo_lectura(true);
+          $form->ef('fecha_prorroga1')->set_solo_lectura(true);
+          $form->ef('fecha_prorroga2')->set_solo_lectura(true);
+          $form->ef('observacion')->set_solo_lectura(true);
+          $form->ef('estado_informe_a')->set_solo_lectura(true);
+          $form->ef('estado_informe_f')->set_solo_lectura(true);
+          } */
     }
 
     function evt__formulario__alta($datos) {
@@ -430,7 +430,7 @@ class ci_proyectos_extension extends extension_ci {
                 break;
             case 'pant_edicion':
                 $this->set_pantalla('pant_formulario');
-                $this->s__mostrar=1;
+                $this->s__mostrar = 1;
 
                 $this->pantalla()->tab("pant_integrantesi")->desactivar();
                 $this->pantalla()->tab("pant_integrantese")->desactivar();
@@ -552,17 +552,30 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrantes__guardar($datos) {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos[id_pext] = $pe['id_pext'];
-        $datos['tipo'] = 'docente';
-        //verifico que las fechas correspondan (FALTA)
+        $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
+        $boolean = false;
+        foreach ($integrantes as $integrante) {
+            if (($integrante['funcion_p'] == $datos['funcion_p']) == 'D    ' OR ( $integrante['funcion_p'] == $datos['funcion_p']) == 'CD-Co ') {
+                $boolean = true;
+            }
+        }
+        if (!$boolean) {
+            
+            $datos[id_pext] = $pe['id_pext'];
+            $datos['tipo'] = 'docente';
+            //verifico que las fechas correspondan (FALTA)
+            
+            $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+            $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+            $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+            
 
-        $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-        $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-
-        //$this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
-        //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-        $this->s__mostrar = 0;
+            //$this->dep('datos')->tabla('integrante_interno_pe')->procesar_filas($datos);
+            //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+            $this->s__mostrar = 0;
+        } else {
+            toba::notificacion()->agregar(utf8_decode('Función dumplicada el director y co-director debe ser unico.'), 'info');
+        }
     }
 
     function evt__form_integrantes__baja($datos) {
@@ -721,6 +734,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
         $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
         $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+        
+        $this->s__mostrar_presup = 0;
     }
 
     function evt__form_presupuesto__baja($datos) {
@@ -878,7 +893,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__pant_formulario(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_formulario";
-        
+
         $this->pantalla()->tab("pant_edicion")->desactivar();
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
@@ -892,7 +907,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
-        
+
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
@@ -1210,6 +1225,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__cuadro_plan__seleccion($datos) {
 
         $this->s__mostrar_activ = 1;
+        
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
 
@@ -1268,12 +1284,15 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
         $this->dep('datos')->tabla('plan_actividades')->resetear();
+        $this->s__mostrar_activ = 0;
+        
     }
 
     function evt__form_actividad__baja($datos) {
         $this->dep('datos')->tabla('plan_actividades')->eliminar_todo();
         $this->dep('datos')->tabla('plan_actividades')->resetear();
         toba::notificacion()->agregar('El plan de actividades se ha eliminado  correctamente.', 'info');
+        
         $this->s__mostrar_activ = 0;
     }
 
@@ -1284,6 +1303,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
+        $this->s__mostrar_activ = 0;
     }
 
     function evt__form_actividad__cancelar() {

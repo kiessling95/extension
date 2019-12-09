@@ -15,13 +15,14 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                 . "dc.fec_nacim,"
                 . "dc.tipo_sexo,"
                 . "dc.pais_nacim,"
-                . "t_i.funcion_p,"
+                . "f_e.descripcion as funcion_p,"
                 . "carga_horaria,"
                 . "t_i.desde,"
                 . "t_i.hasta,"
                 . "rescd,"
                 . "tipo "
                 . "from integrante_interno_pe as t_i "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_i.funcion_p = f_e.id_extension) "
                 . "INNER JOIN  ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
                 . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('".$this->dblink_designa()."',
                     'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim 
@@ -30,7 +31,6 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                 . "where id_pext=" . $id_p
                 . "order by nombre,desde"
         ;
-        //print_r($sql);        exit();
         return toba::db('extension')->consultar($sql);
     }
     
