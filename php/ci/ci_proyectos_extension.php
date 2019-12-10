@@ -71,8 +71,15 @@ class ci_proyectos_extension extends extension_ci {
             $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($datos[id_pext]);
             $co_director = $co_director[0];
 
-            print_r($datos);
-            exit();
+            //Objetivos Especificos 
+            $obj_especificos = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($datos[id_pext]);
+
+            $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($datos[id_pext]);
+            //print_r($integrantes);
+            //exit();
+
+
+
 
             //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Formulario Convocatoria.pdf");
@@ -123,10 +130,10 @@ class ci_proyectos_extension extends extension_ci {
             $pdf->ezText('' . utf8_d_seguro('Tipo y Nro. de documento') . ' :  ' . $co_director[tipo_docum] . ' ' . $co_director[nro_docum], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $co_director[telefono], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $co_director[correo_institucional], 10, ['justification' => 'full']);
-            
+
             //salto de linea
-            $pdf->ezText(utf8_d_seguro('') . $datos[''], 10, ['justification' => 'full']);
-            
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
             //Indentificacion del Proyecto
             $pdf->ezText('' . utf8_d_seguro('<b>Datos generales </b>'), 10, ['justification' => 'full']);
             //Nombre del Proyecto
@@ -152,8 +159,8 @@ class ci_proyectos_extension extends extension_ci {
 
 
             //salto linea
-            $pdf->ezText(utf8_d_seguro('') . $datos[''], 10, ['justification' => 'full']);
-            
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
 
             $pdf->ezText('<b>' . utf8_d_seguro('Fundamentación del origen del proyecto: ') . '</b>', 10, ['justification' => 'full']);
             //Fundamentación del Proyecto
@@ -162,7 +169,201 @@ class ci_proyectos_extension extends extension_ci {
             $pdf->ezText(utf8_d_seguro('Identificar destinatarios:  ') . $datos['caracterizacion_poblacion'], 10, ['justification' => 'full']);
             //localizacion geografica
             $pdf->ezText(utf8_d_seguro('Localización geográfica :  ') . $datos['localizacion_geo'], 10, ['justification' => 'full']);
-           
+
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            $pdf->ezText('<b>' . utf8_d_seguro('Resultados esperados : ') . '</b>', 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Resultados esperados del proyecto') . $datos[impacto], 10, ['justification' => 'full']);
+
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Objetivo General
+            $pdf->ezText('<b>' . utf8_d_seguro('Objetivo General : ') . '</b>', 10, ['justification' => 'full']);
+            $pdf->ezText(utf8_d_seguro('Objetivo General :') . $datos[objetivo], 10, ['justification' => 'full']);
+
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            //Objetivo Especifico
+            $pdf->ezText('<b>' . utf8_d_seguro('Objetivos especificos : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($obj_especificos as $obj_especifico) {
+
+                $pdf->ezText(utf8_d_seguro(' * Descripción: ') . $obj_especifico[descripcion], 10, ['justification' => 'full']);
+                $pdf->ezText(utf8_d_seguro('   - Meta: ') . $obj_especifico[meta], 10, ['justification' => 'full']);
+                $pdf->ezText(utf8_d_seguro('   - Ponderacion: ') . $obj_especifico[ponderacion] . "% ", 10, ['justification' => 'full']);
+                //actividades de obj especifico
+
+                $plan_actividades = $this->dep('datos')->tabla('plan_actividades')->get_listado($obj_especifico[id_objetivo]);
+
+                for ($index = 0; $index < count($plan_actividades); $index++) {
+                    $plan = $plan_actividades[$index];
+
+                    $pdf->ezText(utf8_d_seguro('     + Detalle de la Actividad : ') . $plan[detalle], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('     + Destinatarios : ') . $plan[destinatarios], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('     + Mes de Inicio : ') . $plan[fecha], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('     + Localizacion : ') . $plan[localizacion], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('     + Año de comienzo de actividad : ') . $plan[anio], 10, ['justification' => 'full']);
+                }
+                //salto de linea
+                $pdf->ezText("\n", 10, ['justification' => 'full']);
+            }
+
+            // Integrantes
+            $pdf->ezText('<b>' . utf8_d_seguro('Equipo y Organizaciones participantes : ') . '</b>', 10, ['justification' => 'full']);
+
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Estudiantes
+            $pdf->ezText('<b>' . utf8_d_seguro('Estudiantes : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Estudiante') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            //Becario
+            $pdf->ezText('<b>' . utf8_d_seguro('Becario : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Becario') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            //Asesor
+            $pdf->ezText('<b>' . utf8_d_seguro('Asesor : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Asesor') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            //Colaborador
+            $pdf->ezText('<b>' . utf8_d_seguro('Colaborador : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Colaborador') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Colaborador Externo
+            $pdf->ezText('<b>' . utf8_d_seguro('Colaborador Externo : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Colaborador Externo') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Integrante 
+            $pdf->ezText('<b>' . utf8_d_seguro('Integrante : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Integrante') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Docentes / Investigadores Universitarios 
+            $pdf->ezText('<b>' . utf8_d_seguro('Docentes / Investigadores Universitarios : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                //print_r($integrante);                exit();
+                if ($integrante[funcion_p] == 'Director' || $integrante[funcion_p] == 'Codirector') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Graduados
+            $pdf->ezText('<b>' . utf8_d_seguro('Graduados : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'Graduado') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // No Docentes
+            $pdf->ezText('<b>' . utf8_d_seguro('No Docentes : ') . '</b>', 10, ['justification' => 'full']);
+            foreach ($integrantes as $integrante) {
+                if ($integrante[funcion_p] == 'No Docente') {
+                    $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum].''.$integrante[nro_docum], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Horas dedicadas : ') . $integrante[carga_horaria], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Mail : ') . $integrante[mail], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Telefono : ') . $integrante[telefono], 10, ['justification' => 'full']);
+                    $pdf->ezText(utf8_d_seguro('Ad Honorem ? : ') . $integrante[ad_honorem], 10, ['justification' => 'full']);
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                }
+            }
+            //salto de linea
+            $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+            // Organizaciones
+            //
+
             /*
               //
               $pdf->ezText(utf8_d_seguro('').$datos[''], 10, ['justification' => 'full']);

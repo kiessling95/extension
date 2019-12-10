@@ -3,7 +3,7 @@
 class dt_plan_actividad extends extension_datos_tabla {
 
     //Arreglar cuando el rubro ya esté definido
-    function get_listado($id_obj) {
+    function get_listado($id_obj = null) {
 
         $sql = "SELECT 
                 
@@ -24,7 +24,7 @@ class dt_plan_actividad extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_datos($id_obj) {
+    function get_datos($id_obj = null) {
 
         $sql = "SELECT
                 
