@@ -135,7 +135,6 @@ class dt_pextension extends extension_datos_tabla {
 
     function get_datos_seg($id)
     {
- 
         $sql = "SELECT
                         t_p.id_pext,
                         t_p.codigo,
@@ -156,7 +155,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.observacion,
                         t_p.estado_informe_a,
                         t_p.estado_informe_f,
-                        t_p.id_bases,
+                        b_c.id_bases,
                         t_p.resolucion_pago,
                         t_p.fecha_inf_avance,
                         t_p.fecha_inf_final,
@@ -168,7 +167,6 @@ class dt_pextension extends extension_datos_tabla {
                         
                         FROM pextension as t_p INNER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases) 
                         WHERE t_p.id_pext = ".$id ;
-//        print_r(toba::db('extension')->consultar($sql));        exit();
                 return toba::db('extension')->consultar($sql);
 
     }

@@ -380,22 +380,20 @@ class ci_proyectos_extension extends extension_ci {
         }
         
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
-            $datos = $this->dep('datos')->tabla('pextension')->get();
-//            print_r($datos['id_bases']);            exit();
-            $datos = $this->dep('datos')->tabla('pextension')->get_datos_seg($datos['id_pext']);
-//            print_r($datos);            exit();
-            $form->set_datos($datos);
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $datos = $this->dep('datos')->tabla('pextension')->get_datos_seg($pe['id_pext']);
+
+            $form->set_datos($datos[0]);
             
         }
-        $perfil = toba::usuario()->get_perfil_datos();
+//        $perfil = toba::usuario()->get_perfil_datos();
     }
     
     
     function evt__formulario_seguimiento__alta($datos) 
     {
-//        print_r($datos);        exit();
-        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
-        if($perfil != null && $perfil != formulador)
+//        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
+//        if($perfil != null && $perfil != formulador)
         {
             $this->dep('datos')->tabla('pextension')->set($datos);
             $this->dep('datos')->tabla('pextension')->sincronizar();
@@ -407,6 +405,11 @@ class ci_proyectos_extension extends extension_ci {
     
     function evt__formulario_seguimiento__modificacion($datos)
     {
+        if($datos['fecha_prorroga2'] != null) 
+        {
+            $datos['fec_hasta'] = $datos['fecha_prorroga2'];
+        }
+                
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
     }
