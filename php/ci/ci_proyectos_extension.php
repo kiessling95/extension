@@ -738,6 +738,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->resetear();
         $this->set_pantalla('pant_seguimiento_central');
     }
+    
 
 //-----------------------------------------------------------------------------------
 //---- JAVASCRIPT -------------------------------------------------------------------
@@ -750,7 +751,10 @@ class ci_proyectos_extension extends extension_ci {
 		{$this->objeto_js}.evt__alta = function()
 		{
 		}
+                
+                
 		";
+        
     }
 
 //-----------------------------------------------------------------------------------

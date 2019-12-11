@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_formulario', --clase
 	'1001000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'formulario_ocultar_mostrar', --subclase
+	'ci/formulario_ocultar_mostrar.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensi�n - CI - formulario_seguimiento', --nombre
@@ -295,19 +295,19 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				[ef id=estado_informe_a]</td>
-		</tr>
-		<tr>
-			<td>
-				[ef id=expediente]</td>
-		</tr>
-		<tr>
-			<td>
 				[ef id=fecha_inf_avance]</td>
 		</tr>
 		<tr>
 			<td>
+				[ef id=estado_informe_a]</td>
+		</tr>
+		<tr>
+			<td>
 				[ef id=fecha_evaluacion_avance]</td>
+		</tr>
+		<tr>
+			<td>
+				[ef id=expediente]</td>
 		</tr>
 		<tr>
 			<td>
@@ -319,22 +319,23 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 			<td>
 				[ef id=informe_final]</td>
 		</tr>
-		<tr>
-			<td>
-				[ef id=estado_informe_f]</td>
-		</tr>
-		<tr>
-			<td>
-				[ef id=res_rect]</td>
-		</tr>
-		<tr>
+                <tr>
 			<td>
 				[ef id=fecha_inf_final]</td>
 		</tr>
 		<tr>
 			<td>
+				[ef id=estado_informe_f]</td>
+		</tr>
+                <tr>
+			<td>
 				[ef id=fecha_evaluacion_final]</td>
 		</tr>
+		<tr>
+			<td>
+				[ef id=res_rect]</td>
+		</tr>
+		
 		<tr>
 			<td>
 				&nbsp;</td>
