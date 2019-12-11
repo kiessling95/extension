@@ -25,7 +25,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.duracion,
                         t_p.palabras_clave,
                         t_p.objetivo,
-                        t_p.estado,
+                        t_p.id_estado,
                         t_p.financiacion,
                         t_p.monto,
                         t_p.fecha_rendicion,
