@@ -138,8 +138,8 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'Legajo', --etiqueta
 	NULL, --descripcion
 	'0', --obligatorio
-	'1', --inicial
-	'1', --orden
+	'0', --inicial
+	'3', --orden
 	NULL, --estado_defecto
 	'0', --opciones_es_multiple
 	NULL, --opciones_ef
@@ -254,8 +254,8 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'Apellido', --etiqueta
 	NULL, --descripcion
 	'0', --obligatorio
-	'0', --inicial
-	'3', --orden
+	'1', --inicial
+	'1', --orden
 	NULL, --estado_defecto
 	'0', --opciones_es_multiple
 	NULL, --opciones_ef

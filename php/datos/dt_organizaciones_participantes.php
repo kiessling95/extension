@@ -20,7 +20,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.email ,
                     o_p.referencia_vinculacion_inst,
                     o_p.id_pais,
-                    o_p.id_provincia
+                    o_p.id_provincia,
+                    o_p.domicilio
                     
                 FROM
                    organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"
@@ -52,7 +53,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.email ,
                     o_p.referencia_vinculacion_inst,
                     o_p.id_pais,
-                    o_p.id_provincia
+                    o_p.id_provincia,
+                    o_p.domicilio
                     
                 FROM "
                    ." organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"   

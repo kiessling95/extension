@@ -165,7 +165,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1002000056', --objeto_cuadro
 	'1002000044', --objeto_cuadro_col
-	'localidad', --clave
+	'id_localidad', --clave
 	'2', --orden
 	'Localidad', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
@@ -196,7 +196,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1002000056', --objeto_cuadro
 	'1002000045', --objeto_cuadro_col
-	'provincia', --clave
+	'id_provincia', --clave
 	'3', --orden
 	'Provincia', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
@@ -351,7 +351,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1002000056', --objeto_cuadro
 	'1002000067', --objeto_cuadro_col
-	'pais', --clave
+	'id_pais', --clave
 	'8', --orden
 	'País', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo

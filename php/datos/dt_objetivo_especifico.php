@@ -19,7 +19,7 @@ class dt_objetivo_especifico extends extension_datos_tabla
         return toba::db('extension')->consultar($sql);
     }
     
-    function get_datos($id)
+    function get_datos($id = null)
     {
                 $sql = "SELECT
                 
