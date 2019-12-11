@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000186]--  Proyectos Extensiï¿½n - CI 
+--[1001000186]--  Proyectos Extension - CI 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,7 +20,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'ci/ci_proyectos_extension.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'Proyectos Extensiï¿½n - CI', --nombre
+	'Proyectos Extension - CI', --nombre
 	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
@@ -117,7 +117,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000244', --evento_id
 	'1001000186', --objeto
 	'integrantesi', --identificador
-	'Integrante Interno', --etiqueta
+	'Integrante Docente', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
@@ -150,7 +150,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000245', --evento_id
 	'1001000186', --objeto
 	'integrantese', --identificador
-	'Integrante Externo', --etiqueta
+	'Integrante Otro', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
@@ -178,21 +178,18 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'0', --es_seleccion_multiple
 	'0'  --es_autovinculo
 );
---- FIN Grupo de desarrollo 1001
-
---- INICIO Grupo de desarrollo 1002
 INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
 	'extension', --proyecto
-	'1002000040', --evento_id
+	'1001000300', --evento_id
 	'1001000186', --objeto
-	'organizaciones', --identificador
-	'Organizacion Participante', --etiqueta
+	'enviar', --identificador
+	'&Enviar', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'instanciar.gif', --imagen
+	'mensajeria/enviar.gif', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'5', --orden
@@ -214,21 +211,18 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'0', --es_seleccion_multiple
 	'0'  --es_autovinculo
 );
---- FIN Grupo de desarrollo 1002
-
---- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
 	'extension', --proyecto
-	'1001000300', --evento_id
+	'1001000311', --evento_id
 	'1001000186', --objeto
-	'enviar', --identificador
-	'&Enviar', --etiqueta
+	'pdf', --identificador
+	'&Exportar a PDF', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'mensajeria/enviar.gif', --imagen
+	'exp_pdf.gif', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'6', --orden
@@ -237,12 +231,12 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'0', --defecto
 	NULL, --display_datos_cargados
 	NULL, --grupo
-	NULL, --accion
-	NULL, --accion_imphtml_debug
+	'F', --accion
+	'0', --accion_imphtml_debug
 	NULL, --accion_vinculo_carpeta
 	NULL, --accion_vinculo_item
 	NULL, --accion_vinculo_objeto
-	NULL, --accion_vinculo_popup
+	'0', --accion_vinculo_popup
 	NULL, --accion_vinculo_popup_param
 	NULL, --accion_vinculo_target
 	NULL, --accion_vinculo_celda
@@ -584,8 +578,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000073', --pantalla
 	'pant_edicion', --identificador
 	'1', --orden
-	'Proyectos de Extensión', --etiqueta
-	'Proyectos de Extensión de la diferentes Unidades Académicas', --descripcion
+	'Proyectos de Extensiï¿½n', --etiqueta
+	'Proyectos de Extensiï¿½n de la diferentes Unidades Acadï¿½micas', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
@@ -621,8 +615,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000075', --pantalla
 	'pant_integrantese', --identificador
-	'7', --orden
-	'2-2-Integrantes Externos', --etiqueta
+	'6', --orden
+	'2-2-Integrantes Otros', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -661,7 +655,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
 	'4', --orden
-	'1-Identificación del Proyecto', --etiqueta
+	'1-Identificaciï¿½n del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -679,8 +673,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000087', --pantalla
 	'pant_organizaciones', --identificador
-	'8', --orden
-	'2-3-1 Organizaciones Participantes', --etiqueta
+	'7', --orden
+	'3- Organizaciones Participantes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -698,8 +692,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000088', --pantalla
 	'pant_objetivos', --identificador
-	'9', --orden
-	'3- Objetivos y Metas a alcanzar', --etiqueta
+	'8', --orden
+	'4- Objetivos y Metas a alcanzar', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -739,8 +733,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000009', --pantalla
 	'pant_presupuesto', --identificador
-	'11', --orden
-	'4-Presupuesto', --etiqueta
+	'10', --orden
+	'5-Presupuesto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -758,8 +752,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000011', --pantalla
 	'pant_actividad', --identificador
-	'10', --orden
-	'3-1-Plan de Actividad', --etiqueta
+	'9', --orden
+	'4-1-Plan de Actividad', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -1003,12 +997,6 @@ INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VAL
 	'extension'  --proyecto
 );
 INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
-	'1001000076', --pantalla
-	'1001000186', --objeto_ci
-	'1002000040', --evento_id
-	'extension'  --proyecto
-);
-INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
 	'1001000078', --pantalla
 	'1001000186', --objeto_ci
 	'1001000231', --evento_id
@@ -1018,6 +1006,12 @@ INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VAL
 	'1001000078', --pantalla
 	'1001000186', --objeto_ci
 	'1001000300', --evento_id
+	'extension'  --proyecto
+);
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000078', --pantalla
+	'1001000186', --objeto_ci
+	'1001000311', --evento_id
 	'extension'  --proyecto
 );
 INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (

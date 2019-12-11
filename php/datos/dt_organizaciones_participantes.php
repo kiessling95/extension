@@ -4,10 +4,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla
 {
     function get_listado_filtro($id,$filtro = array()) {
     
-        //print_r($filtro);        exit();
         $where = array();
 		if (isset($filtro)) {
-			//$where[] = "tipo ILIKE ".quote("%{$filtro['tipo']}%");
                         $where[]= $filtro;
 		}	
         $sql = "SELECT
@@ -20,7 +18,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.email ,
                     o_p.referencia_vinculacion_inst,
                     o_p.id_pais,
-                    o_p.id_provincia
+                    o_p.id_provincia,
+                    o_p.domicilio
                     
                 FROM
                    organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"
@@ -33,10 +32,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla
         {
             $sql = sql_concatenar_where($sql, $where)
             . "AND o_p.id_pext=" . $id ;
-            //print_r($sql);
+
 	}
-       
-        print_r($sql);        exit();
         return toba::db('extension')->consultar($sql);
     }
     
@@ -52,7 +49,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                     o_p.email ,
                     o_p.referencia_vinculacion_inst,
                     o_p.id_pais,
-                    o_p.id_provincia
+                    o_p.id_provincia,
+                    o_p.domicilio
                     
                 FROM "
                    ." organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"   
@@ -60,8 +58,7 @@ class dt_organizaciones_participantes extends extension_datos_tabla
                    ." ON (o_p.id_localidad = l.id)"
                    ." LEFT OUTER JOIN tipo_organizacion as t_o ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)
                    
-                WHERE o_p.id_pext = ".$id
-                ;
+                WHERE o_p.id_pext = ".$id;
         
         return toba::db('extension')->consultar($sql);
     }

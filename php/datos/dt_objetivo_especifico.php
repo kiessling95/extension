@@ -19,7 +19,7 @@ class dt_objetivo_especifico extends extension_datos_tabla
         return toba::db('extension')->consultar($sql);
     }
     
-    function get_datos($id)
+    function get_datos($id = null)
     {
                 $sql = "SELECT
                 
@@ -30,7 +30,7 @@ class dt_objetivo_especifico extends extension_datos_tabla
                 o_e.ponderacion
                 
                 FROM objetivo_especifico as o_e INNER JOIN pextension as p_e ON (o_e.id_pext = p_e.id_pext)
-                WHERE o_e.id_pext = ".$id;
+                WHERE o_e.id_objetivo = ".$id;
         return toba::db('extension')->consultar($sql);
     }
 }
