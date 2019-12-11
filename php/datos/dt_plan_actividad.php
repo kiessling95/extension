@@ -25,7 +25,7 @@ class dt_plan_actividad extends extension_datos_tabla {
     }
 
     function get_datos($id_obj = null) {
-
+        
         $sql = "SELECT
                 
                     p_a.id_plan ,
