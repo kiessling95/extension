@@ -13,12 +13,15 @@
 			switch (this.ef('informe_avance').get_estado()) {
 					case 'Presento':
 						this.ef('fecha_inf_avance').mostrar();
+                                                this.ef('estado_informe_a').activar();
 						break;
 					case 'No Presento':
 						this.ef('fecha_inf_avance').ocultar();
+                                                this.ef('estado_informe_a').desactivar();
 						break;
 					default:
 						this.ef('fecha_inf_avance').ocultar();
+                                                this.ef('estado_informe_a').desactivar();
 						break;					
 				}
                     }
@@ -43,12 +46,15 @@
 			switch (this.ef('informe_final').get_estado()) {
 					case 'Presento':
 						this.ef('fecha_inf_final').mostrar();
+                                                this.ef('estado_informe_f').activar();
 						break;
 					case 'No Presento':
 						this.ef('fecha_inf_final').ocultar();
+                                                this.ef('estado_informe_f').desactivar();
 						break;
 					default:
 						this.ef('fecha_inf_final').ocultar();
+                                                this.ef('estado_informe_f').desactivar();
 						break;					
 				}
                     }
