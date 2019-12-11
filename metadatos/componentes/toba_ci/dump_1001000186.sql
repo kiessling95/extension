@@ -535,6 +535,24 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	NULL, --inicializar
 	NULL  --orden
 );
+--- FIN Grupo de desarrollo 1001
+
+--- INICIO Grupo de desarrollo 1002
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
+	'1002000041', --dep_id
+	'1001000186', --objeto_consumidor
+	'1002000066', --objeto_proveedor
+	'formulario_seg_ua', --identificador
+	NULL, --parametros_a
+	NULL, --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+--- FIN Grupo de desarrollo 1002
+
+--- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
 	'1001000200', --dep_id
@@ -560,8 +578,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000073', --pantalla
 	'pant_edicion', --identificador
 	'1', --orden
-	'Proyectos de Extensión', --etiqueta
-	'Proyectos de Extensión de la diferentes Unidades Académicas', --descripcion
+	'Proyectos de Extensiï¿½n', --etiqueta
+	'Proyectos de Extensiï¿½n de la diferentes Unidades Acadï¿½micas', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
@@ -578,7 +596,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000074', --pantalla
 	'pant_integrantesi', --identificador
-	'5', --orden
+	'6', --orden
 	'2-1-Integrantes Docentes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -616,7 +634,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000076', --pantalla
 	'pant_planilla', --identificador
-	'4', --orden
+	'5', --orden
 	'2-Planilla de Personal Afectado', --etiqueta
 	'Muestra todos los integrantes cuya fecha "HASTA" coincide con la fecha hasta del proyecto correspondiente. <br>
 Los integrantes que no tienen esa fecha se han dado de baja previo a la finalizaciï¿½n del mismo.', --descripcion
@@ -636,8 +654,8 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
-	'3', --orden
-	'1-Identificación del Proyecto', --etiqueta
+	'4', --orden
+	'1-Identificaciï¿½n del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -694,7 +712,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000094', --pantalla
 	'pant_seguimiento_central', --identificador
 	'2', --orden
-	'Seguimiento de Secretaria Central del Proyecto', --etiqueta
+	'Seguimiento de Secretaria Central', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -747,6 +765,25 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	NULL, --template
 	NULL, --template_impresion
 	'1001000004'  --punto_montaje
+);
+INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, identificador, orden, etiqueta, descripcion, tip, imagen_recurso_origen, imagen, objetos, eventos, subclase, subclase_archivo, template, template_impresion, punto_montaje) VALUES (
+	'extension', --objeto_ci_proyecto
+	'1001000186', --objeto_ci
+	'1002000012', --pantalla
+	'pant_seguimiento_ua', --identificador
+	'3', --orden
+	'Seguimiento de Unidad Academica', --etiqueta
+	NULL, --descripcion
+	NULL, --tip
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	NULL, --objetos
+	NULL, --eventos
+	NULL, --subclase
+	NULL, --subclase_archivo
+	NULL, --template
+	NULL, --template_impresion
+	NULL  --punto_montaje
 );
 --- FIN Grupo de desarrollo 1002
 
@@ -899,6 +936,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1001000186', --objeto_ci
 	'1', --orden
 	'1002000040'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1002000012', --pantalla
+	'1001000186', --objeto_ci
+	'0', --orden
+	'1002000041'  --dep_id
 );
 
 ------------------------------------------------------------
