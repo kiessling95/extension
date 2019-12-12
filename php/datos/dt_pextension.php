@@ -25,7 +25,7 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.duracion,
                         t_p.palabras_clave,
                         t_p.objetivo,
-                        t_p.id_estado,
+                        t_e.descripcion as id_estado,
                         t_p.financiacion,
                         t_p.monto,
                         t_p.fecha_rendicion,
@@ -74,6 +74,7 @@ class dt_pextension extends extension_datos_tabla {
                                             
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)
+                        LEFT OUTER JOIN estado_pe as t_e ON (t_e.id_estado = t_p.id_estado)
                         
                     ORDER BY codigo";
         

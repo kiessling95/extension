@@ -37,9 +37,7 @@ class ci_proyectos_extension extends extension_ci {
 
 //ejes tematicos 
             $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_descripciones($datos[id_bases]);
-
-//print_r($ejes_conv);  
-
+;  
             $ejes = array();
             $aux = $datos['eje_tematico'];
             for ($i = 0; $i < strlen($aux); $i++) {
@@ -47,7 +45,7 @@ class ci_proyectos_extension extends extension_ci {
                     $ejes . array_push($ejes, $aux[$i]);
                 }
             }
-//print_r($ejes);
+
             $aux = array();
             foreach ($ejes_conv as $eje_conv) {
                 foreach ($ejes as $eje) {
@@ -63,45 +61,44 @@ class ci_proyectos_extension extends extension_ci {
             $datos[id_bases] = $bases['bases_titulo'];
             $datos[id_conv] = $bases[descripcion];
 
-//obtengo director 
+            //obtengo director 
             $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($datos[id_pext]);
             $director = $director[0];
 
-//obtengo co-director
+            //obtengo co-director
             $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($datos[id_pext]);
             $co_director = $co_director[0];
 
-//Objetivos Especificos 
+            //Objetivos Especificos 
             $obj_especificos = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($datos[id_pext]);
 
             $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($datos[id_pext]);
-//print_r($integrantes);
-//exit();
-//configuramos el nombre que tendrá el archivo pdf
+
+            //configuramos el nombre que tendrá el archivo pdf
             $salida->set_nombre_archivo("Formulario Convocatoria.pdf");
 
-//recuperamos el objteo ezPDF para agregar la cabecera y el pie de página 
+            //recuperamos el objteo ezPDF para agregar la cabecera y el pie de página 
             $salida->set_papel_orientacion('portrait'); //landscape
             $salida->inicializar();
-//$salida->set_pdf_fuente('Times-Roman.afm');
-//$salida->set_papel_tamanio('A4');
+            //$salida->set_pdf_fuente('Times-Roman.afm');
+            //$salida->set_papel_tamanio('A4');
 
             $pdf = $salida->get_pdf();
-//terc izquierda 
-//bajo normas Icontec y APA
+            //terc izquierda 
+            //bajo normas Icontec y APA
             $pdf->ezSetCmMargins(2.54, 2.54, 2.54, 2.54);
 
-//Configuramos el pie de página. El mismo, tendra el número de página centrado en la página y la fecha ubicada a la derecha. 
-//Primero definimos la plantilla para el número de página.
+            //Configuramos el pie de página. El mismo, tendra el número de página centrado en la página y la fecha ubicada a la derecha. 
+            //Primero definimos la plantilla para el número de página.
             $formato = utf8_decode('Página {PAGENUM} de {TOTALPAGENUM} ');
 
-//Determinamos la ubicación del número página en el pié de pagina definiendo las coordenadas x y, tamaño de letra, posición, texto, pagina inicio 
+            //Determinamos la ubicación del número página en el pié de pagina definiendo las coordenadas x y, tamaño de letra, posición, texto, pagina inicio 
             $pdf->ezStartPageNumbers(300, 20, 8, 'justify', utf8_d_seguro($formato), 1);
-//$pdf->ezText('full');
-//Luego definimos la ubicación de la fecha en el pie de página.
+            //$pdf->ezText('full');
+            //Luego definimos la ubicación de la fecha en el pie de página.
             $pdf->addText(380, 20, 8, 'Mocovi - Extension ' . date('d/m/Y h:i:s a'));
 
-//Configuración de Título.
+            //Configuración de Título.
             $salida->titulo(utf8_d_seguro('UNIVERSIDAD NACIONAL DEL COMAHUE' . chr(10) . 'SECRETARÍA DE EXTENSIÓN UNIVERSITARIA'));
             $titulo = "   ";
 
@@ -109,17 +106,16 @@ class ci_proyectos_extension extends extension_ci {
 
 
             $pdf->ezText("\n\n\n\n", 10, ['justification' => 'full']);
-//Pantalla Principal Formulario
-//Director 
+            //Pantalla Principal Formulario
+            //Director 
             $pdf->ezText('' . utf8_d_seguro('<b>Director del Proyecto </b>') . ' : ', 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Nombre') . ' :  ' . $director[nombre], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Unidad Académica') . ' :  ' . $director[ua], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Tipo y Nro. de documento') . ' :  ' . $director[tipo_docum] . ' ' . $director[nro_docum], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $director[telefono], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $director[correo_institucional], 10, ['justification' => 'full']);
-//$pdf->ezText(''.utf8_d_seguro('').' :  ' . $director[], 10, ['justification' => 'full']);
-//$pdf->ezText(''.utf8_d_seguro('').' :  ' . $director[], 10, ['justification' => 'full']);
-//Co-Director 
+
+            //Co-Director 
             $pdf->ezText('' . utf8_d_seguro('<b>Co-Director del Proyecto </b>') . ' : ', 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Nombre') . ' :  ' . $co_director[nombre], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Unidad Académica') . ' :  ' . $co_director[ua], 10, ['justification' => 'full']);
@@ -127,69 +123,69 @@ class ci_proyectos_extension extends extension_ci {
             $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $co_director[telefono], 10, ['justification' => 'full']);
             $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $co_director[correo_institucional], 10, ['justification' => 'full']);
 
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-//Indentificacion del Proyecto
+            //Indentificacion del Proyecto
             $pdf->ezText('' . utf8_d_seguro('<b>Datos generales </b>'), 10, ['justification' => 'full']);
-//Nombre del Proyecto
+            //Nombre del Proyecto
             $pdf->ezText('Nombre del Proyecto :  ' . $datos['denominacion'], 10, ['justification' => 'full']);
-//Financiamiento Anterior
-//unidad academica
+            //Financiamiento Anterior
+            //unidad academica
             $pdf->ezText('Unidad Academica :  ' . $datos['uni_acad'], 10, ['justification' => 'full']);
-//departamento
-//$pdf->ezText('Departamento :  ' . $datos['departamento'], 10, ['justification' => 'full']);
-//area
-//$pdf->ezText('Area :  ' . $datos['area'], 10, ['justification' => 'full']);
-//eje tematico
+            //departamento
+            //$pdf->ezText('Departamento :  ' . $datos['departamento'], 10, ['justification' => 'full']);
+            //area
+            //$pdf->ezText('Area :  ' . $datos['area'], 10, ['justification' => 'full']);
+            //eje tematico
             $pdf->ezText('' . utf8_d_seguro('Ejes Tematicos : '), 10, ['justification' => 'full']);
             foreach ($ejes_tematicos as $eje) {
                 $pdf->ezText(' - ' . $eje, 10, ['justification' => 'full']);
             }
-//palabras claves
+            //palabras claves
             $pdf->ezText('Palabras Claves:  ' . $datos['palabras_clave'], 10, ['justification' => 'full']);
-//id bases 
+            //id bases 
             $pdf->ezText('Titulo Bases :  ' . $datos['id_bases'], 10, ['justification' => 'full']);
-//Tipo convocatoria
+            //Tipo convocatoria
             $pdf->ezText(utf8_d_seguro('Tipo Convocatoria :  ') . $datos['id_conv'], 10, ['justification' => 'full']);
 
 
-//salto linea
+            //salto linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
 
             $pdf->ezText('<b>' . utf8_d_seguro('Fundamentación del origen del proyecto: ') . '</b>', 10, ['justification' => 'full']);
-//Fundamentación del Proyecto
+            //Fundamentación del Proyecto
             $pdf->ezText(utf8_d_seguro('Fundamentación del Proyecto :  ') . $datos['descripcion_situacion'], 10, ['justification' => 'full']);
-//Identificar destinatarios 
+            //Identificar destinatarios 
             $pdf->ezText(utf8_d_seguro('Identificar destinatarios:  ') . $datos['caracterizacion_poblacion'], 10, ['justification' => 'full']);
-//localizacion geografica
+            //localizacion geografica
             $pdf->ezText(utf8_d_seguro('Localización geográfica :  ') . $datos['localizacion_geo'], 10, ['justification' => 'full']);
 
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
             $pdf->ezText('<b>' . utf8_d_seguro('Resultados esperados : ') . '</b>', 10, ['justification' => 'full']);
             $pdf->ezText(utf8_d_seguro('Resultados esperados del proyecto') . $datos[impacto], 10, ['justification' => 'full']);
 
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Objetivo General
+            // Objetivo General
             $pdf->ezText('<b>' . utf8_d_seguro('Objetivo General : ') . '</b>', 10, ['justification' => 'full']);
             $pdf->ezText(utf8_d_seguro('Objetivo General :') . $datos[objetivo], 10, ['justification' => 'full']);
 
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-//Objetivo Especifico
+            //Objetivo Especifico
             $pdf->ezText('<b>' . utf8_d_seguro('Objetivos especificos : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($obj_especificos as $obj_especifico) {
 
                 $pdf->ezText(utf8_d_seguro(' * Descripción: ') . $obj_especifico[descripcion], 10, ['justification' => 'full']);
                 $pdf->ezText(utf8_d_seguro('   - Meta: ') . $obj_especifico[meta], 10, ['justification' => 'full']);
                 $pdf->ezText(utf8_d_seguro('   - Ponderacion: ') . $obj_especifico[ponderacion] . "% ", 10, ['justification' => 'full']);
-//actividades de obj especifico
+                //actividades de obj especifico
 
                 $plan_actividades = $this->dep('datos')->tabla('plan_actividades')->get_listado($obj_especifico[id_objetivo]);
 
@@ -202,17 +198,17 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText(utf8_d_seguro('     + Localizacion : ') . $plan[localizacion], 10, ['justification' => 'full']);
                     $pdf->ezText(utf8_d_seguro('     + Año de comienzo de actividad : ') . $plan[anio], 10, ['justification' => 'full']);
                 }
-//salto de linea
+                //salto de linea
                 $pdf->ezText("\n", 10, ['justification' => 'full']);
             }
 
-// Integrantes
+            // Integrantes
             $pdf->ezText('<b>' . utf8_d_seguro('Equipo y Organizaciones participantes : ') . '</b>', 10, ['justification' => 'full']);
 
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Estudiantes
+            // Estudiantes
             $pdf->ezText('<b>' . utf8_d_seguro('Estudiantes : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Estudiante') {
@@ -225,10 +221,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-//Becario
+            //Becario
             $pdf->ezText('<b>' . utf8_d_seguro('Becario : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Becario') {
@@ -241,10 +237,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-//Asesor
+            //Asesor
             $pdf->ezText('<b>' . utf8_d_seguro('Asesor : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Asesor') {
@@ -257,10 +253,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-//Colaborador
+            //Colaborador
             $pdf->ezText('<b>' . utf8_d_seguro('Colaborador : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Colaborador') {
@@ -273,10 +269,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Colaborador Externo
+            // Colaborador Externo
             $pdf->ezText('<b>' . utf8_d_seguro('Colaborador Externo : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Colaborador Externo') {
@@ -289,10 +285,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Integrante 
+            // Integrante 
             $pdf->ezText('<b>' . utf8_d_seguro('Integrante : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Integrante') {
@@ -305,13 +301,13 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Docentes / Investigadores Universitarios 
+            // Docentes / Investigadores Universitarios 
             $pdf->ezText('<b>' . utf8_d_seguro('Docentes / Investigadores Universitarios : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
-//print_r($integrante);                exit();
+                    
                 if ($integrante[funcion_p] == 'Director' || $integrante[funcion_p] == 'Codirector') {
                     $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
                     $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum] . '' . $integrante[nro_docum], 10, ['justification' => 'full']);
@@ -322,10 +318,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Graduados
+            // Graduados
             $pdf->ezText('<b>' . utf8_d_seguro('Graduados : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'Graduado') {
@@ -338,10 +334,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// No Docentes
+            // No Docentes
             $pdf->ezText('<b>' . utf8_d_seguro('No Docentes : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
                 if ($integrante[funcion_p] == 'No Docente') {
@@ -354,10 +350,10 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
             }
-//salto de linea
+            //salto de linea
             $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-// Organizaciones
+            // Organizaciones
 //
 
             /*
@@ -366,16 +362,16 @@ class ci_proyectos_extension extends extension_ci {
 
              */
 
-//salto de linea
+            //salto de linea
             $pdf->ezText('  ', 10, ['justification' => 'full']);
 
 
 
 
-// Logos pimera pagina
+            // Logos pimera pagina
             $id = 7;
             $pdf->reopenObject($id); //definimos el path a la imagen de logo de la organizacion 
-//agregamos al documento la imagen y definimos su posición a través de las coordenadas (x,y) y el ancho y el alto.
+            //agregamos al documento la imagen y definimos su posición a través de las coordenadas (x,y) y el ancho y el alto.
             $imagen = toba::proyecto()->get_path() . '/www/img/logo_uc.jpg';
             $imagen2 = toba::proyecto()->get_path() . '/www/img/ext.jpeg';
             $pdf->addJpegFromFile($imagen, 40, 715, 70, 66);
@@ -578,7 +574,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__formulario__alta($datos) {
 
-        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
+        $perfil = toba::usuario()->get_perfil_datos();
+
         if ($perfil != null) {
             $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
             $datos['uni_acad'] = $ua[0]['sigla'];
@@ -599,8 +596,6 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[co_director]);
         unset($datos[co_email]);
         unset($datos[co_telefono]);
-        unset($datos[departamento]);
-        unset($datos[area]);
         unset($datos[tipo_convocatoria]);
 
         //Cambio de estado a en formulacion

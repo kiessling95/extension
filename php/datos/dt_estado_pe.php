@@ -3,7 +3,7 @@
 class dt_estado_pe extends extension_datos_tabla
 {
     function get_descripciones(){
-       $sql="select * from estado_pe";    
+       $sql="select id_estado, descripcion from estado_pe";    
        return toba::db('extension')->consultar($sql);
     }
     function get_descripciones_perfil(){
