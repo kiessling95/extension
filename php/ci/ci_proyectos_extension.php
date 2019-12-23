@@ -10,6 +10,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__mostrar_org;
     protected $s__mostrar_obj;
     protected $s__mostrar_activ;
+    protected $s__mostrar_dest;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
@@ -37,7 +38,7 @@ class ci_proyectos_extension extends extension_ci {
 
 //ejes tematicos 
             $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_descripciones($datos[id_bases]);
-;  
+            ;
             $ejes = array();
             $aux = $datos['eje_tematico'];
             for ($i = 0; $i < strlen($aux); $i++) {
@@ -307,7 +308,7 @@ class ci_proyectos_extension extends extension_ci {
             // Docentes / Investigadores Universitarios 
             $pdf->ezText('<b>' . utf8_d_seguro('Docentes / Investigadores Universitarios : ') . '</b>', 10, ['justification' => 'full']);
             foreach ($integrantes as $integrante) {
-                    
+
                 if ($integrante[funcion_p] == 'Director' || $integrante[funcion_p] == 'Codirector') {
                     $pdf->ezText(utf8_d_seguro('Nombre y Apellido : ') . $integrante[nombre], 10, ['justification' => 'full']);
                     $pdf->ezText(utf8_d_seguro('Tipo y Nro Documento : ') . $integrante[tipo_docum] . '' . $integrante[nro_docum], 10, ['justification' => 'full']);
@@ -492,6 +493,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_objetivos")->desactivar();
         $this->pantalla()->tab("pant_actividad")->desactivar();
+        $this->pantalla()->tab("pant_destinatarios")->desactivar();
 
 
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
@@ -502,6 +504,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_destinatarios")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         if ($perfil == formulador) {
@@ -642,20 +645,22 @@ class ci_proyectos_extension extends extension_ci {
     function resetear() {
         $this->dep('datos')->resetear();
     }
-    
-    //------------------------------------------------------------------------------------------------
-    //---- Formulario Seguimiento Central-------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------------------------
-//---- Formulario Seguimiento -------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //---- Formulario Seguimiento Central-------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
 
     function conf__formulario_seguimiento(toba_ei_formulario $form) {
 
-        if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
-            $this->dep('formulario_seguimiento')->descolapsar();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+        if ($estado != 'FORM' && $perfil == formulador) {
+            $this->dep('formulario_seguimiento')->set_solo_lectura();
+            $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
+            $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
+            $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
+
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pe = $this->dep('datos')->tabla('pextension')->get();
@@ -663,7 +668,6 @@ class ci_proyectos_extension extends extension_ci {
 
             $form->set_datos($datos[0]);
         }
-//        $perfil = toba::usuario()->get_perfil_datos();
     }
 
     function evt__formulario_seguimiento__alta($datos) {
@@ -697,64 +701,57 @@ class ci_proyectos_extension extends extension_ci {
         $this->resetear();
         $this->set_pantalla('pant_seguimiento_central');
     }
-    
-    
+
     //------------------------------------------------------------------------------------------------
     //---- Formulario Seguimiento UA-------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
 
     function conf__formulario_seg_ua(toba_ei_formulario $form) {
-        
-        if ($this->s__mostrar == 1) {// si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
-            $this->dep('formulario_seguimiento_ua')->descolapsar();
-            
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+        if ($estado != 'FORM' && $perfil == formulador) {
+            $this->dep('formulario_seg_ua')->set_solo_lectura();
+            $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
+            $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
+            $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
-        
+
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pe = $this->dep('datos')->tabla('pextension')->get();
 //            print_r($pe);            exit();
             $datos = $this->dep('datos')->tabla('pextension')->get_datos_seg_ua($pe['id_pext']);
 
             $form->set_datos($datos[0]);
-            
         }
 //        $perfil = toba::usuario()->get_perfil_datos();
     }
-    
-    
-    function evt__formulario_seg_ua__alta($datos) 
-    {
-//        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
-//        if($perfil != null && $perfil != formulador)
-        {
-            $this->dep('datos')->tabla('pextension')->set($datos);
-            $this->dep('datos')->tabla('pextension')->sincronizar();
-            $this->dep('datos')->tabla('pextension')->cargar($datos);
-            
-            toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
-        }
+
+    function evt__formulario_seg_ua__alta($datos) {
+
+        $this->dep('datos')->tabla('pextension')->set($datos);
+        $this->dep('datos')->tabla('pextension')->sincronizar();
+        $this->dep('datos')->tabla('pextension')->cargar($datos);
+
+        toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
     }
-    
-    function evt__formulario_seg_ua__modificacion($datos)
-    {
-                
+
+    function evt__formulario_seg_ua__modificacion($datos) {
+
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
     }
-    
-    function evt__formulario_seg_ua__baja() 
-    {
+
+    function evt__formulario_seg_ua__baja() {
         $this->dep('datos')->tabla('pextension')->eliminar_todo();
         $this->resetear();
         $this->set_pantalla('pant_edicion');
     }
 
-    function evt__formulario_seg_ua__cancelar() 
-    {
+    function evt__formulario_seg_ua__cancelar() {
         $this->resetear();
         $this->set_pantalla('pant_seguimiento_ua');
     }
-    
 
     //-----------------------------------------------------------------------------------
     //---- JAVASCRIPT -------------------------------------------------------------------
@@ -812,6 +809,10 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_actividad':
                 $this->s__mostrar_activ = 1;
                 $this->dep('datos')->tabla('plan_actividades')->resetear();
+                break;
+            case 'pant_destinatarios':
+                $this->s__mostrar_dest = 1;
+                $this->dep('datos')->tabla('destinatarios')->resetear();
                 break;
             case 'pant_edicion':
                 $this->set_pantalla('pant_formulario');
@@ -896,6 +897,52 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__organizaciones() {
         $this->set_pantalla('pant_organizaciones');
+    }
+
+    /* ------------------------------------------------------------------------------
+     * -------------------------- Fotmulario Destinatarios --------------------------
+     * ------------------------------------------------------------------------------
+     */
+
+    function conf__formulario_destinatarios(toba_ei_formulario $form) {
+        if ($this->s__mostrar == 1) {
+            $this->dep('formulario_destinatarios')->descolapsar();
+        } else {
+            $this->dep('formulario_destinatarios')->colapsar();
+        }
+
+        if ($this->dep('datos')->tabla('destinatarios')->esta_cargada()) {
+            $datos = $this->dep('datos')->tabla('destinatarios')->get();
+
+            $form->set_datos($datos);
+        }
+    }
+
+    function evt__formulario_destinatarios__alta($datos) {
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+
+        $this->dep('datos')->tabla('destinatarios')->set($datos);
+        $this->dep('datos')->tabla('destinatarios')->sincronizar();
+        $this->dep('datos')->tabla('destinatarios')->resetear();
+    }
+
+    function evt__formulario_destinatarios__modificacion($datos) {
+        $this->dep('datos')->tabla('destinatarios')->set($datos);
+        $this->dep('datos')->tabla('destinatarios')->sincronizar();
+    }
+
+    function evt__formulario_destinatarios__baja($datos) {
+        $this->dep('datos')->tabla('destinatarios')->eliminar_todo();
+        $this->dep('datos')->tabla('destinatarios')->resetear();
+        toba::notificacion()->agregar('El integrante se ha eliminado  correctamente.', 'info');
+        $this->s__mostrar = 0;
+    }
+
+    function evt__formulario_destinatarios__cancelar() {
+        $this->s__mostrar = 0;
+        $this->dep('datos')->tabla('destinatarios')->resetear();
     }
 
 //-----------------------------------------------------------------------------------
@@ -1020,8 +1067,8 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $pe['id_pext'];
         $datos['tipo'] = 'Otro';
         $datos['nro_tabla'] = 1;
-//recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
-//$personas=$this->dep('datos')->tabla('persona')->get_listado();           
+        //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
+        //$personas=$this->dep('datos')->tabla('persona')->get_listado();           
         $datos['tipo_docum'] = $datos['integrante'][0];
         $datos['nro_docum'] = $datos['integrante'][1];
         $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
@@ -1044,6 +1091,17 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__cancelar() {
         $this->s__mostrar_e = 0;
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+    }
+
+    // -------------------------------------------------------------------------
+    //------------------------- Cuadro Destinatarios ---------------------------
+    //--------------------------------------------------------------------------
+
+    function conf__cuadro_destinatarios(toba_ei_cuadro $cuadro) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos = $this->dep('datos')->tabla('destinatarios')->get_listado($pe['id_pext']);
+
+        $cuadro->set_datos($datos);
     }
 
 //-----------------------------------------------------------------------------------
@@ -1227,7 +1285,6 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_organizacion__guardar($datos) {
-        print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $datos[id_pext] = $pe['id_pext'];
@@ -1263,24 +1320,21 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_edicion(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_edicion";
 
-//$this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
         $this->pantalla()->tab("pant_actividad")->desactivar();
 
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
-//$this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
     }
 
-    function conf__pant_seguimiento_central(toba_ei_pantalla $pantalla) {
-        $this->s__pantalla = "pant_seguimiento_central";
+    function conf__pant_destinatarios(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_destinatarios";
 
         $this->pantalla()->tab("pant_edicion")->desactivar();
-//$this->pantalla()->tab("pant_organizaciones")->desactivar();
         $this->pantalla()->tab("pant_integrantesi")->desactivar();
         $this->pantalla()->tab("pant_integrantese")->desactivar();
         $this->pantalla()->tab("pant_actividad")->desactivar();
@@ -1288,12 +1342,29 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
-//$this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
+            $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        }
     }
-    
-    
+
+    function conf__pant_seguimiento_central(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_seguimiento_central";
+
+        $this->pantalla()->tab("pant_edicion")->desactivar();
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+        $this->pantalla()->tab("pant_actividad")->desactivar();
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+    }
+
     function conf__pant_seguimiento_ua(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_seguimiento_central";
 
@@ -1308,7 +1379,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
-        $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
     }
 
     function conf__pant_formulario(toba_ei_pantalla $pantalla) {
@@ -1327,14 +1397,16 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
 
         if ($perfil == formulador) {
-            $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
+
 
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'FORM') {
                 $this->controlador()->evento('enviar')->ocultar();
+            } else {
+                $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
+                $this->pantalla()->tab("pant_seguimiento_ua")->pcultar();
             }
-            $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         }
     }
 
