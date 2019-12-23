@@ -578,7 +578,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000073', --pantalla
 	'pant_edicion', --identificador
 	'1', --orden
-	'Proyectos de Extensiï¿½n', --etiqueta
+	'Proyectos de Extensión', --etiqueta
 	'Proyectos de Extensiï¿½n de la diferentes Unidades Acadï¿½micas', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -615,7 +615,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000075', --pantalla
 	'pant_integrantese', --identificador
-	'6', --orden
+	'7', --orden
 	'2-2-Integrantes Otros', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -655,7 +655,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
 	'4', --orden
-	'1-Identificaciï¿½n del Proyecto', --etiqueta
+	'1-Identificación del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -673,7 +673,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000087', --pantalla
 	'pant_organizaciones', --identificador
-	'7', --orden
+	'8', --orden
 	'3- Organizaciones Participantes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -692,7 +692,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000088', --pantalla
 	'pant_objetivos', --identificador
-	'8', --orden
+	'9', --orden
 	'4- Objetivos y Metas a alcanzar', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -733,7 +733,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000009', --pantalla
 	'pant_presupuesto', --identificador
-	'10', --orden
+	'11', --orden
 	'5-Presupuesto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -752,7 +752,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000011', --pantalla
 	'pant_actividad', --identificador
-	'9', --orden
+	'10', --orden
 	'4-1-Plan de Actividad', --etiqueta
 	NULL, --descripcion
 	NULL, --tip

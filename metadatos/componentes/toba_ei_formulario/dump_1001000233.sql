@@ -114,14 +114,14 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 );
 INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
 	'extension', --proyecto
-	'1001000303', --evento_id
+	'1001000304', --evento_id
 	'1001000233', --objeto
-	'modificacion', --identificador
-	'&Modificar', --etiqueta
-	'1', --maneja_datos
+	'cancelar', --identificador
+	'Ca&ncelar', --etiqueta
+	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
-	'ei-boton-mod', --estilo
+	'ei-boton-canc', --estilo
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
 	'1', --en_botonera
@@ -147,14 +147,14 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 );
 INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
 	'extension', --proyecto
-	'1001000304', --evento_id
+	'1001000317', --evento_id
 	'1001000233', --objeto
-	'cancelar', --identificador
-	'Ca&ncelar', --etiqueta
-	'0', --maneja_datos
+	'modificar', --identificador
+	'&Modificar', --etiqueta
+	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
-	'ei-boton-canc', --estilo
+	NULL, --estilo
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
 	'1', --en_botonera
@@ -164,7 +164,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'0', --implicito
 	'0', --defecto
 	NULL, --display_datos_cargados
-	'cargado', --grupo
+	NULL, --grupo
 	NULL, --accion
 	NULL, --accion_imphtml_debug
 	NULL, --accion_vinculo_carpeta

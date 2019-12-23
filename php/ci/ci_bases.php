@@ -151,25 +151,59 @@ class ci_bases extends extension_ci {
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
         $tipo = $this->dep('datos')->tabla('tipos_ejes_tematicos')->get_tipo($datos['descripcion'])[0];
 
-        $datos['id_bases'] = $bases['id_bases'];
-        $datos['descripcion'] = $tipo['descripcion'];
-        $datos['id_eje'] = $tipo['id_eje'];
+        $correcto = true;
+        $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']);
+        // Control Ejes no repetidos 
+        foreach ($ejes_conv as $eje) {
+            if ($eje['id_eje'] == $tipo['id_eje']) {
+                $correcto = false;
+                toba::notificacion()->agregar('Eje tematico repetido, vuelva a intentarlo', 'info');
+            }
+        }
+        if ($correcto) {
+            $datos['id_bases'] = $bases['id_bases'];
+            $datos['descripcion'] = $tipo['descripcion'];
+            $datos['id_eje'] = $tipo['id_eje'];
 
-        // control clave unica
+            // control clave unica
 
-        $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
-        $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
-        $this->dep('datos')->tabla('eje_tematico_conv')->cargar($datos);
+            $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
+            $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
+            $this->dep('datos')->tabla('eje_tematico_conv')->cargar($datos);
 
-        $this->s__mostrar = 0;
+            $this->s__mostrar = 0;
+        }
         //$this->dep('datos')->resetear();
         //$this->set_pantalla('pant_ejes');
     }
-
+    
+    // problemas con la clave al modificar, no se actualiza ( Se elimino el evento )
     function evt__form_ejes__modificacion($datos) {
-        $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
-        $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
-        $this->s__mostrar = 0;
+        
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        $tipo = $this->dep('datos')->tabla('tipos_ejes_tematicos')->get_tipo($datos['descripcion'])[0];
+        print_r($tipo);
+        $correcto = true;
+        $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']);
+        // Control Ejes no repetidos 
+        foreach ($ejes_conv as $eje) {
+            if ($eje['id_eje'] == $tipo['id_eje']) {
+                $correcto = false;
+                toba::notificacion()->agregar('Eje tematico repetido, vuelva a intentarlo', 'info');
+            }
+        }
+        if ($correcto) {
+            $datos['id_bases'] = $bases['id_bases'];
+            $datos['descripcion'] = $tipo['descripcion'];
+            $datos['id_eje'] = $tipo['id_eje'];
+
+            // control clave unica
+
+            $this->dep('datos')->tabla('eje_tematico_conv')->set($datos);
+            $this->dep('datos')->tabla('eje_tematico_conv')->sincronizar();
+
+            $this->s__mostrar = 0;
+        }
     }
 
     function evt__form_ejes__baja() {
@@ -177,7 +211,7 @@ class ci_bases extends extension_ci {
         toba::notificacion()->agregar('El registro se ha eliminado correctamente', 'info');
 
         $this->dep('datos')->tabla('eje_tematico_conv')->resetear();
-        $this->set_pantalla('pant_ejes');
+        //$this->set_pantalla('pant_ejes');
         $this->s__mostrar = 0;
     }
 
@@ -230,7 +264,7 @@ class ci_bases extends extension_ci {
 
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
-            
+
             $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_descripciones($bases[id_bases]);
 
             //configuramos el nombre que tendrá el archivo pdf
@@ -279,11 +313,11 @@ class ci_bases extends extension_ci {
 
             $pdf->ezText(utf8_d_seguro('<b> EJES TEMÁTICOS: </b>'), 10, ['justification' => 'full']);
             $pdf->ezText(utf8_d_seguro($bases['eje_tematico_txt']), 10, ['justification' => 'full']);
-            
+
             foreach ($ejes_conv as $eje) {
                 $pdf->ezText(' - ' . $eje[descripcion], 10, ['justification' => 'full']);
             }
-            
+
             //salto de linea
             $pdf->ezText('  ', 10, ['justification' => 'full']);
 

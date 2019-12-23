@@ -44,7 +44,7 @@ class dt_bases_convocatoria extends extension_datos_tabla {
     
     function get_convocatorias_vigentes($id_estado =null) {
         $where =null;
-        if(is_null($id_estado)|| $id_estado='FORM'){
+        if(is_null($id_estado) || $id_estado=='FORM'){
             $where ="WHERE fecha_desde <= current_date AND fecha_hasta >= current_date ";
         }else{
             $where = '';
