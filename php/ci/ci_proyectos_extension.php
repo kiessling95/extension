@@ -885,6 +885,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_org = 0;
         $this->s__mostrar_obj = 0;
         $this->s__mostrar_activ = 0;
+        $this->s__mostrar_dest = 0;
     }
 
     function evt__integrantesi() {
@@ -905,7 +906,7 @@ class ci_proyectos_extension extends extension_ci {
      */
 
     function conf__formulario_destinatarios(toba_ei_formulario $form) {
-        if ($this->s__mostrar == 1) {
+        if ($this->s__mostrar_dest == 1) {
             $this->dep('formulario_destinatarios')->descolapsar();
         } else {
             $this->dep('formulario_destinatarios')->colapsar();
@@ -926,22 +927,24 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('destinatarios')->set($datos);
         $this->dep('datos')->tabla('destinatarios')->sincronizar();
         $this->dep('datos')->tabla('destinatarios')->resetear();
+        $this->s__mostrar_dest = 0;
     }
 
     function evt__formulario_destinatarios__modificacion($datos) {
         $this->dep('datos')->tabla('destinatarios')->set($datos);
         $this->dep('datos')->tabla('destinatarios')->sincronizar();
+        $this->s__mostrar_dest = 0;
     }
 
     function evt__formulario_destinatarios__baja($datos) {
         $this->dep('datos')->tabla('destinatarios')->eliminar_todo();
         $this->dep('datos')->tabla('destinatarios')->resetear();
         toba::notificacion()->agregar('El integrante se ha eliminado  correctamente.', 'info');
-        $this->s__mostrar = 0;
+        $this->s__mostrar_dest = 0;
     }
 
     function evt__formulario_destinatarios__cancelar() {
-        $this->s__mostrar = 0;
+        $this->s__mostrar_dest = 0;
         $this->dep('datos')->tabla('destinatarios')->resetear();
     }
 
@@ -1102,6 +1105,11 @@ class ci_proyectos_extension extends extension_ci {
         $datos = $this->dep('datos')->tabla('destinatarios')->get_listado($pe['id_pext']);
 
         $cuadro->set_datos($datos);
+    }
+    
+    function evt__cuadro_destinatarios__seleccion($datos) {
+        $this->dep('datos')->tabla('destinatarios')->cargar($datos);
+        $this->s__mostrar_dest = 1;
     }
 
 //-----------------------------------------------------------------------------------

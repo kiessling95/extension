@@ -3,6 +3,7 @@
 class dt_destinatarios extends extension_datos_tabla {
     
     function get_listado ($id_pext = null){
+        
         $sql = "SELECT "
                 . "d.id_destinatario, "
                 . "d.id_pext, "
