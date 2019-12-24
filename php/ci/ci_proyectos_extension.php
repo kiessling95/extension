@@ -411,6 +411,11 @@ class ci_proyectos_extension extends extension_ci {
         return $datos['nro_resol'];
     }
 
+    function destinatarios() {
+        $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
+        return $this->dep('datos')->tabla('destinatarios')->get_descripciones($id_pext);
+    }
+
 //---- Filtro -----------------------------------------------------------------------
 
     function conf__filtro(toba_ei_filtro $filtro) {
@@ -907,6 +912,15 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__formulario_destinatarios(toba_ei_formulario $form) {
         if ($this->s__mostrar_dest == 1) {
+            $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+            $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+            // si presiono el boton enviar no puede editar nada mas 
+            if ($estado != 'FORM' && $perfil == formulador) {
+                $this->dep('formulario_destinatarios')->set_solo_lectura();
+                $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
+                $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
+                $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
+            }
             $this->dep('formulario_destinatarios')->descolapsar();
         } else {
             $this->dep('formulario_destinatarios')->colapsar();
@@ -1106,7 +1120,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $cuadro->set_datos($datos);
     }
-    
+
     function evt__cuadro_destinatarios__seleccion($datos) {
         $this->dep('datos')->tabla('destinatarios')->cargar($datos);
         $this->s__mostrar_dest = 1;
@@ -1581,7 +1595,6 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
-// creo que todas estas conf ya no son necesarias 
 //-----------------------------------------------------------------------------------
 //---- cuadro_int -------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -1795,7 +1808,19 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('plan_actividades')->esta_cargada()) {
+
             $datos = $this->dep('datos')->tabla('plan_actividades')->get();
+
+            $dest = array();
+            $aux = $datos['destinatarios'];
+            for ($i = 0; $i < strlen($aux); $i++) {
+                if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
+                    $dest . array_push($dest, $aux[$i]);
+                }
+            }
+            $datos['destinatarios'] = $dest;
+
+
             $form->set_datos($datos);
         }
     }
@@ -1803,6 +1828,16 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_actividad__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
+        
+        $destinatarios = $datos['destinatarios'];
+
+        $array = '{' . $destinatarios[0];
+        unset($destinatarios[0]);
+        foreach ($destinatarios as $destinatario) {
+            $array = $array . ',' . $destinatario;
+        }
+        $array = $array . '}';
+        $datos['destinatarios'] = $array;
 
         $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
         if ($datos[anio] > date('Y') + 1) {
@@ -1828,6 +1863,18 @@ class ci_proyectos_extension extends extension_ci {
             toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
             $datos[anio] = date('Y') + 1;
         }
+        $destinatarios = $datos['destinatarios'];
+        
+        $destinatarios = $datos['destinatarios'];
+
+        $array = '{' . $destinatarios[0];
+        unset($destinatarios[0]);
+        foreach ($destinatarios as $destinatario) {
+            $array = $array . ',' . $destinatario;
+        }
+        $array = $array . '}';
+        $datos['destinatarios'] = $array;
+        
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
         $this->s__mostrar_activ = 0;
