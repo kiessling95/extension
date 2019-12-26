@@ -420,7 +420,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
             $id_estado = $pext['id_estado'];
-        }else{
+        } else {
             $id_estado = 'FORM';
         }
         return $this->dep('datos')->tabla('bases_convocatoria')->get_convocatorias_vigentes($id_estado);
@@ -1217,14 +1217,21 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_presupuesto__guardar($datos) {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
-
+      
         $datos[id_pext] = $pe['id_pext'];
 
-        $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
-        $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
-        $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+        $monto_max = $this->dep('datos')->tabla('bases_convocatoria')->get_monto($pe[id_bases])[0][monto_max];
 
-        $this->s__mostrar_presup = 0;
+        if (($pe[monto]+$datos[monto]) <= $monto_max) {
+
+            $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+            $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+            $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+            $this->s__mostrar_presup = 0;
+        } else {
+            $monto_restante = $monto_max - $pe[monto];
+            toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
+        }
     }
 
     function evt__form_presupuesto__baja($datos) {
@@ -1235,8 +1242,23 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_presupuesto__modificacion($datos) {
-        $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
-        $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        
+        $datos[id_pext] = $pe['id_pext'];
+
+        $monto_max = $this->dep('datos')->tabla('bases_convocatoria')->get_monto($pe[id_bases])[0][monto_max];
+
+        
+        if (($pe[monto]+$datos[monto]) <= $monto_max) {
+
+            $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+            $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+            $this->s__mostrar_presup = 0;
+        } else {
+            $monto_restante = $monto_max - $pe[monto];
+            toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
+        }
     }
 
     function evt__form_presupuesto__cancelar() {
@@ -1677,6 +1699,17 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_presup(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $cuadro->set_datos($this->dep('datos')->tabla('presupuesto_extension')->get_listado($pe['id_pext']));
+
+        $datos = $cuadro->get_datos();
+        $monto = 0;
+        foreach ($datos as $dato) {
+            $monto = $monto + $dato[monto];
+        }
+
+        $pe[monto] = $monto;
+
+        $this->dep('datos')->tabla('pextension')->set($pe);
+        $this->dep('datos')->tabla('pextension')->sincronizar();
     }
 
     function evt__cuadro_presup__seleccion($datos) {
