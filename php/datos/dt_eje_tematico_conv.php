@@ -10,10 +10,10 @@ class dt_eje_tematico_conv extends extension_datos_tabla {
                     . "Where b_c.id_bases= " . $id_bases;
             
             $res = toba::db('extension')->consultar($sql);
+ 
         } else {
             $res = array();
         }
-        //print_r($res);        exit();
         return $res;
     }
 
@@ -28,9 +28,8 @@ class dt_eje_tematico_conv extends extension_datos_tabla {
 		ORDER BY descripcion";
         return toba::db('extension')->consultar($sql);
     }
-    
-    
-    function existe_eje($id_base = null, $id_eje = null){
+
+    function existe_eje($id_base = null, $id_eje = null) {
         $sql = "SELECT
 			t_etc.id_eje,
                         t_etc.id_bases,
@@ -39,10 +38,10 @@ class dt_eje_tematico_conv extends extension_datos_tabla {
 			eje_tematico_conv as t_etc
                 WHERE   t_etc.id_bases = $id_bases AND t_etc.id_eje = $id_eje
 		ORDER BY descripcion";
-        print_r($sql);        exit();
+        print_r($sql);
+        exit();
         return toba::db('extension')->consultar($sql);
     }
-
 
 }
 

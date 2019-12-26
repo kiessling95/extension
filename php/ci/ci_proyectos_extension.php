@@ -416,6 +416,16 @@ class ci_proyectos_extension extends extension_ci {
         return $this->dep('datos')->tabla('destinatarios')->get_descripciones($id_pext);
     }
 
+    function convocatorias() {
+        if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
+            $pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
+            $id_estado = $pext['id_estado'];
+        }else{
+            $id_estado = 'FORM';
+        }
+        return $this->dep('datos')->tabla('bases_convocatoria')->get_convocatorias_vigentes($id_estado);
+    }
+
 //---- Filtro -----------------------------------------------------------------------
 
     function conf__filtro(toba_ei_filtro $filtro) {
@@ -631,6 +641,10 @@ class ci_proyectos_extension extends extension_ci {
         }
         $array = $array . '}';
         $datos['eje_tematico'] = $array;
+
+        $id_estado = $this->dep('datos')->tabla('estado_pe')->get_id($datos['id_estado'])[0];
+
+        $datos['id_estado'] = $id_estado['id_estado'];
 
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
@@ -877,6 +891,10 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_actividad':
                 $this->set_pantalla('pant_objetivos');
                 $this->dep('datos')->tabla('plan_actividades')->resetear();
+                break;
+            case 'pant_destinatarios':
+                $this->set_pantalla('pant_formulario');
+                $this->dep('datos')->tabla('destinatarios')->resetear();
                 break;
             default :
                 $this->set_pantalla('pant_edicion');
@@ -1415,6 +1433,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_destinatarios")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
 
@@ -1769,6 +1788,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $obj_esp = $this->s__where;
 
+
         $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp['id_objetivo']));
     }
 
@@ -1826,9 +1846,13 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_actividad__guardar($datos) {
+        print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
-        
+
+        //$obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($pe['id_pext']);
+        $obj_esp = $this->s__where;
+        $datos[id_obj_especifico] = $obj_esp['id_objetivo'];
+
         $destinatarios = $datos['destinatarios'];
 
         $array = '{' . $destinatarios[0];
@@ -1839,7 +1863,7 @@ class ci_proyectos_extension extends extension_ci {
         $array = $array . '}';
         $datos['destinatarios'] = $array;
 
-        $datos[id_obj_especifico] = $obj_esp[0]['id_objetivo'];
+
         if ($datos[anio] > date('Y') + 1) {
             toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
             $datos[anio] = date('Y') + 1;
@@ -1864,7 +1888,7 @@ class ci_proyectos_extension extends extension_ci {
             $datos[anio] = date('Y') + 1;
         }
         $destinatarios = $datos['destinatarios'];
-        
+
         $destinatarios = $datos['destinatarios'];
 
         $array = '{' . $destinatarios[0];
@@ -1874,7 +1898,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $array = $array . '}';
         $datos['destinatarios'] = $array;
-        
+
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
         $this->s__mostrar_activ = 0;

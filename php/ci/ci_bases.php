@@ -2,7 +2,6 @@
 
 class ci_bases extends extension_ci {
 
-    protected $nombre_tabla = 'bases_convocatoria';
     protected $s__mostrar;
     protected $s__where = null;
     protected $s__datos_filtro = null;
@@ -18,16 +17,16 @@ class ci_bases extends extension_ci {
     function conf__cuadro(toba_ei_cuadro $cuadro) {
         $this->dep('datos')->resetear();
         if (!is_null($this->s__where)) {
-            $datos = $this->dep('datos')->tabla($this->nombre_tabla)->get_listado($this->s__where);
+            $datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado($this->s__where);
         } else {
-            $datos = $this->dep('datos')->tabla($this->nombre_tabla)->get_listado();
+            $datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado();
         }
         $cuadro->set_datos($datos);
     }
 
     function evt__cuadro__seleccion($datos) {
         $this->set_pantalla('pant_edicion');
-        $this->dep('datos')->tabla($this->nombre_tabla)->cargar($datos);
+        $this->dep('datos')->tabla('bases_convocatoria')->cargar($datos);
     }
 
     function conf__cuadro_ejes(toba_ei_cuadro $cuadro) {
@@ -96,7 +95,7 @@ class ci_bases extends extension_ci {
     function evt__volver() {
 
         $this->set_pantalla('pant_edicion');
-        $this->dep('datos')->tabla($this->nombre_tabla)->resetear();
+        $this->dep('datos')->tabla('bases_convocatoria')->resetear();
     }
 
     function conf__pant_edicion(toba_ei_pantalla $pantalla) {
@@ -223,8 +222,8 @@ class ci_bases extends extension_ci {
     }
 
     function conf__formulario(toba_ei_formulario $form) {
-        if ($this->dep('datos')->tabla($this->nombre_tabla)->esta_cargada()) {
-            $datos = $this->dep('datos')->tabla($this->nombre_tabla)->get();
+        if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
+            $datos = $this->dep('datos')->tabla('bases_convocatoria')->get();
             $form->set_datos($datos);
         }
     }
@@ -233,30 +232,31 @@ class ci_bases extends extension_ci {
         /*
          * todo: el periodo por defecto
          */
-        $this->dep('datos')->tabla($this->nombre_tabla)->set($datos);
-        $this->dep('datos')->tabla($this->nombre_tabla)->sincronizar();
-        $this->resetear();
+        $this->dep('datos')->tabla('bases_convocatoria')->set($datos);
+        $this->dep('datos')->tabla('bases_convocatoria')->sincronizar();
+        $this->dep('datos')->tabla('bases_convocatoria')->cargar($datos);
     }
 
     function evt__formulario__modificacion($datos) {
-        $this->dep('datos')->tabla($this->nombre_tabla)->set($datos);
-        $this->dep('datos')->tabla($this->nombre_tabla)->sincronizar();
-        $this->resetear();
+        
+        $this->dep('datos')->tabla('bases_convocatoria')->set($datos);
+        $this->dep('datos')->tabla('bases_convocatoria')->sincronizar();
     }
 
     function evt__formulario__baja() {
         $this->dep('datos')->eliminar_todo();
         toba::notificacion()->agregar('El registro se ha eliminado correctamente', 'info');
         $this->resetear();
+        $this->set_pantalla('pant_cuadro');
     }
 
     function evt__formulario__cancelar() {
         $this->resetear();
+        $this->set_pantalla('pant_cuadro');
     }
 
     function resetear() {
         $this->dep('datos')->resetear();
-        $this->set_pantalla('pant_cuadro');
     }
 
     function vista_pdf(toba_vista_pdf $salida) {
