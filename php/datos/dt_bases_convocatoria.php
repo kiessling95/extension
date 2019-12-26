@@ -11,6 +11,7 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 			t_bc.destinatarios,
 			t_bc.integrantes,
 			t_bc.monto,
+                        t_bc.monto_max,
 			t_bc.duracion,
 			t_bc.fecha,
                         t_bc.fecha_desde,
@@ -41,6 +42,22 @@ class dt_bases_convocatoria extends extension_datos_tabla {
                 . "ORDER BY convocatoria";
         return toba::db('extension')->consultar($sql);
     }
+    
+    function get_convocatorias_vigentes($id_estado =null) {
+        $where =null;
+        if(is_null($id_estado) || $id_estado=='FORM'){
+            $where ="WHERE fecha_desde <= current_date AND fecha_hasta >= current_date ";
+        }else{
+            $where = '';
+        }
+
+        $sql = "SELECT id_bases, bases_titulo "
+                . "FROM bases_convocatoria as b_c "
+                .  $where
+                . "ORDER BY convocatoria";
+
+        return toba::db('extension')->consultar($sql);
+    }
 
     function get_duracion($id_bases = null) {
 
@@ -65,6 +82,7 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 			t_bc.destinatarios,
 			t_bc.integrantes,
 			t_bc.monto,
+                        t_bc.monto_max,
 			t_bc.duracion,
 			t_bc.fecha,
                         t_bc.fecha_desde,
