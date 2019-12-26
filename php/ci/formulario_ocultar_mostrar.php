@@ -134,6 +134,41 @@
                     }
 		}
                 
+                {$id_js}.evt__prorrogar__procesar = function(es_inicial)
+                {
+                    if(this.ef('prorrogar').chequeado())
+                    {
+                        this.ef('fecha_prorroga1').mostrar();
+                        this.ef('estado_prorroga').mostrar();
+                    }
+                    else
+                    {
+                        this.ef('fecha_prorroga1').ocultar();
+                        this.ef('estado_prorroga').ocultar();
+                    }
+                }
+                
+                {$id_js}.evt__estado_prorroga__procesar = function(es_inicial) 
+		{
+                    switch (this.ef('estado_prorroga').get_estado()) {
+                                    case 'A':
+                                            this.ef('num_acta_prorroga').mostrar();
+                                            this.ef('fecha_prorroga2').mostrar();
+                                            this.ef('observacion_prorroga').mostrar();
+                                            break;
+                                    case 'D':
+                                            this.ef('num_acta_prorroga').mostrar();
+                                            this.ef('fecha_prorroga2').ocultar();
+                                            this.ef('observacion_prorroga').mostrar();
+                                            break;
+                                    default:
+                                            this.ef('num_acta_prorroga').ocultar();
+                                            this.ef('fecha_prorroga2').ocultar();
+                                            this.ef('observacion_prorroga').ocultar();
+                                           break;
+                    }
+		}
+                
                 ";
         }
     }

@@ -623,10 +623,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000158', --objeto
 	'1002000126', --col_id
 	'resolucion_pago', --columna
-	'E', --tipo
+	'C', --tipo
 	'0', --pk
 	'', --secuencia
-	NULL, --largo
+	'20', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa
@@ -721,10 +721,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000158', --objeto
 	'1002000135', --col_id
 	'num_acta_avance', --columna
-	'E', --tipo
+	'C', --tipo
 	'0', --pk
 	'', --secuencia
-	NULL, --largo
+	'20', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa
@@ -735,10 +735,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000158', --objeto
 	'1002000136', --col_id
 	'num_acta_final', --columna
-	'E', --tipo
+	'C', --tipo
 	'0', --pk
 	'', --secuencia
-	NULL, --largo
+	'20', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
 	'0', --externa
@@ -777,7 +777,63 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000158', --objeto
 	'1002000139', --col_id
 	'num_acta', --columna
-	'E', --tipo
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1002000140', --col_id
+	'num_acta_prorroga', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1002000141', --col_id
+	'prorrogar', --columna
+	'L', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1002000142', --col_id
+	'estado_prorroga', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'1', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'pextension'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000158', --objeto
+	'1002000143', --col_id
+	'observacion_prorroga', --columna
+	'C', --tipo
 	'0', --pk
 	'', --secuencia
 	NULL, --largo
