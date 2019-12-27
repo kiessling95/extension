@@ -670,7 +670,7 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------------------------------------------------------------------------------
 
     function conf__formulario_seguimiento(toba_ei_formulario $form) {
-
+        
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         if ($estado != 'FORM' && $perfil == formulador) {
@@ -679,12 +679,13 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
             $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
-
+        
+        
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pe = $this->dep('datos')->tabla('pextension')->get();
             $datos = $this->dep('datos')->tabla('pextension')->get_datos_seg($pe['id_pext']);
-
+           
             $form->set_datos($datos[0]);
         }
     }
@@ -696,7 +697,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->set($datos);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($datos);
-
             toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
         }
     }
@@ -720,6 +720,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->resetear();
         $this->set_pantalla('pant_seguimiento_central');
     }
+    
+    
 
     //------------------------------------------------------------------------------------------------
     //---- Formulario Seguimiento UA-------------------------------------------------------------------
@@ -858,7 +860,6 @@ class ci_proyectos_extension extends extension_ci {
                 if ($perfil == formulador) {
                     $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
                 }
-
 
                 $this->dep('datos')->tabla('pextension')->resetear();
                 break;
