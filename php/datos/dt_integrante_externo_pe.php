@@ -46,16 +46,15 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "t_i.ua,"
                 . "t_i.carga_horaria,"
                 . "t_f.descripcion as funcion_p,"
-                . "t_do.telefono,"
                 . "t_do.correo_institucional as mail,"
                 . "ad_honorem " 
                 . "FROM  integrante_interno_pe t_i "
                 . "LEFT OUTER JOIN ( SELECT d.* FROM dblink('".$this->dblink_designa()."', "
                 . "'SELECT d.id_designacion,d.id_docente, d.carac,d.cat_estat,d.dedic FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER, carac CHARACTER(1),cat_estat CHARACTER(6), dedic INTEGER )) as t_d ON (t_i.id_designacion=t_d.id_designacion) "
                 . "LEFT OUTER JOIN (SELECT dc.* FROM dblink('".$this->dblink_designa()."',
-                    'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim ,dc.telefono, dc.correo_institucional
+                    'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim , dc.correo_institucional
                     FROM docente as dc ') as dc 
-                    ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2),telefono INTEGER,correo_institucional CHARACTER(60)) ) as t_do ON (t_d.id_docente=t_do.id_docente) "
+                    ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2),correo_institucional CHARACTER(60)) ) as t_do ON (t_d.id_docente=t_do.id_docente) "
                 . "LEFT OUTER JOIN funcion_extension t_f ON (t_i.funcion_p=t_f.id_extension) "
                 . "LEFT OUTER JOIN pextension p ON (t_i.id_pext=p.id_pext) ";
         if (count($where) > 0) {
@@ -79,7 +78,6 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "'' as ua, "
                 . "t_e.carga_horaria, "
                 . "t_f.descripcion as funcion_p,"
-                . "t_p.telefono,"
                 . "t_p.mail,"
                 . "ad_honorem "
                 . "FROM integrante_externo_pe t_e"
