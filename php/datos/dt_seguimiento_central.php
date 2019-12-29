@@ -1,0 +1,48 @@
+<?php
+
+class dt_seguimiento_central extends extension_datos_tabla {
+
+    function get_listado($id = null)
+    {
+        $sql = "SELECT 
+                
+                   s_c.id_seguimiento,
+                   s_c.id_pext,
+                   s_c.codigo,
+                   s_c.nro_ord_cs,
+                   s_c.res_rect,
+                   s_c.resolucion_pago,
+                   s_c.fecha_inf_avance,
+                   s_c.fecha_evaluacion_avance,
+                   s_c.dictamen,
+                   s_c.fecha_inf_final,
+                   s_c.fecha_evaluacion_final,
+                   s_c.informe_avance,
+                   s_c.informe_final,
+                   s_c.observacion_avance,
+                   s_c.observacion_final,
+                   s_c.num_acta_avance,
+                   s_c.num_acta_final,
+                   s_c.rendicion,
+                   s_c.estado_rendicion,
+                   s_c.num_acta,
+                   s_c.num_acta_prorroga,
+                   s_c.prorrogar,
+                   s_c.estado_prorroga,
+                   s_c.observacion_prorroga,
+                   s_c.fecha_rendicion,
+                   s_c.rendicion_monto,
+                   s_c.estado_informe_a,
+                   s_c.estado_informe_f,
+                   s_c.fecha_prorroga1,
+                   s_c.fecha_prorroga2
+                   
+                FROM seguimiento_central as s_c INNER JOIN pextension as p_e ON (s_c.id_pext = p_e.id_pext)
+                
+                WHERE s_c.id_pext = ".$id;
+//        print_r(toba::db('extension')->consultar($sql));        exit();
+        return toba::db('extension')->consultar($sql);
+    }
+   
+}
+?>
