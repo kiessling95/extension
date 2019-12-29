@@ -72,6 +72,12 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 
         return $res;
     }
+    
+    function get_monto($id_base = null){
+        $sql = "SELECT monto_max FROM bases_convocatoria WHERE id_bases = $id_base";
+        return toba::db('extension')->consultar($sql);
+        
+    }
 
     function get_datos($where = null) {
         $sql = "SELECT

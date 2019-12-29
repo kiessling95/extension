@@ -1641,17 +1641,17 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_convocatorias_vigentes', --carga_metodo
+	'convocatorias', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	'1001000156', --carga_dt
+	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'extension', --carga_fuente
 	NULL, --carga_lista
 	'id_bases', --carga_col_clave
 	'bases_titulo', --carga_col_desc
-	'id_estado', --carga_maestros
+	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'1', --carga_permite_no_seteado
