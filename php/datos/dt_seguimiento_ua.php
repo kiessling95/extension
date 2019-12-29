@@ -8,7 +8,7 @@ class dt_seguimiento_ua extends extension_datos_tabla {
             
                     s_u.id_seguimiento,
                     s_u.id_pext,
-                    s_u.observacion,
+                    s_u.observacion_ua,
                     s_u.nro_resol,
                     s_u.fecha_resol
                     
