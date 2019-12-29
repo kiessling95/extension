@@ -572,7 +572,8 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
             $seg = $this->dep('datos')->tabla('seguimiento_central')->get_listado($datos['id_pext']);
-//            $datos[codigo] = $seg[codigo];
+            
+            
 //            $datos[res_rect] = $seg[res_rect];
 //            $datos[nro_ord_cs] = $seg[nro_ord_cs];
             
@@ -581,7 +582,7 @@ class ci_proyectos_extension extends extension_ci {
             $where['id_pext'] = $datos[id_pext];
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $datos = $datos[0];
-
+            $datos[codigo] = $seg[0][codigo];
             $ejes = array();
             $aux = $datos['eje_tematico'];
             for ($i = 0; $i < strlen($aux); $i++) {
