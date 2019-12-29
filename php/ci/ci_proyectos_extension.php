@@ -679,7 +679,8 @@ class ci_proyectos_extension extends extension_ci {
     function conf__formulario_seguimiento(toba_ei_formulario $form) {
         
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $estado = $pe[id_estado];
         if ($estado != 'FORM' && $perfil == formulador) {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
@@ -687,9 +688,8 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
         
-
-        if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
-            $pe = $this->dep('datos')->tabla('pextension')->get();
+        if ($this->dep('datos')->tabla('seguimiento_central')->get_listado($pe['id_pext'])) {
+            
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pe['id_pext']);
 
             $datos[0][denominacion] = $pe[denominacion];
@@ -752,16 +752,18 @@ class ci_proyectos_extension extends extension_ci {
     function conf__formulario_seg_ua(toba_ei_formulario $form) {
 
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $estado = $pe[id_estado];
         if ($estado != 'FORM' && $perfil == formulador) {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
             $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
+        
 
-        if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
-            $pe = $this->dep('datos')->tabla('pextension')->get();
+        if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext'])) {
+            
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
 
             $datos[0][uni_acad] = $pe[uni_acad];
