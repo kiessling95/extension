@@ -561,7 +561,11 @@ class ci_proyectos_extension extends extension_ci {
         // Si esta cargado, traigo los datos de la base de datos
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('pextension')->get();
-
+            $seg = $this->dep('datos')->tabla('seguimiento_central')->get_listado($datos['id_pext']);
+//            $datos[codigo] = $seg[codigo];
+//            $datos[res_rect] = $seg[res_rect];
+//            $datos[nro_ord_cs] = $seg[nro_ord_cs];
+            
             $where = array();
             $where['uni_acad'] = $datos[uni_acad];
             $where['id_pext'] = $datos[id_pext];
@@ -605,6 +609,9 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[co_email]);
         unset($datos[co_telefono]);
         unset($datos[tipo_convocatoria]);
+        unset($datos[codigo]);
+        unset($datos[res_rect]);
+        unset($datos[nro_ord_cs]);
 
         //Cambio de estado a en formulacion
         $datos[id_estado] = 'FORM';
@@ -666,12 +673,18 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
         
-        
 
-        if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
+        if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
             $pe = $this->dep('datos')->tabla('pextension')->get();
-            $datos = $this->dep('datos')->tabla('pextension')->get_datos_seg($pe['id_pext']);
-           
+            $datos = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pe['id_pext']);
+
+            $datos[0][denominacion] = $pe[denominacion];
+            $datos[0][id_bases] = $pe[id_bases];
+            $datos[0][duracion] = $pe[duracion];
+            $datos[0][monto] = $pe[monto];
+            $datos[0][fec_desde] = $pe[fec_desde];
+            $datos[0][fec_hasta] = $pe[fec_hasta];
+            
             $form->set_datos($datos[0]);
         }
     }
@@ -679,12 +692,21 @@ class ci_proyectos_extension extends extension_ci {
     function evt__formulario_seguimiento__alta($datos) {
 //        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
 //        if($perfil != null && $perfil != formulador)
-        {
-            $this->dep('datos')->tabla('pextension')->set($datos);
-            $this->dep('datos')->tabla('pextension')->sincronizar();
-            $this->dep('datos')->tabla('pextension')->cargar($datos);
-            toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
-        }
+        unset($datos[denominacion]);
+        unset($datos[duracion]);
+        unset($datos[monto]);
+        unset($datos[id_bases]);
+        unset($datos[fec_desde]);
+        unset($datos[fec_hasta]);
+        
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+            
+        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
+        $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
+        toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
+        
     }
 
     function evt__formulario_seguimiento__modificacion($datos) {
@@ -692,12 +714,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos['fec_hasta'] = $datos['fecha_prorroga2'];
         }
 
-        $this->dep('datos')->tabla('pextension')->set($datos);
-        $this->dep('datos')->tabla('pextension')->sincronizar();
+        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
     }
 
     function evt__formulario_seguimiento__baja() {
-        $this->dep('datos')->tabla('pextension')->eliminar_todo();
+        $this->dep('datos')->tabla('seguimiento_central')->eliminar_todo();
         $this->resetear();
         $this->set_pantalla('pant_edicion');
     }
@@ -724,33 +746,63 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
 
-        if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
+        if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $pe = $this->dep('datos')->tabla('pextension')->get();
-//            print_r($pe);            exit();
-            $datos = $this->dep('datos')->tabla('pextension')->get_datos_seg_ua($pe['id_pext']);
+            $datos = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
 
+            $datos[0][uni_acad] = $pe[uni_acad];
+            $datos[0][duracion] = $pe[duracion];
+            $datos[0][estado] = $pe[estado];
+            $datos[0][financiacion] = $pe[financiacion];
+            $datos[0][monto] = $pe[monto];
+            $datos[0][id_bases] = $pe[id_bases];
+            $datos[0][responsable_carga] = $pe[responsable_carga];
+            $datos[0][departamento] = $pe[departamento];
+            $datos[0][area] = $pe[area];
+            $datos[0][fec_desde] = $pe[fec_desde];
+            $datos[0][fec_hasta] = $pe[fec_hasta];
+            $datos[0][denominacion] = $pe[denominacion];
+            $datos[0][codigo] = $pe[codigo];
+            
             $form->set_datos($datos[0]);
         }
 //        $perfil = toba::usuario()->get_perfil_datos();
     }
 
     function evt__formulario_seg_ua__alta($datos) {
+        
+        unset($datos[uni_acad]);
+        unset($datos[duracion]);
+        unset($datos[estado]);
+        unset($datos[financiacion]);
+        unset($datos[monto]);
+        unset($datos[id_bases]);
+        unset($datos[responsable_carga]);
+        unset($datos[departamento]);
+        unset($datos[area]);
+        unset($datos[fec_desde]);
+        unset($datos[fec_hasta]);
+        unset($datos[denominacion]);
+        unset($datos[codigo]);
+        
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
 
-        $this->dep('datos')->tabla('pextension')->set($datos);
-        $this->dep('datos')->tabla('pextension')->sincronizar();
-        $this->dep('datos')->tabla('pextension')->cargar($datos);
+        $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
+        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
 
         toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
     }
 
     function evt__formulario_seg_ua__modificacion($datos) {
 
-        $this->dep('datos')->tabla('pextension')->set($datos);
-        $this->dep('datos')->tabla('pextension')->sincronizar();
+        $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
     }
 
     function evt__formulario_seg_ua__baja() {
-        $this->dep('datos')->tabla('pextension')->eliminar_todo();
+        $this->dep('datos')->tabla('seguimiento_ua')->eliminar_todo();
         $this->resetear();
         $this->set_pantalla('pant_edicion');
     }

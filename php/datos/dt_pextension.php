@@ -10,17 +10,12 @@ class dt_pextension extends extension_datos_tabla {
         }
         $sql = "SELECT
 			t_p.id_pext,
-                        t_p.codigo,
                         t_p.denominacion,
-                        t_p.nro_resol,
-                        t_p.fecha_resol,
                         t_ua.descripcion as uni_acad_nombre,
                         t_p.departamento,
                         t_p.area,
                         t_p.fec_desde,
                         t_p.fec_hasta,
-                        t_p.nro_ord_cs,
-                        t_p.res_rect,
                         t_p.expediente,
                         t_p.duracion,
                         t_p.palabras_clave,
@@ -28,13 +23,6 @@ class dt_pextension extends extension_datos_tabla {
                         t_e.descripcion as id_estado,
                         t_p.financiacion,
                         t_p.monto,
-                        t_p.fecha_rendicion,
-                        t_p.rendicion_monto,
-                        t_p.fecha_prorroga1,
-                        t_p.fecha_prorroga2,
-                        t_p.observacion,
-                        t_p.estado_informe_a,
-                        t_p.estado_informe_f,
                         t_p.uni_acad,
                         
                         d.apellido || ' '|| d.nombre || ' '|| d.tipo_docum || ' '|| d.nro_docum as director,
@@ -75,8 +63,7 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)
                         LEFT OUTER JOIN estado_pe as t_e ON (t_e.id_estado = t_p.id_estado)
-                        
-                    ORDER BY codigo";
+                        ";
         
                 
         if (count($where) > 0) {
@@ -107,12 +94,9 @@ class dt_pextension extends extension_datos_tabla {
         
         $sql = "SELECT
                         t_p.id_pext,
-                        t_p.codigo,
                         t_c.descripcion,
                         dc.apellido || ' '|| dc.nombre || ' '|| dc.tipo_docum || ' '|| dc.nro_docum as director,
                         t_p.denominacion,
-                        t_p.nro_resol,
-                        t_p.fecha_resol,
                         t_p.uni_acad,
                         t_p.fec_desde,
                         t_p.fec_hasta                 
@@ -124,8 +108,7 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN ( SELECT dc.* FROM dblink('".$this->dblink_designa()."', 'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum, dc.nro_docum FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER)) as dc ON (d.id_docente = dc.id_docente)
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)"
-                    .$where
-                    ." ORDER BY codigo";
+                    .$where;
         $sql = toba::perfil_de_datos()->filtrar($sql);
 
         // buscar usuario y rol
@@ -134,12 +117,11 @@ class dt_pextension extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_datos_seg($id)
+ /*   function get_datos_seg($id)
     {
         $sql = "SELECT
                         t_p.id_pext,
                         t_p.denominacion,
-                        t_p.codigo,
                         t_p.fec_desde,
                         t_p.fec_hasta,
                         t_p.nro_ord_cs,
@@ -205,7 +187,7 @@ class dt_pextension extends extension_datos_tabla {
                         WHERE t_p.id_pext = ".$id ;
                 return toba::db('extension')->consultar($sql);
 
-    }
+    }*/
     
 }
 
