@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1002000066]--  Proyectos Extensi�n - CI - formulario_seg_ua 
+--[1002000066]--  Proyectos Extension - CI - formulario_seg_ua 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,7 +20,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'Proyectos Extensi�n - CI - formulario_seg_ua', --nombre
+	'Proyectos Extension - CI - formulario_seg_ua', --nombre
 	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
@@ -233,7 +233,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 	NULL, --clase_proyecto
 	NULL, --clase
 	NULL, --auto_reset
-	NULL, --ancho
+	'100%', --ancho
 	'150px', --ancho_etiqueta
 	'0', --expandir_descripcion
 	NULL, --campo_bl

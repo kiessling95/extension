@@ -1,6 +1,11 @@
 <?php
 
 class dt_pextension extends extension_datos_tabla {
+    
+    function get_titulo($id_pext = null){
+        $sql = "SELECT denominacion FROM pextension WHERE id_pext = $id_pext";
+        return toba::db('extension')->consultar($sql);
+    }
 
     function get_datos($filtro = array() ) {
         $where = array();
