@@ -1223,20 +1223,37 @@ class ci_proyectos_extension extends extension_ci {
         $datos[0]['denominacion'] = $pe['denominacion'];
 
         $cuadro->set_datos($datos);
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil != 'sec_ext_central') {
+            $this->dep('cuadro_seg_central')->evento('alta')->ocultar();
+            $this->dep('cuadro_seg_central')->evento('editar')->ocultar();
+        } else {
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            if ($this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext'])[0]) {
+                $this->dep('cuadro_seg_central')->evento('alta')->ocultar();
+            } else {
+                $this->dep('cuadro_seg_central')->evento('editar')->ocultar();
+            }
+        }
     }
 
     function evt__cuadro_seg_central__seleccion($datos) {
-        $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
-        $this->set_pantalla('pant_seguimiento_central');
-    }
-
-    function evt__cuadro_seg_central__editar($datos) {
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
         $this->set_pantalla('pant_seguimiento_central');
         $this->dep('formulario_seguimiento')->set_solo_lectura();
         $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
         $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
         $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+    }
+
+    function evt__cuadro_seg_central__editar($datos) {
+        $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
+        $this->set_pantalla('pant_seguimiento_central');
+    }
+
+    function evt__cuadro_seg_central__alta($datos) {
+        $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
+        $this->set_pantalla('pant_seguimiento_central');
     }
 
     // -------------------------------------------------------------------------
@@ -1249,20 +1266,39 @@ class ci_proyectos_extension extends extension_ci {
         $datos[0]['denominacion'] = $pe['denominacion'];
 
         $cuadro->set_datos($datos);
+
+
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil != 'sec_ext_ua') {
+            $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
+            $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
+        } else {
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pext['id_pext'])[0]) {
+                $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
+            } else {
+                $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
+            }
+        }
     }
 
     function evt__cuadro_seg_ua__seleccion($datos) {
-        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
-        $this->set_pantalla('pant_seguimiento_ua');
-    }
-
-    function evt__cuadro_seg_ua__editar($datos) {
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
         $this->set_pantalla('pant_seguimiento_ua');
         $this->dep('formulario_seg_ua')->set_solo_lectura();
         $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
         $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
         $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
+    }
+
+    function evt__cuadro_seg_ua__editar($datos) {
+        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
+        $this->set_pantalla('pant_seguimiento_ua');
+    }
+    
+    function evt__cuadro_seg_ua__alta($datos) {
+        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
+        $this->set_pantalla('pant_seguimiento_ua');
     }
 
 //-----------------------------------------------------------------------------------
@@ -1511,6 +1547,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     function conf__pant_seguimiento(toba_ei_pantalla $pantalla) {
@@ -1526,15 +1563,16 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
-
-        $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get();
-        if (!is_null($seg_ua)) {
-            $this->controlador()->evento('seg_ua')->ocultar();
-        }
-        $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get();
-        if (!is_null($seg_ua)) {
-            $this->controlador()->evento('seg_central')->ocultar();
-        }
+        /*
+          $pext =$this->dep('datos')->tabla('pextension')->get();
+          $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pext['id_pext']);
+          if (!is_null($seg_ua)) {
+          $this->controlador()->evento('seg_ua')->ocultar();
+          }else{
+          $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext']);
+          if (!is_null($seg_ua)) {
+          $this->controlador()->evento('seg_central')->ocultar();
+          } */
     }
 
     function conf__pant_destinatarios(toba_ei_pantalla $pantalla) {
