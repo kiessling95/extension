@@ -84,6 +84,7 @@ class ci_bases extends extension_ci {
 
     function evt__nuevo($datos) {
         $this->set_pantalla('pant_edicion');
+        $this->pantalla()->tab("pant_ejes")->ocultar();
     }
 
     function evt__agregar() {
