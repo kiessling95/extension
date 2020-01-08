@@ -1,6 +1,7 @@
 <?php
 class extension_ci extends toba_ci
 {
+    /*
 	function conf__pant_seguimiento(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_seguimiento";
 	echo "<tr height='20'>".
@@ -17,6 +18,6 @@ class extension_ci extends toba_ci
               "</table>".
         "</td>".
     "</tr>";
-    }
+    }*/
 }
 ?>
