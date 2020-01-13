@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000240]--  Proyectos Extensi�n - CI - formulario_seguimiento 
+--[1001000240]--  Proyectos Extension - CI - formulario_seguimiento 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -20,7 +20,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'ci/formulario_ocultar_mostrar.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
-	'Proyectos Extensi�n - CI - formulario_seguimiento', --nombre
+	'Proyectos Extension - CI - formulario_seguimiento', --nombre
 	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
@@ -200,7 +200,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 	NULL, --clase_proyecto
 	NULL, --clase
 	NULL, --auto_reset
-	NULL, --ancho
+	'100%', --ancho
 	'150px', --ancho_etiqueta
 	'0', --expandir_descripcion
 	NULL, --campo_bl
