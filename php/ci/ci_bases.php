@@ -5,6 +5,7 @@ class ci_bases extends extension_ci {
     protected $s__mostrar;
     protected $s__where = null;
     protected $s__datos_filtro = null;
+    protected $s__rubro = null;
 
     function get_eje_tematico($id) {
         
@@ -40,6 +41,33 @@ class ci_bases extends extension_ci {
         $this->s__mostrar = 1;
         $this->set_pantalla('pant_ejes');
         $this->dep('datos')->tabla('eje_tematico_conv')->cargar($datos);
+    }
+
+    function conf__cuadro_rubros(toba_ei_cuadro $cuadro) {
+        if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
+            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        }
+        $datos = array();
+        $i = 0;
+        $rubros = $this->dep('datos')->tabla('rubro_presup_extension')->get_tipo();
+        foreach ($rubros as $rubro) {
+            $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($rubro[id_rubro_extension])[0];
+            $datos[$i][id_rubro_extension] = $rubro[id_rubro_extension];
+            $datos[$i][tipo] = $rubro[tipo];
+            $datos[$i][monto] = $monto[monto_max];
+            $i = $i + 1;
+        }
+        $cuadro->set_datos($datos);
+    }
+
+    function evt__cuadro_rubros__seleccion($datos) {
+
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        $datos[id_bases] = $bases[id_bases];
+        $rubros = $this->dep('datos')->tabla('rubro_presup_extension')->get_descripcion($datos[id_rubro_extension]);
+        $this->s__mostrar = 1;
+        $this->s__rubro = $datos[id_rubro_extension];
+        $this->dep('datos')->tabla('montos_convocatoria')->cargar($datos);
     }
 
 //-----------------------------------------------------------------------------------
@@ -117,9 +145,20 @@ class ci_bases extends extension_ci {
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_ejes")->ocultar();
+        $this->pantalla()->tab("pant_rubros")->ocultar();
     }
 
     function conf__pant_ejes(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_ejes";
+
+        $this->pantalla()->tab("pant_cuadro")->desactivar();
+        #$this->pantalla()->tab("pant_ejes")->desactivar();
+
+        $this->pantalla()->tab("pant_cuadro")->ocultar();
+        #$this->pantalla()->tab("pant_ejes")->ocultar();
+    }
+
+    function conf__pant_rubros(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_ejes";
 
         $this->pantalla()->tab("pant_cuadro")->desactivar();
@@ -176,13 +215,12 @@ class ci_bases extends extension_ci {
         //$this->dep('datos')->resetear();
         //$this->set_pantalla('pant_ejes');
     }
-    
+
     // problemas con la clave al modificar, no se actualiza ( Se elimino el evento )
     function evt__form_ejes__modificacion($datos) {
-        
+
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
         $tipo = $this->dep('datos')->tabla('tipos_ejes_tematicos')->get_tipo($datos['descripcion'])[0];
-        print_r($tipo);
         $correcto = true;
         $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']);
         // Control Ejes no repetidos 
@@ -222,6 +260,64 @@ class ci_bases extends extension_ci {
         $this->s__mostrar = 0;
     }
 
+    // Formulario montos
+
+    function conf__formulario_montos(toba_ei_formulario $form) {
+        if ($this->s__mostrar == 1) {
+            $this->dep('formulario_montos')->descolapsar();
+        } else {
+            $this->dep('formulario_montos')->colapsar();
+        }
+
+        if ($this->dep('datos')->tabla('montos_convocatoria')->esta_cargada()) {
+            $form->set_datos($this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($this->s__rubro)[0]);
+        }
+    }
+
+    function evt__formulario_montos__alta($datos) {
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        $datos['id_bases'] = $bases['id_bases'];
+        $datos[id_rubro_extension] = $this->s__rubro;
+
+        // falta controlar que no supere el monto maximo prop+u+esto en bases
+
+        $this->dep('datos')->tabla('montos_convocatoria')->set($datos);
+        $this->dep('datos')->tabla('montos_convocatoria')->sincronizar();
+        $this->dep('datos')->tabla('montos_convocatoria')->cargar($datos);
+        $this->dep('datos')->tabla('montos_convocatoria')->resetear();
+        
+        toba::notificacion()->agregar('La limitación de monto ha sido guardado exitosamente', 'info');
+
+        $this->s__mostrar = 0;
+    }
+
+    function evt__formulario_montos__modificacion($datos) {
+
+        $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($this->s__rubro)[0];
+
+        $datos['id_bases'] = $monto['id_bases'];
+        $datos[id_rubro_extension] = $monto[id_rubro_extension];
+
+        $this->dep('datos')->tabla('montos_convocatoria')->set($datos);
+        $this->dep('datos')->tabla('montos_convocatoria')->sincronizar();
+        $this->s__mostrar = 0;
+    }
+
+    function evt__formulario_montos__baja() {
+        $this->dep('datos')->tabla('montos_convocatoria')->eliminar_todo();
+        toba::notificacion()->agregar('El registro se ha eliminado correctamente', 'info');
+
+        $this->dep('datos')->tabla('montos_convocatoria')->resetear();
+        //$this->set_pantalla('pant_ejes');
+        $this->s__mostrar = 0;
+    }
+
+    function evt__formulario_montos__cancelar() {
+
+        $this->dep('datos')->tabla('montos_convocatoria')->resetear();
+        $this->s__mostrar = 0;
+    }
+
     function conf__formulario(toba_ei_formulario $form) {
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('bases_convocatoria')->get();
@@ -239,7 +335,7 @@ class ci_bases extends extension_ci {
     }
 
     function evt__formulario__modificacion($datos) {
-        
+
         $this->dep('datos')->tabla('bases_convocatoria')->set($datos);
         $this->dep('datos')->tabla('bases_convocatoria')->sincronizar();
     }

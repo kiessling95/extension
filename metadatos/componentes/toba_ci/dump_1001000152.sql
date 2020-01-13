@@ -204,6 +204,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
+	'1001000209', --dep_id
+	'1001000152', --objeto_consumidor
+	'1001000247', --objeto_proveedor
+	'cuadro_rubros', --identificador
+	NULL, --parametros_a
+	NULL, --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
 	'1001000106', --dep_id
 	'1001000152', --objeto_consumidor
 	'1001000155', --objeto_proveedor
@@ -250,6 +262,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	NULL, --inicializar
 	NULL  --orden
 );
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
+	'1001000210', --dep_id
+	'1001000152', --objeto_consumidor
+	'1001000248', --objeto_proveedor
+	'formulario_montos', --identificador
+	NULL, --parametros_a
+	NULL, --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
 --- FIN Grupo de desarrollo 1001
 
 ------------------------------------------------------------
@@ -282,7 +306,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000062', --pantalla
 	'pant_edicion', --identificador
 	'2', --orden
-	'Pantalla edición', --etiqueta
+	'Formularios Bases Convocatoria', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -301,7 +325,26 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000093', --pantalla
 	'pant_ejes', --identificador
 	'3', --orden
-	'Pantalla Ejes Temáticos', --etiqueta
+	'Ejes Temáticos', --etiqueta
+	NULL, --descripcion
+	NULL, --tip
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	NULL, --objetos
+	NULL, --eventos
+	NULL, --subclase
+	NULL, --subclase_archivo
+	NULL, --template
+	NULL, --template_impresion
+	'1001000004'  --punto_montaje
+);
+INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, identificador, orden, etiqueta, descripcion, tip, imagen_recurso_origen, imagen, objetos, eventos, subclase, subclase_archivo, template, template_impresion, punto_montaje) VALUES (
+	'extension', --objeto_ci_proyecto
+	'1001000152', --objeto_ci
+	'1001000097', --pantalla
+	'pant_rubros', --identificador
+	'4', --orden
+	'Presupuestos Limitaciones', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
@@ -353,6 +396,20 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1001000152', --objeto_ci
 	'1', --orden
 	'1001000196'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1001000097', --pantalla
+	'1001000152', --objeto_ci
+	'0', --orden
+	'1001000209'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1001000097', --pantalla
+	'1001000152', --objeto_ci
+	'1', --orden
+	'1001000210'  --dep_id
 );
 
 ------------------------------------------------------------
