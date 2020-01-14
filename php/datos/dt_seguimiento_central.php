@@ -35,7 +35,13 @@ class dt_seguimiento_central extends extension_datos_tabla {
                    s_c.estado_informe_a,
                    s_c.estado_informe_f,
                    s_c.fecha_prorroga1,
-                   s_c.fecha_prorroga2
+                   s_c.fecha_prorroga2,
+                   s_c.res_desig,
+                   s_c.nro_expediente_pago,
+                   s_c.informe_becario,
+                   s_c.fecha_informe_becario,
+                   s_c.nro_acta_informe_becario,
+                   s_c.estado_becario
                    
                 FROM seguimiento_central as s_c INNER JOIN pextension as p_e ON (s_c.id_pext = p_e.id_pext)
                 
