@@ -1279,12 +1279,7 @@ class ci_proyectos_extension extends extension_ci {
             }
                     
             $this->dep('form_integrante_e')->descolapsar();
-            if ($perfil != 'sec_ext_central')
-            {
-                $form->ef('res_desig')->set_solo_lectura();
-                $form->ef('nro_expediente_pago')->set_solo_lectura();
-                $form->ef('informe_becario')->set_solo_lectura();
-            }
+            
         } else {
             $this->dep('form_integrante_e')->colapsar();
         }

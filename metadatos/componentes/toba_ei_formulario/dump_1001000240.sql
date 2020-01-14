@@ -273,17 +273,63 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 			<td>
 				&nbsp;</td>
 		</tr>
-		
 		<tr>
 			<td>
 				[ef id=id_bases]</td>
-			
 		</tr>
 		<tr>
 			<td>
 				[ef id=duracion]</td>
 			<td>
 				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				<span style="font-size: 20px;"><b>INFORMACION DEL BECARIO</b></span></td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				[ef id=res_desig]</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				[ef id=nro_expediente_pago]</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				[ef id=informe_becario]</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				[ef id=fecha_informe_becario]</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				[ef id=estado_becario]</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;</td>
+			<td>
+				[ef id=nro_acta_informe_becario]</td>
 		</tr>
 		<tr>
 			<td>
@@ -3428,7 +3474,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000240', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'fecha_informe_becario', --identificador
-	'ef_editable', --elemento_formulario
+	'ef_editable_fecha', --elemento_formulario
 	'fecha_informe_becario', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -3512,7 +3558,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'nro_acta_informe_becario', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'39', --orden
+	'40', --orden
 	'N° Acta', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -3592,7 +3638,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'estado_becario', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'40', --orden
+	'39', --orden
 	'Estado', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
