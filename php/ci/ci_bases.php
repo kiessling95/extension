@@ -278,28 +278,59 @@ class ci_bases extends extension_ci {
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
         $datos['id_bases'] = $bases['id_bases'];
         $datos[id_rubro_extension] = $this->s__rubro;
+        if ($bases[monto_max] != null) {
+            $rubros = $this->dep('datos')->tabla('montos_convocatoria')->get_listado($bases[id_bases]);
+            //print_r($rubros);
+            $count = 0;
+            foreach ($rubros as $value) {
+                $count = $count + $value[monto_max];
+            }
+            $count = $count + $datos[monto_max];
+            if ($count <= $bases[monto_max]) {
+                $this->dep('datos')->tabla('montos_convocatoria')->set($datos);
+                $this->dep('datos')->tabla('montos_convocatoria')->sincronizar();
+                $this->dep('datos')->tabla('montos_convocatoria')->cargar($datos);
 
-        // falta controlar que no supere el monto maximo prop+u+esto en bases
-
-        $this->dep('datos')->tabla('montos_convocatoria')->set($datos);
-        $this->dep('datos')->tabla('montos_convocatoria')->sincronizar();
-        $this->dep('datos')->tabla('montos_convocatoria')->cargar($datos);
+                toba::notificacion()->agregar(utf8_d_seguro('La limitación de monto ha sido guardado exitosamente'), 'info');
+            } else {
+                toba::notificacion()->agregar(utf8_d_seguro('No se pudo guardar la ultima limitación, se supera el maximo establecido'), 'info');
+            }
+        } else {
+            toba::notificacion()->agregar(utf8_d_seguro('Aun no se define un monto maximo para los proyectos'), 'info');
+        }
         $this->dep('datos')->tabla('montos_convocatoria')->resetear();
-        
-        toba::notificacion()->agregar('La limitación de monto ha sido guardado exitosamente', 'info');
-
         $this->s__mostrar = 0;
     }
 
     function evt__formulario_montos__modificacion($datos) {
 
         $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($this->s__rubro)[0];
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
 
         $datos['id_bases'] = $monto['id_bases'];
         $datos[id_rubro_extension] = $monto[id_rubro_extension];
 
-        $this->dep('datos')->tabla('montos_convocatoria')->set($datos);
-        $this->dep('datos')->tabla('montos_convocatoria')->sincronizar();
+        if ($bases[monto_max] != null) {
+            $rubros = $this->dep('datos')->tabla('montos_convocatoria')->get_listado($bases[id_bases]);
+            //print_r($rubros);
+            $count = 0;
+            foreach ($rubros as $value) {
+                if ($datos[id_rubro_extension] != $value[id_rubro_extension])
+                    $count = $count + $value[monto_max];
+            }
+            $count = $count + $datos[monto_max];
+            if ($count <= $bases[monto_max]) {
+                $this->dep('datos')->tabla('montos_convocatoria')->set($datos);
+                $this->dep('datos')->tabla('montos_convocatoria')->sincronizar();
+                $this->dep('datos')->tabla('montos_convocatoria')->cargar($datos);
+
+                toba::notificacion()->agregar(utf8_d_seguro('La limitación de monto ha sido guardado exitosamente'), 'info');
+            } else {
+                toba::notificacion()->agregar(utf8_d_seguro('No se pudo guardar la ultima limitación, se supera el maximo establecido'), 'info');
+            }
+        } else {
+            toba::notificacion()->agregar(utf8_d_seguro('Se produjo algun cambio sobre el monto maximo despues de la carga de esta limitación que genera un error'), 'info');
+        };
         $this->s__mostrar = 0;
     }
 
@@ -308,7 +339,6 @@ class ci_bases extends extension_ci {
         toba::notificacion()->agregar('El registro se ha eliminado correctamente', 'info');
 
         $this->dep('datos')->tabla('montos_convocatoria')->resetear();
-        //$this->set_pantalla('pant_ejes');
         $this->s__mostrar = 0;
     }
 
