@@ -1277,7 +1277,9 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
                 $this->dep('form_integrante_e')->evento('cancelar')->ocultar();
             }
+                    
             $this->dep('form_integrante_e')->descolapsar();
+            
         } else {
             $this->dep('form_integrante_e')->colapsar();
         }

@@ -169,6 +169,41 @@
                     }
 		}
                 
+                {$id_js}.evt__informe_becario__procesar = function(es_inicial) 
+                    {
+			switch (this.ef('informe_becario').get_estado()) {
+                        
+					case 'Presento':
+						this.ef('fecha_informe_becario').mostrar();
+                                                this.ef('estado_becario').mostrar();
+						break;
+                                        case 'No Presento':
+                                                this.ef('fecha_informe_becario').ocultar();
+                                                this.ef('estado_becario').ocultar();
+                                                break;
+					default:
+						this.ef('fecha_informe_becario').ocultar();
+                                                this.ef('estado_becario').ocultar();
+						break;					
+				}
+                    }
+                    
+                    {$id_js}.evt__estado_becario__procesar = function(es_inicial) 
+                    {
+			switch (this.ef('estado_becario').get_estado()) {
+                        
+					case 'A':
+                                                this.ef('nro_acta_informe_becario').mostrar();
+						break;
+                                        case 'D':
+                                                this.ef('nro_acta_informe_becario').mostrar();
+                                                break;
+					default:
+                                                this.ef('nro_acta_informe_becario').ocultar();
+						break;					
+				}
+                    }
+                
                 ";
         }
     }
