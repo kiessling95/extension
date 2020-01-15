@@ -2221,24 +2221,55 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_objetivos_esp__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
+
+        $count = 0;
+        foreach ($obj_esp as $value) {
+            $count = $count + $value[ponderacion];
+        }
+        $count = $count + $datos[ponderacion];
 
         $datos[id_pext] = $pe['id_pext'];
 
-        $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
-        $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
-        $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+        if ($count <= 100) {
+
+            $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
+            $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+            $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+        }else{
+            toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
+        }
+        $this->s__mostrar_obj = 0;
     }
 
     function evt__form_objetivos_esp__baja($datos) {
         $this->dep('datos')->tabla('objetivo_especifico')->eliminar_todo();
         $this->dep('datos')->tabla('objetivo_especifico')->resetear();
-        toba::notificacion()->agregar('El objetivo se ha eliminado  correctamente.', 'info');
+        toba::notificacion()->agregar(utf8_decode('El objetivo se ha eliminado  correctamente.'), 'info');
         $this->s__mostrar_obj = 0;
     }
 
     function evt__form_objetivos_esp__modificacion($datos) {
-        $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
-        $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+        
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
+        $obj_modif = $this->dep('datos')->tabla('objetivo_especifico')->get();
+        $count = 0;
+        foreach ($obj_esp as $value) {
+            if($obj_modif[id_objetivo]!=$value[id_objetivo])
+            $count = $count + $value[ponderacion];
+        }
+        $count = $count + $datos[ponderacion];
+
+        if ($count <= 100) {
+
+            $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
+            $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+
+        }else{
+            toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
+        }
+        $this->s__mostrar_obj = 0;
     }
 
     function evt__form_objetivos_esp__cancelar() {
