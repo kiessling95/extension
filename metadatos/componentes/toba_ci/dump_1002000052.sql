@@ -252,12 +252,6 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
 	'1002000010', --pantalla
 	'1002000052', --objeto_ci
-	'1002000030', --evento_id
-	'extension'  --proyecto
-);
-INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
-	'1002000010', --pantalla
-	'1002000052', --objeto_ci
 	'1002000036', --evento_id
 	'extension'  --proyecto
 );

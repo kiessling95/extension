@@ -551,6 +551,12 @@ class ci_proyectos_extension extends extension_ci {
         return $this->dep('datos')->tabla('destinatarios')->get_listado($id_pext);
     }
 
+    function monto_rubro($datos) {
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
+        $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos)[0];
+        return $monto[monto_max];
+    }
+
     function convocatorias() {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
@@ -1520,18 +1526,33 @@ class ci_proyectos_extension extends extension_ci {
 
         $datos[id_pext] = $pe['id_pext'];
 
-        $monto_max = $this->dep('datos')->tabla('bases_convocatoria')->get_monto($pe[id_bases])[0][monto_max];
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases]);
+        $bases = $bases[0];
+
+        $presupuesto = $this->dep('datos')->tabla('presupuesto_extension')->get_listado_rubro($datos[id_rubro_extension]);
+        $count = 0;
+        foreach ($presupuesto as $value) {
+            $count = $count + $value[monto];
+        }
+
+        $monto_max = $bases[monto_max];
+        $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension])[0];
+
 
         if (($pe[monto] + $datos[monto]) <= $monto_max) {
+            if ($datos[monto] + $count <= $rubro[monto_max]) {
 
-            $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
-            $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
-            $this->dep('datos')->tabla('presupuesto_extension')->resetear();
-            $this->s__mostrar_presup = 0;
+                $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+                $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+            } else {
+                toba::notificacion()->agregar('Se supero el monto maximo para el rubro seleccionado', 'info');
+            }
         } else {
             $monto_restante = $monto_max - $pe[monto];
             toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
         }
+        $this->s__mostrar_presup = 0;
     }
 
     function evt__form_presupuesto__baja($datos) {
@@ -1547,18 +1568,36 @@ class ci_proyectos_extension extends extension_ci {
 
         $datos[id_pext] = $pe['id_pext'];
 
-        $monto_max = $this->dep('datos')->tabla('bases_convocatoria')->get_monto($pe[id_bases])[0][monto_max];
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases]);
+        $bases = $bases[0];
+
+        $presupuesto = $this->dep('datos')->tabla('presupuesto_extension')->get_listado_rubro($datos[id_rubro_extension]);
+        $count = 0;
+        foreach ($presupuesto as $value) {
+            if ($value[id_rubro_extension] != $datos[id_rubro_extension])
+                $count = $count + $value[monto];
+        }
+        $count = $count + $datos[monto];
+
+        $monto_max = $bases[monto_max];
+        $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension])[0];
+
 
 
         if (($pe[monto] + $datos[monto]) <= $monto_max) {
+            if ($datos[monto] + $count <= $rubro[monto_max]) {
 
-            $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
-            $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
-            $this->s__mostrar_presup = 0;
+                $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+                $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+            } else {
+                toba::notificacion()->agregar('Se supero el monto maximo para el rubro seleccionado', 'info');
+            }
         } else {
             $monto_restante = $monto_max - $pe[monto];
             toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
         }
+        $this->s__mostrar_presup = 0;
     }
 
     function evt__form_presupuesto__cancelar() {
@@ -1790,7 +1829,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
 
-         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
