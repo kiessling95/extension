@@ -489,4 +489,88 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --externa
 	'seguimiento_central'  --tabla
 );
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000067', --objeto
+	'1002000203', --col_id
+	'res_desig', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'seguimiento_central'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000067', --objeto
+	'1002000204', --col_id
+	'nro_expediente_pago', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'seguimiento_central'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000067', --objeto
+	'1002000205', --col_id
+	'informe_becario', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'seguimiento_central'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000067', --objeto
+	'1002000206', --col_id
+	'fecha_informe_becario', --columna
+	'F', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'seguimiento_central'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000067', --objeto
+	'1002000207', --col_id
+	'nro_acta_informe_becario', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'seguimiento_central'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1002000067', --objeto
+	'1002000208', --col_id
+	'estado_becario', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	'1', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'seguimiento_central'  --tabla
+);
 --- FIN Grupo de desarrollo 1002
