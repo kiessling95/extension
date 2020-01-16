@@ -792,9 +792,9 @@ class ci_proyectos_extension extends extension_ci {
         $array = $array . '}';
         $datos['eje_tematico'] = $array;
 
-        $id_estado = $this->dep('datos')->tabla('estado_pe')->get_id($datos['id_estado'])[0];
+        //$id_estado = $this->dep('datos')->tabla('estado_pe')->get_id($datos['id_estado'])[0];
 
-        $datos['id_estado'] = $id_estado['id_estado'];
+        $datos['id_estado'] = $datos['id_estado'];
 
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
@@ -843,7 +843,6 @@ class ci_proyectos_extension extends extension_ci {
             $datos[monto] = $pe[monto];
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
-
             $form->set_datos($datos);
         }
     }
@@ -904,18 +903,15 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
             $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
-        
-        
-        
-        if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
 
-           
-            
+
+
+        if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
-            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
-            
-            $datos[integrante] = $ext[1][nombre];
-            
+
+            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum])[0];
+            $datos[integrante] = $ext[nro_docum];
+
             $datos[uni_acad] = $pe[uni_acad];
             $datos[duracion] = $pe[duracion];
             $datos[estado] = $pe[estado];
@@ -928,32 +924,27 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[denominacion] = $pe[denominacion];
             $datos[codigo] = $pe[codigo];
-            
-            print_r($datos);            exit();
-            $form->set_datos($datos);
-        }
-        else 
-        {
-            $datos = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
- 
-            $datos[uni_acad] = $pe[uni_acad];
-            $datos[duracion] = $pe[duracion];
-            $datos[id_bases] = $pe[id_bases];
-            $datos[responsable_carga] = $pe[responsable_carga];
-            $datos[departamento] = $pe[departamento];
-            $datos[area] = $pe[area];   
-            $datos[fec_desde] = $pe[fec_desde];
-            $datos[fec_hasta] = $pe[fec_hasta];
-            $datos[denominacion] = $pe[denominacion];
-            $datos[monto] = $pe[monto];
-            $datos[codigo] = $pe[codigo];
-        
+
+
             $form->set_datos($datos);
         }
     }
 
     function evt__formulario_seg_ua__alta($datos) {
-        
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+
+        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
+        if (!is_null($ext)) {
+            $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
+            toba::db('extension')->consultar($sql);
+        }
+
+        $datos['tipo_docum'] = $ext['tipo_docum'];
+        $datos['nro_docum'] = $ext['nro_docum'];
+        $datos['desde'] = $ext['desde'];
+
         unset($datos[uni_acad]);
         unset($datos[duracion]);
         unset($datos[estado]);
@@ -968,21 +959,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[denominacion]);
         unset($datos[codigo]);
         unset($datos[integrante]);
-        
-        
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
-        
-        //No siempre va a ser el primero...pueden haber más integrantes relacionados al proyecto...
-        //ver como seleccionar el que corresponde
-        $datos['tipo_docum'] = $ext[0]['tipo_docum'];
-        $datos['nro_docum'] = $ext[0]['nro_docum'];
-        $datos['id_pext'] = $ext['id_pext'];
-        $datos['desde'] = $ext[0]['desde'];
-
-        
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
@@ -992,14 +969,28 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__formulario_seg_ua__modificacion($datos) {
 
+        //obtengo los datos antes de modificar para verificar que se modificara el becario
+        $datos_seg = $this->dep('datos')->tabla('seguimiento_ua')->get();
+        $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'])[0];
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
 
-        $datos['tipo_docum'] = $ext[0]['tipo_docum'];
-        $datos['nro_docum'] = $ext[0]['nro_docum'];
-        $datos['id_pext'] = $ext['id_pext'];
-        $datos['desde'] = $ext[0]['desde'];
+        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
+
+        if ($datos[integrante] != $datos_seg[nro_docum]) {
+            $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
+            toba::db('extension')->consultar($sql);
+
+            if (!is_null($ext)) {
+                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
+                toba::db('extension')->consultar($sql);
+            }
+        }
+
+        $datos['tipo_docum'] = $ext['tipo_docum'];
+        $datos['nro_docum'] = $ext['nro_docum'];
+        $datos['desde'] = $ext['desde'];
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
@@ -1356,6 +1347,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
         $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+        $this->s__mostrar_e = 0;
     }
 
     function evt__form_integrante_e__baja($datos) {
@@ -1368,6 +1360,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
         $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+        $this->s__mostrar_e = 0;
     }
 
     function evt__form_integrante_e__cancelar() {
@@ -1459,17 +1452,17 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('cuadro_seg_ua')->evento('seleccion')->ocultar();
         }
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-//        if ($perfil != 'sec_ext_ua') {
-//            $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
-//            $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
-//        } else {
+        if ($perfil != 'sec_ext_ua' && $perfil != 'admin') {
+            $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
+            $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
+        } else {
             $pext = $this->dep('datos')->tabla('pextension')->get();
             if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pext['id_pext'])[0]) {
                 $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
             } else {
                 $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
             }
-//        }
+        }
     }
 
     function evt__cuadro_seg_ua__seleccion($datos) {
@@ -2277,7 +2270,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
             $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
             $this->dep('datos')->tabla('objetivo_especifico')->resetear();
-        }else{
+        } else {
             toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
         }
         $this->s__mostrar_obj = 0;
@@ -2291,14 +2284,14 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_objetivos_esp__modificacion($datos) {
-        
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
         $obj_modif = $this->dep('datos')->tabla('objetivo_especifico')->get();
         $count = 0;
         foreach ($obj_esp as $value) {
-            if($obj_modif[id_objetivo]!=$value[id_objetivo])
-            $count = $count + $value[ponderacion];
+            if ($obj_modif[id_objetivo] != $value[id_objetivo])
+                $count = $count + $value[ponderacion];
         }
         $count = $count + $datos[ponderacion];
 
@@ -2306,8 +2299,7 @@ class ci_proyectos_extension extends extension_ci {
 
             $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
             $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
-
-        }else{
+        } else {
             toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
         }
         $this->s__mostrar_obj = 0;
