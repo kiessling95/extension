@@ -28,6 +28,16 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         ;
         return toba::db('extension')->consultar($sql);
     }
+    
+    function get_descripciones()
+    {
+        $sql = "select t_e.*,trim(apellido)||', '||trim(nombre) as nombre "
+                 . "FROM integrante_externo_pe as t_e "
+                . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum) "
+                . "WHERE t_e.funcion_p = 'I' "
+                . "ORDER BY nombre";
+        return toba::db('extension')->consultar($sql);
+    }
 
     function get_plantilla($id_p, $filtro=array()) {
         $where = array();

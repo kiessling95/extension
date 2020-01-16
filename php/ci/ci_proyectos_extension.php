@@ -904,16 +904,21 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
             $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
-
+        
+        
+        
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
 
-
+           
+            
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
-
+            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+            
+            $datos[integrante] = $ext[1][nombre];
+            
             $datos[uni_acad] = $pe[uni_acad];
             $datos[duracion] = $pe[duracion];
             $datos[estado] = $pe[estado];
-            $datos[financiacion] = $pe[financiacion];
             $datos[monto] = $pe[monto];
             $datos[id_bases] = $pe[id_bases];
             $datos[responsable_carga] = $pe[responsable_carga];
@@ -923,13 +928,32 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[denominacion] = $pe[denominacion];
             $datos[codigo] = $pe[codigo];
-
+            
+            print_r($datos);            exit();
+            $form->set_datos($datos);
+        }
+        else 
+        {
+            $datos = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
+ 
+            $datos[uni_acad] = $pe[uni_acad];
+            $datos[duracion] = $pe[duracion];
+            $datos[id_bases] = $pe[id_bases];
+            $datos[responsable_carga] = $pe[responsable_carga];
+            $datos[departamento] = $pe[departamento];
+            $datos[area] = $pe[area];   
+            $datos[fec_desde] = $pe[fec_desde];
+            $datos[fec_hasta] = $pe[fec_hasta];
+            $datos[denominacion] = $pe[denominacion];
+            $datos[monto] = $pe[monto];
+            $datos[codigo] = $pe[codigo];
+        
             $form->set_datos($datos);
         }
     }
 
     function evt__formulario_seg_ua__alta($datos) {
-
+        
         unset($datos[uni_acad]);
         unset($datos[duracion]);
         unset($datos[estado]);
@@ -943,10 +967,22 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fec_hasta]);
         unset($datos[denominacion]);
         unset($datos[codigo]);
+        unset($datos[integrante]);
+        
+        
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+        
+        //No siempre va a ser el primero...pueden haber más integrantes relacionados al proyecto...
+        //ver como seleccionar el que corresponde
+        $datos['tipo_docum'] = $ext[0]['tipo_docum'];
+        $datos['nro_docum'] = $ext[0]['nro_docum'];
+        $datos['id_pext'] = $ext['id_pext'];
+        $datos['desde'] = $ext[0]['desde'];
 
+        
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
@@ -956,9 +992,14 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__formulario_seg_ua__modificacion($datos) {
 
-
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+
+        $datos['tipo_docum'] = $ext[0]['tipo_docum'];
+        $datos['nro_docum'] = $ext[0]['nro_docum'];
+        $datos['id_pext'] = $ext['id_pext'];
+        $datos['desde'] = $ext[0]['desde'];
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
@@ -1418,17 +1459,17 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('cuadro_seg_ua')->evento('seleccion')->ocultar();
         }
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-        if ($perfil != 'sec_ext_ua' && $perfil != 'admin') {
-            $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
-            $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
-        } else {
+//        if ($perfil != 'sec_ext_ua') {
+//            $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
+//            $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
+//        } else {
             $pext = $this->dep('datos')->tabla('pextension')->get();
             if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pext['id_pext'])[0]) {
                 $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
             } else {
                 $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
             }
-        }
+//        }
     }
 
     function evt__cuadro_seg_ua__seleccion($datos) {
