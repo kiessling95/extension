@@ -831,7 +831,9 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
 
-
+        $form->ef('id_bases')->set_solo_lectura();
+        $form->ef('fec_desde')->set_solo_lectura();
+        $form->ef('fec_hasta')->set_solo_lectura();
 
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
 
@@ -904,7 +906,11 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
 
-
+        $form->ef('id_bases')->set_solo_lectura();
+        $form->ef('fec_desde')->set_solo_lectura();
+        $form->ef('fec_hasta')->set_solo_lectura();
+        $form->ef('departamento')->set_solo_lectura();
+        $form->ef('area')->set_solo_lectura();
 
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
@@ -914,7 +920,6 @@ class ci_proyectos_extension extends extension_ci {
 
             $datos[uni_acad] = $pe[uni_acad];
             $datos[duracion] = $pe[duracion];
-            $datos[estado] = $pe[estado];
             $datos[monto] = $pe[monto];
             $datos[id_bases] = $pe[id_bases];
             $datos[responsable_carga] = $pe[responsable_carga];
@@ -947,7 +952,6 @@ class ci_proyectos_extension extends extension_ci {
 
         unset($datos[uni_acad]);
         unset($datos[duracion]);
-        unset($datos[estado]);
         unset($datos[financiacion]);
         unset($datos[monto]);
         unset($datos[id_bases]);
