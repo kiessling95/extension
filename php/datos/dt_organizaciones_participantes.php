@@ -71,5 +71,11 @@ class dt_organizaciones_participantes extends extension_datos_tabla {
 
         return toba::db('extension')->consultar($sql);
     }
+    
+    function tiene_aval($id_organizacion = null){
+        $sql="select case when aval is not null then 1 else 0 end as tiene from organizaciones_participantes where id_organizacion=$id_organizacion";
+        $res=toba::db('extension')->consultar($sql); 
+        return $res[0]['tiene'];
+    }
 
 }

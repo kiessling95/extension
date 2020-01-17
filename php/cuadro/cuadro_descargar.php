@@ -1,12 +1,9 @@
 <?php
-class cuadro_descargar extends designa_ei_cuadro
+class cuadro_descargar extends extension_ei_cuadro
 {
-	//-----------------------------------------------------------------------------------
-	//---- JAVASCRIPT -------------------------------------------------------------------
-	//-----------------------------------------------------------------------------------
-
 	function extender_objeto_js()
 	{
+
 		echo "
 		//---- Eventos ---------------------------------------------
 		
@@ -14,8 +11,8 @@ class cuadro_descargar extends designa_ei_cuadro
 		
 		{$this->objeto_js}.invocar_vinculo = function(vista, id_vinculo)
 		{
-                    if(vista=='pdf_acta'){
-                            this.controlador.ajax('cargar_designacion',id_vinculo,this,this.retorno);
+                    if(vista=='pdf_aval'){
+                            this.controlador.ajax('cargar_aval',id_vinculo,this,this.retorno);
                         }else{
                                this.controlador.ajax('cargar_designacion_r',id_vinculo,this,this.retorno_r);
                               

@@ -17,8 +17,8 @@ class ci_proyectos_extension extends extension_ci {
     protected $tamano_byte = 6292456;
     protected $tamano_mega = 6;
     protected $s__imprimir = 1;
-
-    function vista_pdf(toba_vista_pdf $salida) {
+    protected $s__datos;
+                function vista_pdf(toba_vista_pdf $salida) {
         if ($this->s__imprimir == 1) {
 
             if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
@@ -540,11 +540,12 @@ class ci_proyectos_extension extends extension_ci {
 //}
             }
         } else {
-            $fp_imagen = $this->dep('datos')->tabla('articulo_73')->get_blob('acta');
+            // no estaria funcionando el get_blob
+            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob(aval);
             if (isset($fp_imagen)) {
                 header("Content-type:applicattion/pdf");
-                //header("Content-Disposition:attachment;filename=acta.pdf");
-                header("Content-Disposition:attachment;filename=" . $this->s__nombre);
+                header("Content-Disposition:attachment;filename=acta.pdf");
+                //header("Content-Disposition:attachment;filename=" . $this->s__nombre);
                 echo(stream_get_contents($fp_imagen));
                 exit;
             }
@@ -553,15 +554,17 @@ class ci_proyectos_extension extends extension_ci {
 
     //esta funcion es invocada desde javascript
     //cuando se presiona el boton pdf_acta
-    function ajax__cargar_designacion($id_fila, toba_ajax_respuesta $respuesta) {
-
+ 
+    function ajax__cargar_aval($id_fila, toba_ajax_respuesta $respuesta) {
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
-        $this->s__designacion = $this->s__datos[$id_fila]['id_designacion'];
-        $this->s__nombre = "acta_" . $this->s__datos[$id_fila]['apellido'] . '_' . $this->s__datos[$id_fila]['cat_estat'] . ".pdf";
-        $this->s__pdf = 'acta';
-        $tiene = $this->dep('datos')->tabla('articulo_73')->tiene_acta($this->s__designacion);
+        $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
+        
+        $this->s__nombre = "aval_" . $this->s__datos[$id_fila]['nombre'] . ".pdf";
+        $this->s__pdf = 'aval';
+        $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion);
+
         if ($tiene == 1) {
             $respuesta->set($id_fila);
         } else {
@@ -1062,7 +1065,7 @@ class ci_proyectos_extension extends extension_ci {
     //-----------------------------------------------------------------------------------
     //---- JAVASCRIPT -------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
-
+/*
     function extender_objeto_js() {
         echo "
 		//---- Eventos ---------------------------------------------
@@ -1073,7 +1076,7 @@ class ci_proyectos_extension extends extension_ci {
                 
                 
 		";
-    }
+    }*/
 
 //-----------------------------------------------------------------------------------
 //---- form_pext --------------------------------------------------------------------
@@ -1694,22 +1697,6 @@ class ci_proyectos_extension extends extension_ci {
 //---- cuadro filtro de organizaciones-------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 
-    function conf__cuadro_org_filtro(toba_ei_cuadro $cuadro) {
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-
-        $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado_filtro($pe['id_pext'], $this->s__where);
-
-        $cuadro->set_datos($datos);
-    }
-
-    function evt__cuadro_org_filtro__seleccion($datos) {
-//$this->s__mostrar = 1;
-        /* aca deberia ser capas de diferencia entre si es interno o externo para poder derivar
-         * a las diferentes pantallas */
-        $this->set_pantalla('pant_formulario');
-        $this->dep('datos')->tabla('pextension')->cargar($datos);
-    }
-
 //---- Filtro Organizacion-----------------------------------------------------------------------
 
     function conf__filtro_organizaciones(toba_ei_filtro $filtro) {
@@ -1764,7 +1751,8 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
-            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
+            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob(aval);
+            print_r($fp_imagen);
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
@@ -1781,7 +1769,7 @@ class ci_proyectos_extension extends extension_ci {
                 //$ruta='/designa/1.0/temp/adjunto.jpg';
                 //$datos['imagen_vista_previa'] = "<img src='{$ruta}' alt=''>";
                 $datos['imagen_vista_previa'] = "<a target='_blank' href='{$temp_archivo['url']}' >acta</a>";
-                $datos['aval'] = 'tamano: ' . $tamano . ' KB';
+                $datos[aval] = 'tamano: ' . $tamano . ' KB';
             } else {
                 $datos['aval'] = null;
             }
@@ -1796,21 +1784,19 @@ class ci_proyectos_extension extends extension_ci {
         $datos[id_pext] = $pe['id_pext'];
 
         $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
+        
 
         //-----------aval-----------------------
         if (is_array($datos['aval'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
-            //$s__temp_archivo = $datos['acta']['tmp_name'];//C:\Windows\Temp\php9A45.tmp
-            // Almacena un 'file pointer' en un campo binario o blob de la tabla.
-            //print_r($datos['acta']);//Array ( [name] => TC051168.pdf [type] => application/pdf [tmp_name] => C:\Windows\Temp\phpE148.tmp [error] => 0 [size] => 656209 )
             if ($datos['aval']['size'] > $this->tamano_byte) {
                 toba::notificacion()->agregar('El tamaño del archivo debe ser menor a ' . $this->tamano_mega . 'MB', 'error');
                 $fp = null;
             } else {
                 $fp = fopen($datos['aval']['tmp_name'], 'rb');
-                $this->dep('datos')->tabla('organizaciones_participantes')->set_blob('aval', $fp);
+                $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, $fp);
             }
         } else {
-            $this->dep('datos')->tabla('organizaciones_participantes')->set_blob('aval', null);
+            $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, null);
         }
         $this->dep('datos')->tabla('organizaciones_participantes')->sincronizar();
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
@@ -1826,11 +1812,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_organizacion__modificacion($datos) {
         $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
-
+        
         if (is_array($datos['aval'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
-            //$s__temp_archivo = $datos['acta']['tmp_name'];//C:\Windows\Temp\php9A45.tmp
-            // Almacena un 'file pointer' en un campo binario o blob de la tabla.
-            //print_r($datos['acta']);//Array ( [name] => TC051168.pdf [type] => application/pdf [tmp_name] => C:\Windows\Temp\phpE148.tmp [error] => 0 [size] => 656209 )
             if ($datos['aval']['size'] > 0) {
                 if ($datos['acta']['size'] > $this->tamano_byte) {
                     toba::notificacion()->agregar('El tamaño del archivo debe ser menor a ' . $this->tamano_mega . 'MB', 'error');
@@ -1846,6 +1829,7 @@ class ci_proyectos_extension extends extension_ci {
             // fclose($fp); esto borra el archivo!!!!
         }
         $this->dep('datos')->tabla('organizaciones_participantes')->sincronizar();
+        $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
         $this->s__mostrar_org = 0;
     }
 
@@ -2079,7 +2063,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($estado != 'FORM') {
             $this->controlador()->evento('alta')->ocultar();
         }
-        $this->$s__imprimir = 0;
+        $this->s__imprimir = 0;
     }
 
     function conf__pant_objetivos(toba_ei_pantalla $pantalla) {
@@ -2201,10 +2185,10 @@ class ci_proyectos_extension extends extension_ci {
 //-----------------------------------------------------------------------------------
 
     function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
-//$cuadro->desactivar_modo_clave_segura();
+        //$cuadro->desactivar_modo_clave_segura();
         $pe = $this->dep('datos')->tabla('pextension')->get();
-
-        $cuadro->set_datos($this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']));
+        $this->s__datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
+        $cuadro->set_datos($this->s__datos);
     }
 
     function evt__cuadro_organizaciones__seleccion($datos) {
@@ -2216,10 +2200,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
 
-    function evt__cuadro_organizaciones__pdf_acta($datos) {
-        $organizacion = $this->dep('datos')->tabla('organizaciones_participantes')->get_organizacion($datos[id_organizacion]);
-        print_r($organizacion);
-    }
 
 //-----------------------------------------------------------------------------------
 //---- cuadro_presup  -------------------------------------------------------------------
