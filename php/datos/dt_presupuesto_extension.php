@@ -34,6 +34,22 @@ class dt_presupuesto_extension extends extension_datos_tabla {
                 . " where p_e.id_presupuesto =" . $id['id_presupuesto'];
         return toba::db('extension')->consultar($sql);
     }
+    
+    function get_listado_rubro($id_rubro_extension = null){
+        $sql = "select "
+                . "p_e.id_pext,"
+                . "p_e.id_presupuesto,"
+                . "p_e.id_rubro_extension,"
+                . "r.tipo as rubro,"
+                . "p_e.concepto,"
+                . "p_e.cantidad,"
+                . "p_e.monto "
+                . "from presupuesto_extension as p_e "
+                . "INNER JOIN rubro_presup_extension as r ON ( p_e.id_rubro_extension = r.id_rubro_extension )  "
+                . "where p_e.id_rubro_extension=" . $id_rubro_extension
+                . "order by concepto,monto";
+        return toba::db('extension')->consultar($sql);
+    }
 
 }
 ?>
