@@ -823,6 +823,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        
         $estado = $pe[id_estado];
         if ($estado != 'FORM') {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
@@ -831,10 +832,13 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
 
+        $form->ef('duracion')->set_solo_lectura();
         $form->ef('id_bases')->set_solo_lectura();
         $form->ef('fec_desde')->set_solo_lectura();
         $form->ef('fec_hasta')->set_solo_lectura();
-
+        
+        
+           
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
 
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get();
@@ -847,11 +851,21 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_hasta] = $pe[fec_hasta];
             $form->set_datos($datos);
         }
+        else
+        {
+            $form->ef('denominacion')->set_estado($pe[denominacion]);
+        $form->ef('duracion')->set_estado($pe[duracion]);
+        $form->ef('monto')->set_estado($pe[monto]);
+        $form->ef('fec_desde')->set_estado($pe[fec_desde]);
+        $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
+        }
     }
 
     function evt__formulario_seguimiento__alta($datos) {
-//        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales();
-//        if($perfil != null && $perfil != formulador)
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        
         unset($datos[denominacion]);
         unset($datos[duracion]);
         unset($datos[monto]);
@@ -859,22 +873,22 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fec_desde]);
         unset($datos[fec_hasta]);
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
+        
         toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
     }
 
     function evt__formulario_seguimiento__modificacion($datos) {
-        if ($datos['fecha_prorroga2'] != null) {
-            $datos['fec_hasta'] = $datos['fecha_prorroga2'];
-        }
-
+        
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
+        if ($datos['fecha_prorroga2'] != null) {
+            $sql = "UPDATE pextension SET fec_hasta = " . $datos['fecha_prorroga2'] . " where id_pext = ". $pe[id_pext];
+            toba::db('extension')->consultar($sql);
+        }
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
@@ -911,6 +925,16 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_hasta')->set_solo_lectura();
         $form->ef('departamento')->set_solo_lectura();
         $form->ef('area')->set_solo_lectura();
+        
+        $form->ef('denominacion')->set_estado($pe[denominacion]);
+        $form->ef('fec_desde')->set_estado($pe[fec_desde]);
+        $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
+        $form->ef('departamento')->set_estado($pe[departamento]);
+        $form->ef('area')->set_estado($pe[area]);
+        $form->ef('duracion')->set_estado($pe[duracion]);
+        $form->ef('uni_acad')->set_estado($pe[uni_acad]);
+        $form->ef('monto')->set_estado($pe[monto]);
+        $form->ef('responsable_carga')->set_estado($pe[responsable_carga]);
 
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
