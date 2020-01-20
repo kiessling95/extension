@@ -542,10 +542,11 @@ class ci_proyectos_extension extends extension_ci {
         } else {
             // no estaria funcionando el get_blob
             $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob(aval);
+            print_r($fp_imagen);
             if (isset($fp_imagen)) {
                 header("Content-type:applicattion/pdf");
-                header("Content-Disposition:attachment;filename=acta.pdf");
-                //header("Content-Disposition:attachment;filename=" . $this->s__nombre);
+                //header("Content-Disposition:attachment;filename=f52ee2c34fc394130bfa650e7656dd55.pdf");
+                header("Content-Disposition:attachment;filename=" . $this->s__nombre);
                 echo(stream_get_contents($fp_imagen));
                 exit;
             }
@@ -1756,7 +1757,6 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
             $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob(aval);
-            print_r($fp_imagen);
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
@@ -1783,12 +1783,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_organizacion__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-
-
         $datos[id_pext] = $pe['id_pext'];
-
-        $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
         
+        $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
 
         //-----------aval-----------------------
         if (is_array($datos['aval'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
@@ -1797,7 +1794,7 @@ class ci_proyectos_extension extends extension_ci {
                 $fp = null;
             } else {
                 $fp = fopen($datos['aval']['tmp_name'], 'rb');
-                $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, $fp);
+                $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, $fp); 
             }
         } else {
             $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, null);
