@@ -1833,10 +1833,6 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_organizacion__baja($datos) {
-        $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
-        if (isset($fp_imagen)) {
-            fclose($fp_imagen);
-        }
         $this->dep('datos')->tabla('organizaciones_participantes')->eliminar_todo();
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
         toba::notificacion()->agregar('La organizacion se ha eliminado  correctamente.', 'info');

@@ -14,17 +14,15 @@ class cuadro_descargar extends extension_ei_cuadro {
                     if(vista=='pdf_aval'){
                             this.controlador.ajax('cargar_aval',id_vinculo,this,this.retorno);
                         }
+                    if(vista=='pdf_bases'){
+                        this.controlador.ajax('descargar_bases',id_vinculo,this,this.retorno);
+                    }
                     
                     return false;
 		}
 		 {$this->objeto_js}.retorno = function(datos)
 		{
-                 if(datos==-1){alert('No tiene un acta adjunto');
-                   }else{vinculador.invocar(datos);}
-		}
-		{$this->objeto_js}.retorno_r = function(datos)
-		{
-                 if(datos==-1){alert('No tiene adjunto en la resol');
+                 if(datos==-1){alert('No tiene un aval adjunto');
                    }else{vinculador.invocar(datos);}
 		}
 		";
