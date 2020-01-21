@@ -991,14 +991,13 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_hasta')->set_solo_lectura();
         $form->ef('departamento')->set_solo_lectura();
         $form->ef('area')->set_solo_lectura();
-        
-        
+
+
 
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
 
-            if($datos['nro_docum'] != null)
-            {
+            if ($datos['nro_docum'] != null) {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum])[0];
 
                 $datos[integrante] = $ext[nro_docum];
@@ -1018,9 +1017,7 @@ class ci_proyectos_extension extends extension_ci {
 
 
             $form->set_datos($datos);
-        }
-        else
-        {
+        } else {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
@@ -1037,20 +1034,18 @@ class ci_proyectos_extension extends extension_ci {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
-        if($datos['integrante'] != null)
-        {
+
+        if ($datos['integrante'] != null) {
             $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
             if (!is_null($ext)) {
                 $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
                 toba::db('extension')->consultar($sql);
-        
             }
             $datos['tipo_docum'] = $ext['tipo_docum'];
             $datos['nro_docum'] = $ext['nro_docum'];
             $datos['desde'] = $ext['desde'];
         }
-        
+
         unset($datos[uni_acad]);
         unset($datos[duracion]);
         unset($datos[financiacion]);
@@ -1076,26 +1071,22 @@ class ci_proyectos_extension extends extension_ci {
 
         //obtengo los datos antes de modificar para verificar que se modificara el becario
         $datos_seg = $this->dep('datos')->tabla('seguimiento_ua')->get();
-        
-        if($datos_seg['nro_docum'] != null)
-        {
+
+        if ($datos_seg['nro_docum'] != null) {
             $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'])[0];
         }
-        
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-       
-        if($datos['integrante'] != null)
-        {
+
+        if ($datos['integrante'] != null) {
             $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
 
-            if(!is_null($ext_anterior))
-            {
+            if (!is_null($ext_anterior)) {
                 if ($datos[integrante] != $datos_seg[nro_docum]) {
-                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
-                toba::db('extension')->consultar($sql);
+                    $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
+                    toba::db('extension')->consultar($sql);
                 }
-        
             }
 //            
             $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
@@ -1104,9 +1095,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos['tipo_docum'] = $ext['tipo_docum'];
             $datos['nro_docum'] = $ext['nro_docum'];
             $datos['desde'] = $ext['desde'];
-        }
-        else
-        {
+        } else {
+            if (!is_null($ext_anterior)) {
+
+                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
+                toba::db('extension')->consultar($sql);
+            }
             $datos['tipo_docum'] = null;
             $datos['nro_docum'] = null;
             $datos['desde'] = null;
