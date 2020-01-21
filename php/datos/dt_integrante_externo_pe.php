@@ -47,7 +47,6 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
 
     function get_plantilla($id_p, $filtro = array()) {
         $where = array();
-//        print_r($filtro);        exit();
         if (isset($filtro['tipo'])) {
             $where[] = "tipo = " . quote($filtro[tipo][valor]);
         }
@@ -81,7 +80,6 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         } else {
             $sql .= "where t_i.id_pext = " . $id_p . " and t_i.hasta = p.fec_hasta)";
         }
-//        print_r($sql);        exit();
 
         $sql .= " UNION" //union con los integrantes externos
                 . " (select "
