@@ -1393,7 +1393,7 @@ class ci_proyectos_extension extends extension_ci {
 //$this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
             $this->s__mostrar = 0;
         } else {
-            toba::notificacion()->agregar(utf8_decode('Función dumplicada el director y co-director debe ser unico.'), 'info');
+            toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
         }
     }
 
@@ -1445,7 +1445,8 @@ class ci_proyectos_extension extends extension_ci {
             if (count($persona) > 0) {
                 $datos['integrante'] = $persona[0]['nombre'];
             }
-
+            
+            
             $form->set_datos($datos);
         }
     }
@@ -1453,17 +1454,60 @@ class ci_proyectos_extension extends extension_ci {
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-        $datos['tipo'] = 'Otro';
-        $datos['nro_tabla'] = 1;
-        //recupero todas las personas, Las recupero igual que como aparecen en operacion Configuracion->Personas
-        //$personas=$this->dep('datos')->tabla('persona')->get_listado();           
-        $datos['tipo_docum'] = $datos['integrante'][0];
-        $datos['nro_docum'] = $datos['integrante'][1];
-        $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
-        $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
-        $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
-        $this->s__mostrar_e = 0;
+//        print_r($datos['hasta']);        exit();
+        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1]);
+//        print_r($int_ext[0]['desde']);        exit();
+        if(!is_null($int_ext))
+        {
+//            
+                if($int_ext[0]['nro_docum'] == $datos['integrante'][1])
+                    
+                {
+                    if($int_ext[0]['desde'] == $datos['desde'])
+                    {
+                        toba::notificacion()->agregar('El integrante ingresado se encuentra vigente en el proyecto', 'info');
+                    }
+                    else 
+                    {
+                        $datos['id_pext'] = $pe['id_pext'];
+                        $datos['tipo'] = 'Otro';
+                        $datos['tipo_docum'] = $datos['integrante'][0];
+                        $datos['nro_docum'] = $datos['integrante'][1];
+                        
+                        $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
+                        $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+                        $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                        $this->s__mostrar_e = 0;
+                    }
+                }
+                else
+                {
+                    $datos['id_pext'] = $pe['id_pext'];
+                    $datos['tipo'] = 'Otro';
+                    $datos['tipo_docum'] = $datos['integrante'][0];
+                    $datos['nro_docum'] = $datos['integrante'][1];
+                    
+                    $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
+                    $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+                    $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                    $this->s__mostrar_e = 0;
+                }  
+        }
+        
+        else
+        {
+            $datos['id_pext'] = $pe['id_pext'];
+        
+            $datos['tipo'] = 'Otro';
+            $datos['nro_tabla'] = 1;
+            $datos['tipo_docum'] = $datos['integrante'][0];
+            $datos['nro_docum'] = $datos['integrante'][1];
+        
+            $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
+            $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+            $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+            $this->s__mostrar_e = 0;
+        }
     }
 
     function evt__form_integrante_e__baja($datos) {
