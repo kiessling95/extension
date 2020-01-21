@@ -540,12 +540,14 @@ class ci_proyectos_extension extends extension_ci {
 //}
             }
         } else {
-            // no estaria funcionando el get_blob
-            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob(aval);
-            print_r($fp_imagen);
+            $aval[id_organizacion] = $this->s__organizacion ;
+            print_r($aval);
+            $this->dep('datos')->tabla('organizaciones_participantes')->resetear();//limpia
+            $this->dep('datos')->tabla('organizaciones_participantes')->cargar($aval);//carga el articulo que se selecciono
+            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
+
             if (isset($fp_imagen)) {
                 header("Content-type:applicattion/pdf");
-                //header("Content-Disposition:attachment;filename=f52ee2c34fc394130bfa650e7656dd55.pdf");
                 header("Content-Disposition:attachment;filename=" . $this->s__nombre);
                 echo(stream_get_contents($fp_imagen));
                 exit;
@@ -561,7 +563,7 @@ class ci_proyectos_extension extends extension_ci {
             $id_fila = $id_fila / 2;
         }
         $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
-        
+        -
         $this->s__nombre = "aval_" . $this->s__datos[$id_fila]['nombre'] . ".pdf";
         $this->s__pdf = 'aval';
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion);
@@ -921,6 +923,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
+        if ($datos['fecha_prorroga2'] != null) {
+            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = ". $pe[id_pext];
+            toba::db('extension')->consultar($sql);
+        }
         
         unset($datos[denominacion]);
         unset($datos[duracion]);
