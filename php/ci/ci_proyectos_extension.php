@@ -937,12 +937,11 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario_seguimiento__modificacion($datos) {
-        
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         
         if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta = " . $datos['fecha_prorroga2'] . " where id_pext = ". $pe[id_pext];
+            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = ". $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
 
