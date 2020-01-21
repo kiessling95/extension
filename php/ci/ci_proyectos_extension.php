@@ -991,22 +991,18 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_hasta')->set_solo_lectura();
         $form->ef('departamento')->set_solo_lectura();
         $form->ef('area')->set_solo_lectura();
-
-        $form->ef('denominacion')->set_estado($pe[denominacion]);
-        $form->ef('fec_desde')->set_estado($pe[fec_desde]);
-        $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
-        $form->ef('departamento')->set_estado($pe[departamento]);
-        $form->ef('area')->set_estado($pe[area]);
-        $form->ef('duracion')->set_estado($pe[duracion]);
-        $form->ef('uni_acad')->set_estado($pe[uni_acad]);
-        $form->ef('monto')->set_estado($pe[monto]);
-        $form->ef('responsable_carga')->set_estado($pe[responsable_carga]);
+        
+        
 
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
 
-            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum])[0];
-            $datos[integrante] = $ext[nro_docum];
+            if($datos['nro_docum'] != null)
+            {
+                $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum])[0];
+
+                $datos[integrante] = $ext[nro_docum];
+            }
 
             $datos[uni_acad] = $pe[uni_acad];
             $datos[duracion] = $pe[duracion];
@@ -1023,23 +1019,38 @@ class ci_proyectos_extension extends extension_ci {
 
             $form->set_datos($datos);
         }
+        else
+        {
+            $form->ef('denominacion')->set_estado($pe[denominacion]);
+            $form->ef('fec_desde')->set_estado($pe[fec_desde]);
+            $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
+            $form->ef('departamento')->set_estado($pe[departamento]);
+            $form->ef('area')->set_estado($pe[area]);
+            $form->ef('duracion')->set_estado($pe[duracion]);
+            $form->ef('uni_acad')->set_estado($pe[uni_acad]);
+            $form->ef('monto')->set_estado($pe[monto]);
+            $form->ef('responsable_carga')->set_estado($pe[responsable_carga]);
+        }
     }
 
     function evt__formulario_seg_ua__alta($datos) {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-
-        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
-        if (!is_null($ext)) {
-            $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
-            toba::db('extension')->consultar($sql);
+        
+        if($datos['integrante'] != null)
+        {
+            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
+            if (!is_null($ext)) {
+                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
+                toba::db('extension')->consultar($sql);
+        
+            }
+            $datos['tipo_docum'] = $ext['tipo_docum'];
+            $datos['nro_docum'] = $ext['nro_docum'];
+            $datos['desde'] = $ext['desde'];
         }
-
-        $datos['tipo_docum'] = $ext['tipo_docum'];
-        $datos['nro_docum'] = $ext['nro_docum'];
-        $datos['desde'] = $ext['desde'];
-
+        
         unset($datos[uni_acad]);
         unset($datos[duracion]);
         unset($datos[financiacion]);
@@ -1065,26 +1076,41 @@ class ci_proyectos_extension extends extension_ci {
 
         //obtengo los datos antes de modificar para verificar que se modificara el becario
         $datos_seg = $this->dep('datos')->tabla('seguimiento_ua')->get();
-        $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'])[0];
-
+        
+        if($datos_seg['nro_docum'] != null)
+        {
+            $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'])[0];
+        }
+        
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+       
+        if($datos['integrante'] != null)
+        {
+            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
 
-        $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
-
-        if ($datos[integrante] != $datos_seg[nro_docum]) {
-            $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
-            toba::db('extension')->consultar($sql);
-
-            if (!is_null($ext)) {
-                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
+            if(!is_null($ext_anterior))
+            {
+                if ($datos[integrante] != $datos_seg[nro_docum]) {
+                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
                 toba::db('extension')->consultar($sql);
+                }
+        
             }
+//            
+            $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
+            toba::db('extension')->consultar($sql);
+//            
+            $datos['tipo_docum'] = $ext['tipo_docum'];
+            $datos['nro_docum'] = $ext['nro_docum'];
+            $datos['desde'] = $ext['desde'];
         }
-
-        $datos['tipo_docum'] = $ext['tipo_docum'];
-        $datos['nro_docum'] = $ext['nro_docum'];
-        $datos['desde'] = $ext['desde'];
+        else
+        {
+            $datos['tipo_docum'] = null;
+            $datos['nro_docum'] = null;
+            $datos['desde'] = null;
+        }
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
