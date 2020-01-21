@@ -18,7 +18,11 @@ class ci_proyectos_extension extends extension_ci {
     protected $tamano_mega = 6;
     protected $s__imprimir = 1;
     protected $s__datos;
-                function vista_pdf(toba_vista_pdf $salida) {
+    protected $s__organizacion;
+    protected $s__nombre;
+    protected $s__pdf;
+
+    function vista_pdf(toba_vista_pdf $salida) {
         if ($this->s__imprimir == 1) {
 
             if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
@@ -540,34 +544,36 @@ class ci_proyectos_extension extends extension_ci {
 //}
             }
         } else {
-            $aval[id_organizacion] = $this->s__organizacion ;
-            print_r($aval);
-            $this->dep('datos')->tabla('organizaciones_participantes')->resetear();//limpia
-            $this->dep('datos')->tabla('organizaciones_participantes')->cargar($aval);//carga el articulo que se selecciono
-            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
+            if (isset($this->s__organizacion)) {
+                $aval['id_organizacion'] = $this->s__organizacion;
+                $this->dep('datos')->tabla('organizaciones_participantes')->resetear(); //limpia
+                $this->dep('datos')->tabla('organizaciones_participantes')->cargar($aval); //carga el articulo que se selecciono
+                $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
+                if (isset($fp_imagen)) {
+                    header("Content-type:applicattion/pdf");
+                    header("Content-Disposition:attachment;filename=" . $this->s__nombre);
 
-            if (isset($fp_imagen)) {
-                header("Content-type:applicattion/pdf");
-                header("Content-Disposition:attachment;filename=" . $this->s__nombre);
-                echo(stream_get_contents($fp_imagen));
-                exit;
+                    echo(stream_get_contents($fp_imagen));
+                    exit;
+                }
+                unset($this->s__organizacion);
+                unset($this->s__pdf);
             }
         }
     }
 
     //esta funcion es invocada desde javascript
     //cuando se presiona el boton pdf_acta
- 
+
     function ajax__cargar_aval($id_fila, toba_ajax_respuesta $respuesta) {
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
         $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
-        -
+
         $this->s__nombre = "aval_" . $this->s__datos[$id_fila]['nombre'] . ".pdf";
         $this->s__pdf = 'aval';
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion);
-
         if ($tiene == 1) {
             $respuesta->set($id_fila);
         } else {
@@ -881,7 +887,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        
+
         $estado = $pe[id_estado];
         if ($estado != 'FORM') {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
@@ -894,9 +900,9 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('id_bases')->set_solo_lectura();
         $form->ef('fec_desde')->set_solo_lectura();
         $form->ef('fec_hasta')->set_solo_lectura();
-        
-        
-           
+
+
+
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
 
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get();
@@ -908,14 +914,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
             $form->set_datos($datos);
-        }
-        else
-        {
+        } else {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
-        $form->ef('duracion')->set_estado($pe[duracion]);
-        $form->ef('monto')->set_estado($pe[monto]);
-        $form->ef('fec_desde')->set_estado($pe[fec_desde]);
-        $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
+            $form->ef('duracion')->set_estado($pe[duracion]);
+            $form->ef('monto')->set_estado($pe[monto]);
+            $form->ef('fec_desde')->set_estado($pe[fec_desde]);
+            $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
         }
     }
 
@@ -923,12 +927,12 @@ class ci_proyectos_extension extends extension_ci {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = ". $pe[id_pext];
+            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
-        
+
         unset($datos[denominacion]);
         unset($datos[duracion]);
         unset($datos[monto]);
@@ -939,16 +943,16 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
-        
+
         toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
     }
 
     function evt__formulario_seguimiento__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = ". $pe[id_pext];
+            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
 
@@ -987,7 +991,7 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_hasta')->set_solo_lectura();
         $form->ef('departamento')->set_solo_lectura();
         $form->ef('area')->set_solo_lectura();
-        
+
         $form->ef('denominacion')->set_estado($pe[denominacion]);
         $form->ef('fec_desde')->set_estado($pe[fec_desde]);
         $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
@@ -1100,18 +1104,18 @@ class ci_proyectos_extension extends extension_ci {
     //-----------------------------------------------------------------------------------
     //---- JAVASCRIPT -------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
-/*
-    function extender_objeto_js() {
-        echo "
-		//---- Eventos ---------------------------------------------
-		
-		{$this->objeto_js}.evt__alta = function()
-		{
-		}
-                
-                
-		";
-    }*/
+    /*
+      function extender_objeto_js() {
+      echo "
+      //---- Eventos ---------------------------------------------
+
+      {$this->objeto_js}.evt__alta = function()
+      {
+      }
+
+
+      ";
+      } */
 
 //-----------------------------------------------------------------------------------
 //---- form_pext --------------------------------------------------------------------
@@ -1731,7 +1735,6 @@ class ci_proyectos_extension extends extension_ci {
 //-----------------------------------------------------------------------------------
 //---- cuadro filtro de organizaciones-------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-
 //---- Filtro Organizacion-----------------------------------------------------------------------
 
     function conf__filtro_organizaciones(toba_ei_filtro $filtro) {
@@ -1786,35 +1789,30 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
-            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob(aval);
+            $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
                 fclose($temp_fp);
                 //-- Se muestra la imagen temporal
                 $tamano = round(filesize($temp_archivo['path']) / 1024);
-                //$datos['imagen_vista_previa'] = "<a href='{$temp_archivo['url']}' >acta</a>";
-                //print_r($temp_archivo['url']);/designa/1.0/temp/3334acta.pdf
-                //definimos el path a la imagen de logo de la organizacion 
-                //$ruta='/designa/1.0/temp/adjunto.jpg';
-                //$datos['imagen_vista_previa'] = "<img src='{$ruta}' alt=''>";
-                $datos['imagen_vista_previa'] = "<a target='_blank' href='{$temp_archivo['url']}' >acta</a>";
-                $datos[aval] = 'tamano: ' . $tamano . ' KB';
+                $datos['imagen_vista_previa'] = "<a target='_blank' href='{$temp_archivo['url']}' >Aval_Organizacion</a>";
+                $datos['aval'] = 'tamano: ' . $tamano . ' KB';
             } else {
                 $datos['aval'] = null;
             }
         }
+
         $form->set_datos($datos);
     }
 
     function evt__form_organizacion__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos[id_pext] = $pe['id_pext'];
-        
+
         $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
 
         //-----------aval-----------------------
@@ -1824,7 +1822,7 @@ class ci_proyectos_extension extends extension_ci {
                 $fp = null;
             } else {
                 $fp = fopen($datos['aval']['tmp_name'], 'rb');
-                $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, $fp); 
+                $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, $fp);
             }
         } else {
             $this->dep('datos')->tabla('organizaciones_participantes')->set_blob(aval, null);
@@ -1835,6 +1833,10 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_organizacion__baja($datos) {
+        $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
+        if (isset($fp_imagen)) {
+            fclose($fp_imagen);
+        }
         $this->dep('datos')->tabla('organizaciones_participantes')->eliminar_todo();
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
         toba::notificacion()->agregar('La organizacion se ha eliminado  correctamente.', 'info');
@@ -1843,7 +1845,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_organizacion__modificacion($datos) {
         $this->dep('datos')->tabla('organizaciones_participantes')->set($datos);
-        
+
         if (is_array($datos['aval'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
             if ($datos['aval']['size'] > 0) {
                 if ($datos['acta']['size'] > $this->tamano_byte) {
@@ -2230,7 +2232,6 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
-
 
 //-----------------------------------------------------------------------------------
 //---- cuadro_presup  -------------------------------------------------------------------

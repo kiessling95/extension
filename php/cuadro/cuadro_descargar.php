@@ -1,10 +1,10 @@
 <?php
-class cuadro_descargar extends extension_ei_cuadro
-{
-	function extender_objeto_js()
-	{
 
-		echo "
+class cuadro_descargar extends extension_ei_cuadro {
+
+    function extender_objeto_js() {
+
+        echo "
 		//---- Eventos ---------------------------------------------
 		
 		
@@ -13,11 +13,7 @@ class cuadro_descargar extends extension_ei_cuadro
 		{
                     if(vista=='pdf_aval'){
                             this.controlador.ajax('cargar_aval',id_vinculo,this,this.retorno);
-                        }else{
-                               this.controlador.ajax('cargar_designacion_r',id_vinculo,this,this.retorno_r);
-                              
                         }
-                    
                     
                     return false;
 		}
@@ -32,7 +28,7 @@ class cuadro_descargar extends extension_ei_cuadro
                    }else{vinculador.invocar(datos);}
 		}
 		";
-	}
+    }
 
 }
 

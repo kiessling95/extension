@@ -68,7 +68,6 @@ class dt_organizaciones_participantes extends extension_datos_tabla {
                 FROM "
                 . " organizaciones_participantes as o_p "
                 . " WHERE o_p.id_organizacion = " . $id_organizacion;
-
         return toba::db('extension')->consultar($sql);
     }
     
