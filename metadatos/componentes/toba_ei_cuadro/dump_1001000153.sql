@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_cuadro', --clase
 	'1001000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'cuadro_descargar', --subclase
+	'cuadro/cuadro_descargar.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'ci_Alta Convocatoria - cuadro', --nombre
@@ -116,7 +116,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'extension', --proyecto
 	'1001000271', --evento_id
 	'1001000153', --objeto
-	'pdf', --identificador
+	'pdf_bases', --identificador
 	NULL, --etiqueta
 	'1', --maneja_datos
 	'1', --sobre_fila
@@ -132,7 +132,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --defecto
 	NULL, --display_datos_cargados
 	NULL, --grupo
-	'P', --accion
+	'V', --accion
 	NULL, --accion_imphtml_debug
 	NULL, --accion_vinculo_carpeta
 	NULL, --accion_vinculo_item
@@ -143,7 +143,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --accion_vinculo_celda
 	'vista_pdf', --accion_vinculo_servicio
 	'0', --es_seleccion_multiple
-	'0'  --es_autovinculo
+	'1'  --es_autovinculo
 );
 --- FIN Grupo de desarrollo 1001
 

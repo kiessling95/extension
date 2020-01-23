@@ -107,7 +107,6 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 			WHERE t_bc.id_bases=
 				$where";
         }
-        //print_r($sql);        exit();
         return toba::db('extension')->consultar($sql);
     }
 
