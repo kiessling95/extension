@@ -895,18 +895,29 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_desde')->set_solo_lectura();
         $form->ef('fec_hasta')->set_solo_lectura();
         
-        
-           
+        $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
+        if($seg_ua[0]['nro_docum'] != null)
+        {
+            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum']);
+        }
+            
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
 
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get();
-
+         
             $datos[denominacion] = $pe[denominacion];
             $datos[id_bases] = $pe[id_bases];
             $datos[duracion] = $pe[duracion];
             $datos[monto] = $pe[monto];
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
+            
+            if(!is_null($int))
+            {
+                $datos[nombre_becario] = $int[0][nombre];
+                $datos[dni_becario] = $int[0][tipo_docum] . $int[0][nro_docum];
+            }
+            
             $form->set_datos($datos);
         }
         else
@@ -916,6 +927,12 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('monto')->set_estado($pe[monto]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
+            if(!is_null($int))
+            {
+                $form->ef('nombre_becario')->set_estado($int[0][nombre]);
+                $form->ef('dni_becario')->set_estado($int[0][tipo_docum] . $int[0][nro_docum]);
+            }
+            
         }
     }
 
@@ -935,6 +952,8 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_bases]);
         unset($datos[fec_desde]);
         unset($datos[fec_hasta]);
+        unset($datos[nombre_becario]);
+        unset($datos[dni_becario]);
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();

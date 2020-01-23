@@ -204,6 +204,26 @@
 				}
                     }
                 
+
+                    {$id_js}.evt__nombre_becario__procesar = function(es_inicial) 
+                    {
+                        if(this.ef('nombre_becario').tiene_estado())
+                        {
+                            this.ef('res_desig').mostrar();
+                            this.ef('nro_expediente_pago').mostrar();
+                            this.ef('informe_becario').mostrar();
+                            this.ef('nombre_becario').mostrar();
+                            this.ef('dni_becario').mostrar();
+                        }
+                        else
+                        {
+                            this.ef('res_desig').ocultar();
+                            this.ef('nro_expediente_pago').ocultar();
+                            this.ef('informe_becario').ocultar();
+                            this.ef('nombre_becario').ocultar();
+                            this.ef('dni_becario').ocultar();
+                        }
+                    }
                 ";
         }
     }
