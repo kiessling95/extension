@@ -229,9 +229,13 @@ class ci_bases extends extension_ci {
 
     // problemas con la clave al modificar, no se actualiza ( Se elimino el evento )
     function evt__form_ejes__modificacion($datos) {
-
+        $ejes = $this->dep('datos')->tabla('eje_tematico_conv')->get();
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        if($ejes['descripcion']==$datos['descripcion']){
+            $datos['descripcion'] = $ejes['id_eje'];
+        }
         $tipo = $this->dep('datos')->tabla('tipos_ejes_tematicos')->get_tipo($datos['descripcion'])[0];
+        
         $correcto = true;
         $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']);
         // Control Ejes no repetidos 
