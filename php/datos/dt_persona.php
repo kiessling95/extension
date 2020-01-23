@@ -142,6 +142,7 @@ class dt_persona extends extension_datos_tabla {
     }
 
     function get_datos($tipo, $nro) {
+        
         $sql = "select trim(apellido)||', '||trim(nombre) as nombre from persona"
                 . " where tipo_docum='" . $tipo . "'" . " and nro_docum=" . $nro;
         return toba::db('extension')->consultar($sql);
