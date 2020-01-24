@@ -2357,6 +2357,24 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
+    //---- Filtro Integrantes Internos-----------------------------------------------------------------------
+
+    function conf__filtro_internos(toba_ei_filtro $filtro) {
+        if (isset($this->s__datos_filtro)) {
+            $filtro->set_datos($this->s__datos_filtro);
+        }
+    }
+
+    function evt__filtro_internos__filtrar($datos) {
+        $this->s__datos_filtro = $datos;
+        $this->s__where = $this->dep('filtro_internos')->get_sql_where();
+    }
+
+    function evt__filtro_internos__cancelar() {
+        unset($this->s__datos_filtro);
+        unset($this->s__where);
+    }
+    
 //-----------------------------------------------------------------------------------
 //---- cuadro_int -------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -2380,7 +2398,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
+        if (isset($this->s__where)) {
+        $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_fecha($this->s__where));
+        }
     }
 
     function evt__cuadro_ii__seleccion($datos) {
