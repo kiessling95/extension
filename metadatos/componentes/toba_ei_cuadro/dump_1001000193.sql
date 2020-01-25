@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_cuadro', --clase
 	'1001000004', --punto_montaje
-	'extension_cuadro', --subclase
-	'cuadro/extension_cuadro.php', --subclase_archivo
+	NULL, --subclase
+	NULL, --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - cuadro_int', --nombre
@@ -355,18 +355,18 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'6', --orden
 	'Fecha Inicio en  Proyecto', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
-	'7', --estilo
+	'4', --estilo
 	NULL, --ancho
 	'8', --formateo
 	NULL, --vinculo_indice
-	NULL, --no_ordenar
+	'0', --no_ordenar
 	NULL, --mostrar_xls
 	NULL, --mostrar_pdf
 	NULL, --pdf_propiedades
 	NULL, --desabilitado
-	NULL, --total
+	'0', --total
 	NULL, --total_cc
-	NULL, --usar_vinculo
+	'0', --usar_vinculo
 	NULL, --vinculo_carpeta
 	NULL, --vinculo_item
 	NULL, --vinculo_popup

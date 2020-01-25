@@ -5,7 +5,20 @@
 
 class dt_integrante_interno_pe extends extension_datos_tabla {
     
-     function get_listado($id_p = null) {
+    function get_integrante($id_docente = null){
+        $sql= "SELECT t_ii.*, t_dc.id_docente "
+                . "FROM integrante_interno_pe as t_ii "
+                . "INNER JOIN  ( SELECT t_d.* FROM dblink('".$this->dblink_designa()."', 'SELECT t_d.id_designacion,t_d.id_docente FROM designacion as t_d ') as t_d ( id_designacion INTEGER,id_docente INTEGER)) as t_d ON (t_ii.id_designacion = t_d.id_designacion) "
+                . "LEFT OUTER JOIN (SELECT t_dc.* FROM dblink('".$this->dblink_designa()."',
+                    'SELECT t_dc.id_docente,t_dc.nombre, t_dc.apellido, t_dc.tipo_docum,t_dc.nro_docum, t_dc.fec_nacim,t_dc.tipo_sexo,t_dc.pais_nacim 
+                    FROM docente as t_dc ') as t_dc 
+                    ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as t_dc ON (t_d.id_docente = t_dc.id_docente) "
+                ."WHERE t_dc.id_docente = $id_docente";
+        return toba::db('extension')->consultar($sql);
+    }
+
+
+    function get_listado($id_p = null) {
         $sql = "select "
                 . "id_pext,"
                 . "trim(dc.apellido)||', '||trim(dc.nombre) as nombre,"
@@ -32,6 +45,30 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                 . "where id_pext=" . $id_p
                 . "order by nombre,desde"
         ;
+        return toba::db('extension')->consultar($sql);
+    }
+    
+    function get_fecha($where=array())
+    {
+        
+        if (!is_null($where)) {
+            $where = ' WHERE ' . $where;
+        } else {
+            $where = '';
+        }
+        $sql = " SELECT t_i.*, trim(apellido)||', '||trim(nombre) as nombre, dc.tipo_docum, dc.nro_docum, dc.tipo_sexo, dc.fec_nacim"
+                . " FROM integrante_interno_pe as t_i  "
+                . " LEFT OUTER JOIN pextension as p ON (t_i.id_pext = p.id_pext)"
+                . "INNER JOIN  ( SELECT d.* FROM dblink('".$this->dblink_designa()."', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (t_i.id_designacion = d.id_designacion) "
+                . " LEFT OUTER JOIN (SELECT dc.* FROM dblink('".$this->dblink_designa()."',
+                    'SELECT dc.correo_institucional,dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum,dc.nro_docum, dc.fec_nacim,dc.tipo_sexo,dc.pais_nacim 
+                    FROM docente as dc ') as dc 
+                    ( correo_institucional CHARACTER(60),id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as dc ON (d.id_docente = dc.id_docente)  "
+            
+//                .$where;
+                ;
+            $sql = sql_concatenar_where($sql, $where)
+                    . " t_i.hasta = p.fec_hasta";
         return toba::db('extension')->consultar($sql);
     }
     

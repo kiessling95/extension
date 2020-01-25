@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_cuadro', --clase
 	'1001000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'cuadro_descargar', --subclase
+	'cuadro/cuadro_descargar.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - cuadro_organizaciones', --nombre
@@ -84,16 +84,16 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 --- INICIO Grupo de desarrollo 1001
 INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
 	'extension', --proyecto
-	'1001000331', --evento_id
+	'1001000338', --evento_id
 	'1002000056', --objeto
-	'pdf_acta', --identificador
+	'pdf_aval', --identificador
 	'Aval', --etiqueta
 	'1', --maneja_datos
 	'1', --sobre_fila
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'extension_pdf.png', --imagen
+	'exp_pdf.gif', --imagen
 	'0', --en_botonera
 	NULL, --ayuda
 	'2', --orden

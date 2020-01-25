@@ -16,12 +16,12 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_cuadro', --clase
 	'1001000004', --punto_montaje
-	'extension_cuadro', --subclase
-	'cuadro/extension_cuadro.php', --subclase_archivo
+	NULL, --subclase
+	NULL, --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extensión - CI - cuadro_ii', --nombre
-	'Integrantes del Proyecto de Extensión Internos', --titulo
+	NULL, --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	NULL, --fuente_datos_proyecto
@@ -118,7 +118,7 @@ INSERT INTO apex_objeto_cuadro (objeto_cuadro_proyecto, objeto_cuadro, titulo, s
 	NULL, --desplegable
 	NULL, --desplegable_activo
 	'0', --scroll
-	NULL, --scroll_alto
+	'250px', --scroll_alto
 	't', --cc_modo
 	'0', --cc_modo_anidado_colap
 	NULL, --cc_modo_anidado_totcol

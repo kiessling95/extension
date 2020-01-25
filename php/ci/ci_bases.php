@@ -6,9 +6,20 @@ class ci_bases extends extension_ci {
     protected $s__where = null;
     protected $s__datos_filtro = null;
     protected $s__rubro = null;
+    protected $s__bases;
+    protected $s__datos;
 
     function get_eje_tematico($id) {
         
+    }
+
+    function ajax__descargar_bases($id_fila, toba_ajax_respuesta $respuesta) {
+        if ($id_fila != 0) {
+            $id_fila = $id_fila / 2;
+        }
+        $this->s__bases = $this->s__datos[$id_fila]['id_bases'];
+
+        $respuesta->set($id_fila);
     }
 
 //------------------------------------------------------------------------------------
@@ -18,11 +29,11 @@ class ci_bases extends extension_ci {
     function conf__cuadro(toba_ei_cuadro $cuadro) {
         $this->dep('datos')->resetear();
         if (!is_null($this->s__where)) {
-            $datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado($this->s__where);
+            $this->s__datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado($this->s__where);
         } else {
-            $datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado();
+            $this->s__datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado();
         }
-        $cuadro->set_datos($datos);
+        $cuadro->set_datos($this->s__datos);
     }
 
     function evt__cuadro__seleccion($datos) {
@@ -218,9 +229,13 @@ class ci_bases extends extension_ci {
 
     // problemas con la clave al modificar, no se actualiza ( Se elimino el evento )
     function evt__form_ejes__modificacion($datos) {
-
+        $ejes = $this->dep('datos')->tabla('eje_tematico_conv')->get();
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        if($ejes['descripcion']==$datos['descripcion']){
+            $datos['descripcion'] = $ejes['id_eje'];
+        }
         $tipo = $this->dep('datos')->tabla('tipos_ejes_tematicos')->get_tipo($datos['descripcion'])[0];
+        
         $correcto = true;
         $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']);
         // Control Ejes no repetidos 
@@ -387,7 +402,11 @@ class ci_bases extends extension_ci {
     }
 
     function vista_pdf(toba_vista_pdf $salida) {
-
+        if (isset($this->s__bases)) {
+            $base['id_bases'] = $this->s__bases;
+            $this->dep('datos')->tabla('bases_convocatoria')->resetear(); //limpia
+            $this->dep('datos')->tabla('bases_convocatoria')->cargar($base); //carga el articulo que se selecciono
+        }
 
         if ($this->dep('datos')->tabla('bases_convocatoria')->esta_cargada()) {
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
