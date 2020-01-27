@@ -1050,7 +1050,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $pe['id_pext'];
 
         if ($datos['integrante'] != null) {
-            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
+            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'], $datos[id_pext])[0];
             if (!is_null($ext)) {
                 $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
                 toba::db('extension')->consultar($sql);
@@ -1087,14 +1087,14 @@ class ci_proyectos_extension extends extension_ci {
         $datos_seg = $this->dep('datos')->tabla('seguimiento_ua')->get();
 
         if ($datos_seg['nro_docum'] != null) {
-            $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'])[0];
+            $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'], $datos_seg[id_pext])[0];
         }
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
         if ($datos['integrante'] != null) {
-            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'])[0];
+            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'], $datos[id_pext])[0];
 
             if (!is_null($ext_anterior)) {
                 if ($datos[integrante] != $datos_seg[nro_docum]) {
