@@ -899,30 +899,28 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('id_bases')->set_solo_lectura();
         $form->ef('fec_desde')->set_solo_lectura();
         $form->ef('fec_hasta')->set_solo_lectura();
-        
+
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
-        if($seg_ua[0]['nro_docum'] != null)
-        {
+        if ($seg_ua[0]['nro_docum'] != null) {
             $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum']);
         }
-            
+
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
 
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get();
-         
+
             $datos[denominacion] = $pe[denominacion];
             $datos[id_bases] = $pe[id_bases];
             $datos[duracion] = $pe[duracion];
             $datos[monto] = $pe[monto];
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
-            
-            if(!is_null($int))
-            {
+
+            if (!is_null($int)) {
                 $datos[nombre_becario] = $int[0][nombre];
                 $datos[dni_becario] = $int[0][tipo_docum] . $int[0][nro_docum];
             }
-            
+
             $form->set_datos($datos);
         } else {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
@@ -930,12 +928,10 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('monto')->set_estado($pe[monto]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
-            if(!is_null($int))
-            {
+            if (!is_null($int)) {
                 $form->ef('nombre_becario')->set_estado($int[0][nombre]);
                 $form->ef('dni_becario')->set_estado($int[0][tipo_docum] . $int[0][nro_docum]);
             }
-            
         }
     }
 
@@ -1456,7 +1452,7 @@ class ci_proyectos_extension extends extension_ci {
                         if ($datos['funcion_p'] == 'D    ' OR $datos['funcion_p'] == 'CD-Co') {
                             foreach ($integrantes as $integrante) {
                                 if ($integrante['funcion_p'] == 'Director' OR $integrante['funcion_p'] == 'Codirector') {
-                                    $boolean = true;                      
+                                    $boolean = true;
                                 }
                             }
                         }
@@ -2357,32 +2353,36 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
-    //---- Filtro Integrantes Internos-----------------------------------------------------------------------
+    //---- Filtro Integrantes Vigentes -----------------------------------------------------------------------
 
-    function conf__filtro_internos(toba_ei_filtro $filtro) {
+    function conf__filtro_vigentes(toba_ei_filtro $filtro) {
         if (isset($this->s__datos_filtro)) {
             $filtro->set_datos($this->s__datos_filtro);
         }
     }
 
-    function evt__filtro_internos__filtrar($datos) {
+    function evt__filtro_vigentes__filtrar($datos) {
         $this->s__datos_filtro = $datos;
-        $this->s__where = $this->dep('filtro_internos')->get_sql_where();
+        $this->s__where = $this->dep('filtro_vigentes')->get_sql_where();
     }
 
-    function evt__filtro_internos__cancelar() {
+    function evt__filtro_vigentes__cancelar() {
         unset($this->s__datos_filtro);
         unset($this->s__where);
     }
-    
+
 //-----------------------------------------------------------------------------------
 //---- cuadro_int -------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 
     function conf__cuadro_int(toba_ei_cuadro $cuadro) {
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $cuadro->set_datos($this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']));
+        if (isset($this->s__where)) {
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_externo_pe')->get_vigentes($this->s__where));
+        } else {
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']));
+        }
     }
 
     function evt__cuadro_int__seleccion($datos) {
@@ -2397,9 +2397,9 @@ class ci_proyectos_extension extends extension_ci {
 //-----------------------------------------------------------------------------------
 
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
-        $pe = $this->dep('datos')->tabla('pextension')->get();
+
         if (isset($this->s__where)) {
-        $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_fecha($this->s__where));
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where));
         }
     }
 
