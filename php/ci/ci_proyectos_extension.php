@@ -1009,6 +1009,7 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_hasta')->set_solo_lectura();
         $form->ef('departamento')->set_solo_lectura();
         $form->ef('area')->set_solo_lectura();
+        $form->ef('duracion')->set_solo_lectura();
 
 
 
@@ -1035,7 +1036,9 @@ class ci_proyectos_extension extends extension_ci {
 
 
             $form->set_datos($datos);
-        } else {
+        }
+        else 
+        {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
