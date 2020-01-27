@@ -75,7 +75,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1002000084', --col_id
 	'id_presupuesto', --columna
 	'E', --tipo
-	'1', --pk
+	'0', --pk
 	'presupuesto_extension_seq', --secuencia
 	NULL, --largo
 	NULL, --no_nulo
@@ -103,7 +103,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1002000086', --col_id
 	'id_rubro_extension', --columna
 	'E', --tipo
-	'1', --pk
+	'0', --pk
 	'', --secuencia
 	NULL, --largo
 	NULL, --no_nulo

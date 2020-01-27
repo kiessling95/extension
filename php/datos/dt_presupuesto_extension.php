@@ -19,7 +19,7 @@ class dt_presupuesto_extension extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_datos($id) {
+    function get_datos($id_presupuesto = null) {
 
         $sql = "select "
                 . "p_e.id_pext,"
@@ -31,7 +31,7 @@ class dt_presupuesto_extension extends extension_datos_tabla {
                 . "from presupuesto_extension as p_e "
                 . "INNER JOIN rubro_presup_extension as r ON ( p_e.id_rubro_extension = r.id_rubro_extension )"
                 . "LEFT OUTER JOIN pextension as p ON ( p_e.id_pext = p.id_pext )  "
-                . " where p_e.id_presupuesto =" . $id['id_presupuesto'];
+                . " where p_e.id_presupuesto =" . $id_presupuesto;
         return toba::db('extension')->consultar($sql);
     }
     
