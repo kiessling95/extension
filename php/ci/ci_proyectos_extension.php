@@ -1012,7 +1012,7 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
 
             if ($datos['nro_docum'] != null) {
-                $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum])[0];
+                $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
 
                 $datos[integrante] = $ext[nro_docum];
             }
