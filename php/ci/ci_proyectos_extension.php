@@ -909,7 +909,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         if ($seg_ua[0]['nro_docum'] != null) {
-            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum']);
+            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'],$pe['id_pext']);
         }
 
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
@@ -1773,7 +1773,15 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_plantilla(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'], $this->s__datos_filtro);
+        if(isset($this->s__datos_filtro))
+        {
+            $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'], $this->s__datos_filtro);
+        
+        }
+        else
+        {
+            $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrantes($pe['id_pext']);
+        }
         $duracion = '';
         $fecha = date('d-m-Y', strtotime($pe['fecha_resol']));
 
@@ -2411,6 +2419,11 @@ class ci_proyectos_extension extends extension_ci {
 
         if (isset($this->s__where)) {
             $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where));
+        }
+        else
+        {
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
         }
     }
 
