@@ -909,7 +909,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         if ($seg_ua[0]['nro_docum'] != null) {
-            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum']);
+            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'],$pe['id_pext']);
         }
 
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
@@ -1450,7 +1450,7 @@ class ci_proyectos_extension extends extension_ci {
                         $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
                         $boolean = false;
                         //control de director o codirector no repetido 
-                        if ($datos['funcion_p'] == 'D    ' OR $datos['funcion_p'] == 'CD-Co') {
+                        if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p'] && ($datos['funcion_p'] == 'D    ' || $datos['funcion_p'] == 'CD-Co')) {
                             foreach ($integrantes as $integrante) {
                                 if ($integrante['funcion_p'] == 'Director' OR $integrante['funcion_p'] == 'Codirector') {
                                     $boolean = true;
@@ -1458,8 +1458,7 @@ class ci_proyectos_extension extends extension_ci {
                             }
                         }
                         if (!$boolean) {
-
-
+                            
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'docente';
 
@@ -1528,7 +1527,7 @@ class ci_proyectos_extension extends extension_ci {
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1])[0];
+        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1],$pe['id_pext'])[0];
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
@@ -1584,7 +1583,8 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
-
+        
+        //Si count == 2 se modifico la persona asociada
         $count = count($datos['integrante']);
         if ($count == 2) {
             $int_ext = array();
@@ -1598,6 +1598,7 @@ class ci_proyectos_extension extends extension_ci {
                 if ($integrante_datos_almacenados['hasta'] == $datos['hasta'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
                     //control fecha desde mayor o igual a fecha inicio proyecto
                     if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                        // control persona repetida
                         if (!is_null($int_ext)) {
                             // date('Y-m-d') fecha actual 
                             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_ext['hasta']))) <= 0) {
@@ -1613,13 +1614,11 @@ class ci_proyectos_extension extends extension_ci {
                                 $this->s__mostrar_e = 0;
                             }
                         } else {
-
                             if ($count == 2) {
                                 $datos['id_pext'] = $pe['id_pext'];
                                 $datos['tipo'] = 'Otro';
                                 $datos['tipo_docum'] = $datos['integrante'][0];
                                 $datos['nro_docum'] = $datos['integrante'][1];
-                                $datos['integrante'];
                             }
                             $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
