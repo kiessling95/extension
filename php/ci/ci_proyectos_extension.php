@@ -1445,15 +1445,15 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrantes__modificacion($datos) {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
-
+        $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get();
         // control fechas hasta mayo que desde
-        if ($datos['hasta'] > $datos['desde']) {
+        if ($datos['hasta'] > $datos['desde'] || ($integrantes['hasta'] != $datos['hasta'] || $integrantes['desde'] != $datos['desde'])) {
             //control de fecha actual superior a fecha desde
-            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0 || $integrantes['desde'] != $datos['desde']) {
                 // control fecha hasta menor o igual fin proyecto
-                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
+                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0 || $integrantes['hasta'] != $datos['hasta']) {
                     // control fecha desde mayor o igual fecha inicio proyecto
-                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0 || $integrantes['desde'] != $datos['desde']) {
                         $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
                         $boolean = false;
                         //control de director o codirector no repetido 
@@ -1536,6 +1536,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1])[0];
+        
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
@@ -1591,58 +1592,63 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $count = count($datos['integrante']);
+        $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+        
         if ($count == 2) {
             $int_ext = array();
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1])[0];
         }
+        
+        
         //control fecha hasta mayor a desde
-        if ($datos['hasta'] > $datos['desde']) {
+            if ($datos['hasta'] > $datos['desde'] || ($integrantes['hasta'] != $datos['hasta'] || $integrantes['desde'] != $datos['desde'])) {
             //control de fecha actual superior a fecha desde
-            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0 || $integrantes['desde'] != $datos['desde']) {
                 //control fecha hasta menor o igual a fecha fin proyecto
-                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
+                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0 || $integrantes['hasta'] != $datos['hasta']) {
                     //control fecha desde mayor o igual a fecha inicio proyecto
-                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
-                        if (!is_null($int_ext)) {
-                            // date('Y-m-d') fecha actual 
-                            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_ext['hasta']))) <= 0) {
-                                toba::notificacion()->agregar(utf8_d_seguro('El integrante seleccionado ya es un integrante vigente dentro del proyecto'), 'info');
-                            } else {
-                                $datos['id_pext'] = $pe['id_pext'];
-                                $datos['tipo'] = 'Otro';
-                                $datos['tipo_docum'] = $datos['integrante'][0];
-                                $datos['nro_docum'] = $datos['integrante'][1];
+                        if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0 || $integrantes['desde'] != $datos['desde']) {
+                            if (!is_null($int_ext)) {
+                                // date('Y-m-d') fecha actual 
+                                if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_ext['hasta']))) <= 0 || $integrantes['hasta'] != $datos['hasta']) {
+                                    toba::notificacion()->agregar(utf8_d_seguro('El integrante seleccionado ya es un integrante vigente dentro del proyecto'), 'info');
+                                } else {
+                                    $datos['id_pext'] = $pe['id_pext'];
+                                    $datos['tipo'] = 'Otro';
+                                    $datos['tipo_docum'] = $datos['integrante'][0];
+                                    $datos['nro_docum'] = $datos['integrante'][1];
 
+                                    $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
+                                    $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+                                    $this->s__mostrar_e = 0;
+                                }
+                            } else {
+
+                                if ($count == 2) {
+                                    $datos['id_pext'] = $pe['id_pext'];
+                                    $datos['tipo'] = 'Otro';
+                                    $datos['tipo_docum'] = $datos['integrante'][0];
+                                    $datos['nro_docum'] = $datos['integrante'][1];
+                                    $datos['integrante'];
+                                }
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
                                 $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+
                                 $this->s__mostrar_e = 0;
                             }
                         } else {
-
-                            if ($count == 2) {
-                                $datos['id_pext'] = $pe['id_pext'];
-                                $datos['tipo'] = 'Otro';
-                                $datos['tipo_docum'] = $datos['integrante'][0];
-                                $datos['nro_docum'] = $datos['integrante'][1];
-                                $datos['integrante'];
-                            }
-                            $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
-                            $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
-
-                            $this->s__mostrar_e = 0;
+                            toba::notificacion()->agregar(utf8_d_seguro('La fecha de inicio de vigencia dentro del proyecto es inferior a la fecha de inicio de proyecto'), 'info');
                         }
                     } else {
-                        toba::notificacion()->agregar(utf8_d_seguro('La fecha de inicio de vigencia dentro del proyecto es inferior a la fecha de inicio de proyecto'), 'info');
+                        toba::notificacion()->agregar(utf8_d_seguro('La fecha de fin de vigencia dentro del proyecto excede la fecha de fin de proyecto'), 'info');
                     }
                 } else {
-                    toba::notificacion()->agregar(utf8_d_seguro('La fecha de fin de vigencia dentro del proyecto excede la fecha de fin de proyecto'), 'info');
+                    toba::notificacion()->agregar(utf8_d_seguro('La fecha de inicio dentro del proyecto no corresponde a una fecha validad (" fecha desde anterior a fecha actual ")'), 'info');
                 }
             } else {
-                toba::notificacion()->agregar(utf8_d_seguro('La fecha de inicio dentro del proyecto no corresponde a una fecha validad (" fecha desde anterior a fecha actual ")'), 'info');
+                toba::notificacion()->agregar(utf8_d_seguro('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")'), 'info');
             }
-        } else {
-            toba::notificacion()->agregar(utf8_d_seguro('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")'), 'info');
-        }
+     
     }
 
     function evt__form_integrante_e__cancelar() {
