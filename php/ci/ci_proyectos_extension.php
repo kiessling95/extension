@@ -1436,15 +1436,17 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrantes__modificacion($datos) {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        // obtengo informacion integrante antes de posibles modificaciones 
+        $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_interno_pe')->get();
 
         // control fechas hasta mayo que desde
         if ($datos['hasta'] > $datos['desde']) {
-            //control de fecha actual superior a fecha desde
-            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
-                // control fecha hasta menor o igual fin proyecto
-                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
-                    // control fecha desde mayor o igual fecha inicio proyecto
-                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+            //si las fecha no cambio omito control de fecha actual superior a fecha desde
+            if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                // si las fecha no cambio omito control fecha hasta menor o igual fin proyecto
+                if ($integrante_datos_almacenados['hasta'] == $datos['hasta'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
+                    // si las fecha no cambio omito control fecha desde mayor o igual fecha inicio proyecto
+                    if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
                         $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
                         $boolean = false;
                         //control de director o codirector no repetido 
@@ -1581,6 +1583,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+
         $count = count($datos['integrante']);
         if ($count == 2) {
             $int_ext = array();
@@ -1589,11 +1593,11 @@ class ci_proyectos_extension extends extension_ci {
         //control fecha hasta mayor a desde
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
-            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+            if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
                 //control fecha hasta menor o igual a fecha fin proyecto
-                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
+                if ($integrante_datos_almacenados['hasta'] == $datos['hasta'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
                     //control fecha desde mayor o igual a fecha inicio proyecto
-                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                    if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
                         if (!is_null($int_ext)) {
                             // date('Y-m-d') fecha actual 
                             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_ext['hasta']))) <= 0) {
@@ -1930,15 +1934,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__filtro_organizaciones__cancelar() {
         unset($this->s__datos_filtro);
-    }
-
-//-----------------------------------------------------------------------------------
-//---- formulario pextension de organizaciones-------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-
-    function conf__form_pexten(toba_ei_formulario $form) {
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
     }
 
 //-----------------------------------------------------------------------------------
@@ -2460,7 +2455,6 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->dep('datos')->tabla('presupuesto_extension')->cargar($presup[0]);
     }
-
 
 //-----------------------------------------------------------------------------------
 //---- cuadro_objetivo  -------------------------------------------------------------------
