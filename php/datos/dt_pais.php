@@ -9,7 +9,9 @@ class dt_pais extends extension_datos_tabla {
     }
 
     function get_descripciones() {
-        $sql = " SELECT t_p.nombre, t_p.codigo_pais FROM dblink('" . $this->dblink_designa() . "','SELECT nombre,codigo_pais FROM pais') as t_p (nombre CHARACTER VARYING(40), codigo_pais CHARACTER(2)) ORDER BY nombre";
+        $sql = " SELECT t_p.nombre, t_p.codigo_pais FROM dblink('" . $this->dblink_designa() . "','SELECT nombre,codigo_pais FROM pais') as t_p (nombre CHARACTER VARYING(40), codigo_pais CHARACTER(2))"
+                . " WHERE t_p.codigo_pais = 'AR'"
+                . " ORDER BY nombre";
         return toba::db('extension')->consultar($sql);
     }
 
