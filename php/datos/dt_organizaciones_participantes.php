@@ -24,9 +24,10 @@ class dt_organizaciones_participantes extends extension_datos_tabla {
                     
                 FROM
                    organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"
-                . "LEFT OUTER JOIN (SELECT l.id FROM dblink('" . $this->dblink_designa() . "','SELECT id  FROM localidad') as l (id INTEGER)) as l"
-                . " ON (o_p.id_localidad = l.id)
-                   LEFT OUTER JOIN tipo_organizacion as t_o ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)"
+                . "LEFT OUTER JOIN (SELECT l.id,l.localidad FROM dblink('" . $this->dblink_designa() . "','SELECT id,localidad  FROM localidad') as l (id INTEGER, localidad CHARACTER VARYING(255) )) as l"
+                . " ON (o_p.id_localidad = l.id AND o_p.localidad = l.localidad)
+                   LEFT OUTER JOIN tipo_organizacion as t_o ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)
+                    where o_p.localidad = l.localidad"
 
         ;
         if (count($where) > 0) {
@@ -42,20 +43,24 @@ class dt_organizaciones_participantes extends extension_datos_tabla {
                     o_p.id_tipo_organizacion ,
                     o_p.id_pext ,
                     o_p.nombre ,
-                    o_p.id_localidad ,
+                    trim(localidad) as localidad  ,
                     o_p.telefono ,
                     o_p.email ,
                     o_p.referencia_vinculacion_inst,
-                    o_p.id_pais,
-                    o_p.id_provincia,
+                    trim(codigo_pais) as pais ,
+                    trim(descripcion_pcia) as provincia ,
                     o_p.domicilio,
                     o_p.aval
                     
                 FROM "
                 . " organizaciones_participantes as o_p INNER JOIN pextension as p_e ON (o_p.id_pext = p_e.id_pext)"
-                . " LEFT OUTER JOIN (SELECT l.id FROM dblink('" . $this->dblink_designa() . "','SELECT id, localidad  FROM localidad') as l (id INTEGER , localidad CHARACTER VARYING(255))) as l"
+                . " LEFT OUTER JOIN (SELECT l.id,l.localidad FROM dblink('" . $this->dblink_designa() . "','SELECT id, localidad  FROM localidad') as l (id INTEGER , localidad CHARACTER VARYING(255))) as l"
                 . " ON (o_p.id_localidad = l.id)"
                 . " LEFT OUTER JOIN tipo_organizacion as t_o ON (o_p.id_tipo_organizacion = t_o.id_tipo_organizacion)
+                    LEFT OUTER JOIN (SELECT p.codigo_pais,p.nombre FROM dblink('" . $this->dblink_designa() . "','SELECT codigo_pais, nombre  FROM pais') as p (codigo_pais CHARACTER(2) , nombre CHARACTER VARYING(40))) as p"
+                . " ON (o_p.id_pais = p.codigo_pais)
+                    LEFT OUTER JOIN (SELECT pcia.codigo_pcia,pcia.descripcion_pcia FROM dblink('" . $this->dblink_designa() . "','SELECT codigo_pcia, descripcion_pcia  FROM provincia') as pcia (codigo_pcia INTEGER , descripcion_pcia CHARACTER (40))) as pcia"
+                . " ON (o_p.id_provincia = pcia.codigo_pcia)
                    
                 WHERE o_p.id_pext = " . $id;
 
