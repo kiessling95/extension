@@ -615,16 +615,16 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function monto_rubro($id_rubro_extension) {
-        
+
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
         $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($id_rubro_extension)[0];
-        
+
         $presupuesto = $this->dep('datos')->tabla('presupuesto_extension')->get_listado_rubro($id_rubro_extension);
         $count = 0;
         foreach ($presupuesto as $value) {
-                $count = $count + $value[monto];
+            $count = $count + $value[monto];
         }
-        return ($monto[monto_max]- $count);
+        return ($monto[monto_max] - $count);
     }
 
     function convocatorias() {
@@ -1039,9 +1039,7 @@ class ci_proyectos_extension extends extension_ci {
 
 
             $form->set_datos($datos);
-        }
-        else 
-        {
+        } else {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
@@ -1882,7 +1880,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_presupuesto__modificacion($datos) {
 
         $presuesto_datos_anterior = $this->dep('datos')->tabla('presupuesto_extension')->get();
-    
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $datos[id_pext] = $pe['id_pext'];
@@ -1893,9 +1891,9 @@ class ci_proyectos_extension extends extension_ci {
         $presupuesto = $this->dep('datos')->tabla('presupuesto_extension')->get_listado_rubro($datos[id_rubro_extension]);
         $count = 0;
         foreach ($presupuesto as $value) {
-                $count = $count + $value[monto];
+            $count = $count + $value[monto];
         }
-        $count = $count + $datos[monto] - $presuesto_datos_anterior[monto] ;
+        $count = $count + $datos[monto] - $presuesto_datos_anterior[monto];
 
         $monto_max = $bases[monto_max];
         $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension])[0];
@@ -2411,6 +2409,9 @@ class ci_proyectos_extension extends extension_ci {
 
         if (isset($this->s__where)) {
             $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where));
+        } else {
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
         }
     }
 
