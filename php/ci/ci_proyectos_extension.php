@@ -859,72 +859,54 @@ class ci_proyectos_extension extends extension_ci {
         $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos_pe['id_pext']);
         //Obtengo datos de integrantes internos cargados
         $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos_pe['id_pext']);
-        
-        if($datos_pe['fec_desde'] != $datos['fec_desde'])
-        {
-            if(!is_null($datos_integrantes_e) && $datos_pe['fec_desde'] == $datos_integrantes_e['desde'])
-            {
-                foreach($datos_integrantes_e as $externo)
-                {
+
+        if ($datos_pe['fec_desde'] != $datos['fec_desde']) {
+            if (!is_null($datos_integrantes_e) && $datos_pe['fec_desde'] == $datos_integrantes_e['desde']) {
+                foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0)
-                    {
-                        $sql = "UPDATE integrante_externo_pe SET desde =' " . $datos['fec_desde'] . "' where id_pext = " . $externo[id_pext] .
-                                " AND tipo_docum =' " . $externo['tipo_docum'] . " ' AND nro_docum = ". $externo['nro_docum'] ;
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fec_desde'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
                         toba::db('extension')->consultar($sql);
                     }
-                    
                 }
             }
-            if(!is_null($datos_integrantes_i) && $datos_pe['fec_desde'] == $datos_integrantes_i['desde'])
-            {
-                foreach($datos_integrantes_i as $interno)
-                {
-                    
+            if (!is_null($datos_integrantes_i) && $datos_pe['fec_desde'] == $datos_integrantes_i['desde']) {
+                foreach ($datos_integrantes_i as $interno) {
+
                     //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0)
-                    {
-                        $sql = "UPDATE integrante_interno_pe SET desde =' " . $datos['fec_desde'] . "' where id_pext = " . $datos_pe[id_pext] .
-                               " AND id_designacion = ". $interno['id_designacion'] ;
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datos['fec_desde'] . "' where id_pext = " . $datos_pe[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
                         toba::db('extension')->consultar($sql);
                     }
-                    
                 }
             }
-                
         }
-        
-        if($datos_pe['fec_hasta'] != $datos['fec_hasta'])
-        {
-            if(!is_null($datos_integrantes_e))
-            {
-                foreach($datos_integrantes_e as $externo)
-                {
+
+        if ($datos_pe['fec_hasta'] != $datos['fec_hasta']) {
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0)
-                    {
-                        $sql = "UPDATE integrante_externo_pe SET hasta =' " . $datos['fec_hasta'] . "' where id_pext = " . $datos_pe[id_pext] .
-                                " AND tipo_docum =' " . $externo['tipo_docum'] . " ' AND nro_docum = ". $externo['nro_docum'] ;
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $datos['fec_hasta'] . "' where id_pext = " . $datos_pe[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
                     }
-                    
                 }
             }
-            if(!is_null($datos_integrantes_i))
-            {
-                foreach($datos_integrantes_i as $interno)
-                {
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
                     //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0)
-                    {
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
                         $sql = "UPDATE integrante_interno_pe SET hasta =' " . $datos['fec_hasta'] . "' where id_pext = " . $datos_pe[id_pext] .
-                               " AND id_designacion = ". $interno['id_designacion'] ;
+                                " AND id_designacion = " . $interno['id_designacion'];
                         toba::db('extension')->consultar($sql);
                     }
-                    
                 }
             }
         }
-        
+
         $ejes = $datos['eje_tematico'];
         $array = '{' . $ejes[0];
         unset($ejes[0]);
@@ -981,7 +963,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         if ($seg_ua[0]['nro_docum'] != null) {
-            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'],$pe['id_pext']);
+            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'], $pe['id_pext']);
         }
 
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
@@ -1530,7 +1512,7 @@ class ci_proyectos_extension extends extension_ci {
                             }
                         }
                         if (!$boolean) {
-                            
+
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'docente';
 
@@ -1599,7 +1581,7 @@ class ci_proyectos_extension extends extension_ci {
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1],$pe['id_pext'])[0];
+        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1], $pe['id_pext'])[0];
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
@@ -1655,7 +1637,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
-        
+
         //Si count == 2 se modifico la persona asociada
         $count = count($datos['integrante']);
         if ($count == 2) {
