@@ -28,6 +28,45 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
+    function get_vigentes($filtro = null) {
+
+        $vigente = "hasta = 'Vigentes'";
+        if (str_word_count($filtro) == 2) {
+            $where = " WHERE t_e.hasta >= '" . date('Y-m-d') . "'  ";
+        } else {
+            $vigente = "hasta = 'No Vigentes'";
+            if (str_word_count($filtro) == 3) {
+                $where = " WHERE t_e.hasta < '" . date('Y-m-d') . "'  ";
+            } else {
+                $where = '';
+            }
+        }
+
+
+        $sql = "select "
+                . "id_pext,"
+                . "trim(apellido)||', '||trim(nombre) as nombre,"
+                . "t_p.tipo_docum,"
+                . "t_p.nro_docum,"
+                . "fec_nacim,"
+                . "tipo_sexo,"
+                . "pais_nacim,"
+                . "f_e.descripcion as funcion_p,"
+                . "carga_horaria,"
+                . "desde,hasta,"
+                . "rescd,"
+                . "tipo,"
+                . "t_p.telefono,"
+                . "t_p.mail,"
+                . "ad_honorem "
+                . "FROM integrante_externo_pe as t_e "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_e.funcion_p = f_e.id_extension) "
+                . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
+                . $where
+                . " order by nombre,desde";
+        return toba::db('extension')->consultar($sql);
+    }
+
     function get_descripciones() {
         $sql = "select t_e.*,trim(apellido)||', '||trim(nombre) as nombre "
                 . "FROM integrante_externo_pe as t_e "
@@ -37,11 +76,11 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_integrante($nro_docum) {
+    function get_integrante($nro_docum = null,$id_pext = null) {
         $sql = "select t_e.*,trim(apellido)||', '||trim(nombre) as nombre "
                 . "FROM integrante_externo_pe as t_e "
                 . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum) "
-                . "WHERE t_e.nro_docum = $nro_docum ";
+                . "WHERE t_e.nro_docum = $nro_docum AND t_e.id_pext = $id_pext ";
         return toba::db('extension')->consultar($sql);
     }
 
@@ -76,9 +115,9 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where)
                     . "AND t_i.id_pext=" . $id_p
-                    . " and t_i.hasta=p.fec_hasta)";
+                    . " AND t_i.hasta >= '" . date('Y-m-d') . "')";
         } else {
-            $sql .= "where t_i.id_pext = " . $id_p . " and t_i.hasta = p.fec_hasta)";
+            $sql .= "where t_i.id_pext = " . $id_p . " AND t_i.hasta >= '" . date('Y-m-d') . "')";
         }
 
         $sql .= " UNION" //union con los integrantes externos
@@ -102,9 +141,9 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where)
                     . "AND t_e.id_pext=" . $id_p
-                    . " and t_e.hasta=p.fec_hasta)";
+                    . " AND t_e.hasta >= '" . date('Y-m-d') . "')";
         } else {
-            $sql .= " where t_e.id_pext = " . $id_p . " and t_e.hasta = p.fec_hasta)";
+            $sql .= " where t_e.id_pext = " . $id_p . " AND t_e.hasta >= '" . date('Y-m-d') . "')";
         }
 
         return toba::db('extension')->consultar($sql);
