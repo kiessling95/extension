@@ -862,21 +862,21 @@ class ci_proyectos_extension extends extension_ci {
         
         if($datos_pe['fec_desde'] != $datos['fec_desde'])
         {
-            if(!is_null($datos_integrantes_e))
+            if(!is_null($datos_integrantes_e) && $datos_pe['fec_desde'] == $datos_integrantes_e['desde'])
             {
                 foreach($datos_integrantes_e as $externo)
                 {
                     //Si es integrante vigente
                     if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0)
                     {
-                        $sql = "UPDATE integrante_externo_pe SET desde =' " . $datos['fec_desde'] . "' where id_pext = " . $datos_pe[id_pext] .
+                        $sql = "UPDATE integrante_externo_pe SET desde =' " . $datos['fec_desde'] . "' where id_pext = " . $externo[id_pext] .
                                 " AND tipo_docum =' " . $externo['tipo_docum'] . " ' AND nro_docum = ". $externo['nro_docum'] ;
                         toba::db('extension')->consultar($sql);
                     }
                     
                 }
             }
-            if(!is_null($datos_integrantes_i))
+            if(!is_null($datos_integrantes_i) && $datos_pe['fec_desde'] == $datos_integrantes_i['desde'])
             {
                 foreach($datos_integrantes_i as $interno)
                 {
@@ -886,7 +886,6 @@ class ci_proyectos_extension extends extension_ci {
                     {
                         $sql = "UPDATE integrante_interno_pe SET desde =' " . $datos['fec_desde'] . "' where id_pext = " . $datos_pe[id_pext] .
                                " AND id_designacion = ". $interno['id_designacion'] ;
-//                       print_r(toba::db('extension')->consultar($sql));                       exit();
                         toba::db('extension')->consultar($sql);
                     }
                     
@@ -917,7 +916,7 @@ class ci_proyectos_extension extends extension_ci {
                     //Si es integrante vigente
                     if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0)
                     {
-                        $sql = "UPDATE integrante_interno_pe SET desde =' " . $datos['fec_desde'] . "' where id_pext = " . $datos_pe[id_pext] .
+                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $datos['fec_hasta'] . "' where id_pext = " . $datos_pe[id_pext] .
                                " AND id_designacion = ". $interno['id_designacion'] ;
                         toba::db('extension')->consultar($sql);
                     }
