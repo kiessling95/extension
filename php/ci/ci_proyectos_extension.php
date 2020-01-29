@@ -909,7 +909,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         if ($seg_ua[0]['nro_docum'] != null) {
-            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum']);
+            $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'],$pe['id_pext']);
         }
 
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
