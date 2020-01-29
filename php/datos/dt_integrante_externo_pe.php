@@ -115,9 +115,9 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where)
                     . "AND t_i.id_pext=" . $id_p
-                    . " and t_i.hasta=p.fec_hasta)";
+                    . " AND t_i.hasta >= '" . date('Y-m-d') . "')";
         } else {
-            $sql .= "where t_i.id_pext = " . $id_p . " and t_i.hasta = p.fec_hasta)";
+            $sql .= "where t_i.id_pext = " . $id_p . " AND t_i.hasta >= '" . date('Y-m-d') . "')";
         }
 
         $sql .= " UNION" //union con los integrantes externos
@@ -141,9 +141,9 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where)
                     . "AND t_e.id_pext=" . $id_p
-                    . " and t_e.hasta=p.fec_hasta)";
+                    . " AND t_e.hasta >= '" . date('Y-m-d') . "')";
         } else {
-            $sql .= " where t_e.id_pext = " . $id_p . " and t_e.hasta = p.fec_hasta)";
+            $sql .= " where t_e.id_pext = " . $id_p . " AND t_e.hasta >= '" . date('Y-m-d') . "')";
         }
 
         return toba::db('extension')->consultar($sql);

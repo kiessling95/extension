@@ -1144,15 +1144,6 @@ class ci_proyectos_extension extends extension_ci {
     }
 
 //-----------------------------------------------------------------------------------
-//---- form_pext --------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-
-    function conf__form_pext(toba_ei_formulario $form) {
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
-    }
-
-//-----------------------------------------------------------------------------------
 //---- Eventos ----------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 
@@ -1445,19 +1436,21 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrantes__modificacion($datos) {
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        // obtengo informacion integrante antes de posibles modificaciones 
+        $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_interno_pe')->get();
 
         // control fechas hasta mayo que desde
         if ($datos['hasta'] > $datos['desde']) {
-            //control de fecha actual superior a fecha desde
-            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
-                // control fecha hasta menor o igual fin proyecto
-                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
-                    // control fecha desde mayor o igual fecha inicio proyecto
-                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+            //si las fecha no cambio omito control de fecha actual superior a fecha desde
+            if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                // si las fecha no cambio omito control fecha hasta menor o igual fin proyecto
+                if ($integrante_datos_almacenados['hasta'] == $datos['hasta'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
+                    // si las fecha no cambio omito control fecha desde mayor o igual fecha inicio proyecto
+                    if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
                         $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
                         $boolean = false;
                         //control de director o codirector no repetido 
-                        if ($datos['funcion_p'] == 'D    ' OR $datos['funcion_p'] == 'CD-Co') {
+                        if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p'] && ($datos['funcion_p'] == 'D    ' || $datos['funcion_p'] == 'CD-Co')) {
                             foreach ($integrantes as $integrante) {
                                 if ($integrante['funcion_p'] == 'Director' OR $integrante['funcion_p'] == 'Codirector') {
                                     $boolean = true;
@@ -1465,8 +1458,7 @@ class ci_proyectos_extension extends extension_ci {
                             }
                         }
                         if (!$boolean) {
-
-
+                            
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'docente';
 
@@ -1535,7 +1527,7 @@ class ci_proyectos_extension extends extension_ci {
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__guardar($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1])[0];
+        $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1],$pe['id_pext'])[0];
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
@@ -1590,6 +1582,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+        
+        //Si count == 2 se modifico la persona asociada
         $count = count($datos['integrante']);
         if ($count == 2) {
             $int_ext = array();
@@ -1598,11 +1593,12 @@ class ci_proyectos_extension extends extension_ci {
         //control fecha hasta mayor a desde
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
-            if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+            if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
                 //control fecha hasta menor o igual a fecha fin proyecto
-                if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
+                if ($integrante_datos_almacenados['hasta'] == $datos['hasta'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
                     //control fecha desde mayor o igual a fecha inicio proyecto
-                    if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                    if ($integrante_datos_almacenados['desde'] == $datos['desde'] || strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
+                        // control persona repetida
                         if (!is_null($int_ext)) {
                             // date('Y-m-d') fecha actual 
                             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_ext['hasta']))) <= 0) {
@@ -1618,13 +1614,11 @@ class ci_proyectos_extension extends extension_ci {
                                 $this->s__mostrar_e = 0;
                             }
                         } else {
-
                             if ($count == 2) {
                                 $datos['id_pext'] = $pe['id_pext'];
                                 $datos['tipo'] = 'Otro';
                                 $datos['tipo_docum'] = $datos['integrante'][0];
                                 $datos['nro_docum'] = $datos['integrante'][1];
-                                $datos['integrante'];
                             }
                             $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
@@ -1939,15 +1933,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__filtro_organizaciones__cancelar() {
         unset($this->s__datos_filtro);
-    }
-
-//-----------------------------------------------------------------------------------
-//---- formulario pextension de organizaciones-------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-
-    function conf__form_pexten(toba_ei_formulario $form) {
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
     }
 
 //-----------------------------------------------------------------------------------
@@ -2468,15 +2453,6 @@ class ci_proyectos_extension extends extension_ci {
         $presup = $this->dep('datos')->tabla('presupuesto_extension')->get_datos($datos['id_presupuesto']);
 
         $this->dep('datos')->tabla('presupuesto_extension')->cargar($presup[0]);
-    }
-
-//-----------------------------------------------------------------------------------
-//---- formulario_pext de objetivos--------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-
-    function conf__formulario_pext(toba_ei_formulario $form) {
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $form->set_datos($this->dep('datos')->tabla('pextension')->get());
     }
 
 //-----------------------------------------------------------------------------------
