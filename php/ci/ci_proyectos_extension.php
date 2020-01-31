@@ -643,8 +643,34 @@ class ci_proyectos_extension extends extension_ci {
     //----------------------- EVENTOS CI PROYECTO DE EXTENSION -----------------------
     //--------------------------------------------------------------------------------
 
+    function evt__nuevo_proyecto() {
+
+        $this->set_pantalla('pant_alta_proyecto');
+
+        $this->pantalla()->tab("pant_integrantesi")->desactivar();
+        $this->pantalla()->tab("pant_integrantese")->desactivar();
+        $this->pantalla()->tab("pant_planilla")->desactivar();
+        $this->pantalla()->tab("pant_presupuesto")->desactivar();
+        $this->pantalla()->tab("pant_organizaciones")->desactivar();
+        $this->pantalla()->tab("pant_objetivos")->desactivar();
+        $this->pantalla()->tab("pant_actividad")->desactivar();
+
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_planilla")->ocultar();
+        $this->pantalla()->tab("pant_presupuesto")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_objetivos")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_destinatarios")->ocultar();
+    }
+
     function evt__alta() {
         switch ($this->s__pantalla) {
+            case 'pant_alta_proyecto':
+                $this->set_pantalla('pant_formulario');
+                break;
             case 'pant_interno':
                 $this->s__mostrar = 1;
                 $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
@@ -674,32 +700,6 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_destinatarios':
                 $this->s__mostrar_dest = 1;
                 $this->dep('datos')->tabla('destinatarios')->resetear();
-                break;
-            case 'pant_edicion':
-                $this->set_pantalla('pant_formulario');
-                $this->s__mostrar = 1;
-
-                $this->pantalla()->tab("pant_integrantesi")->desactivar();
-                $this->pantalla()->tab("pant_integrantese")->desactivar();
-                $this->pantalla()->tab("pant_planilla")->desactivar();
-                $this->pantalla()->tab("pant_presupuesto")->desactivar();
-                $this->pantalla()->tab("pant_organizaciones")->desactivar();
-                $this->pantalla()->tab("pant_objetivos")->desactivar();
-                $this->pantalla()->tab("pant_actividad")->desactivar();
-
-                $this->pantalla()->tab("pant_integrantesi")->ocultar();
-                $this->pantalla()->tab("pant_integrantese")->ocultar();
-                $this->pantalla()->tab("pant_planilla")->ocultar();
-                $this->pantalla()->tab("pant_presupuesto")->ocultar();
-                $this->pantalla()->tab("pant_organizaciones")->ocultar();
-                $this->pantalla()->tab("pant_objetivos")->ocultar();
-                $this->pantalla()->tab("pant_actividad")->ocultar();
-                $this->pantalla()->tab("pant_seguimiento")->ocultar();
-                $this->pantalla()->tab("pant_destinatarios")->ocultar();
-
-                $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
-
-                $this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
     }
@@ -814,6 +814,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_edicion";
 
         // OCULTO PANTALLAS DE EDICION DEL PROYECTO HASTA QUE SE SELECCIONE UNO O SE QUIERA CREAR UNO
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
@@ -868,12 +869,67 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     //-------------------------------------------------------------------------------
+    //------------------------- PANTALLA ALTA PROYECTO  -----------------------------
+    //-------------------------------------------------------------------------------
+
+    function conf__pant_alta_proyecto(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = 'pant_alta_proyecto';
+
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $this->pantalla()->tab("pant_formulario")->ocultar();
+        $this->pantalla()->tab("pant_destinatarios")->ocultar();
+        $this->pantalla()->tab("pant_planilla")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_objetivos")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_presupuesto")->ocultar();
+    }
+
+    //------------------------- FORMULARIO ALTA PROYECTO ----------------------------
+
+    function conf__form_alta_proyecto(toba_ei_formulario $form) {
+        
+    }
+
+    function evt__form_alta_proyecto__alta($datos) {
+
+        $perfil = toba::usuario()->get_perfil_datos();
+
+        if ($perfil != null) {
+            $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
+            $datos['uni_acad'] = $ua[0]['sigla'];
+        }
+
+        //Cambio de estado a en formulacion ( ESTADO INICIAL )
+        $datos[id_estado] = 'FORM';
+
+        //responsable de carga proyecto
+        $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
+
+        unset($datos[tipo_convocatoria]);
+
+        $this->dep('datos')->tabla('pextension')->set($datos);
+        $this->dep('datos')->tabla('pextension')->sincronizar();
+        $this->dep('datos')->tabla('pextension')->cargar($datos);
+
+        toba::notificacion()->agregar('El Nuevo Proyecto se a creado correctamente', 'info');
+        $this->set_pantalla('pant_formulario');
+    }
+
+    //-------------------------------------------------------------------------------
     //------------------------- PANTALLA SEGUIMIENTO  -------------------------------
     //-------------------------------------------------------------------------------
 
     function conf__pant_seguimiento(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_seguimiento";
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -994,6 +1050,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_seguimiento_central(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_seguimiento_central";
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -1117,6 +1174,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_seguimiento_ua(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_seguimiento_central";
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -1272,6 +1330,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_formulario(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_formulario";
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -1473,6 +1532,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_destinatarios(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_destinatarios";
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -1570,11 +1630,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_planilla(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_planilla";
 
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
-
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -1641,6 +1697,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_integrantesi(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_interno";
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
@@ -1841,10 +1898,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__pant_integrantese(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_externo";
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
 
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
@@ -2043,11 +2098,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_organizaciones(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_organizaciones";
 
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
-
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -2195,11 +2246,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_objetivos(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_objetivos";
 
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
-
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -2326,10 +2373,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_actividad(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_actividad";
 
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
-
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -2466,11 +2510,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__pant_presupuesto(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_presup";
 
-        $this->pantalla()->tab("pant_edicion")->desactivar();
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
-
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
