@@ -1784,9 +1784,11 @@ class ci_proyectos_extension extends extension_ci {
                         $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
                         $boolean = false;
                         //control de director o codirector no repetido 
-                        foreach ($integrantes as $integrante) {
-                            if (($integrante['funcion_p'] == $datos['funcion_p']) == 'D    ' OR ( $integrante['funcion_p'] == $datos['funcion_p']) == 'CD-Co ') {
-                                $boolean = true;
+                        if (($datos['funcion_p'] == 'D    ' || $datos['funcion_p'] == 'CD-Co')) {
+                            foreach ($integrantes as $integrante) {
+                                if ($integrante['funcion_p'] == 'Director' OR $integrante['funcion_p'] == 'Codirector') {
+                                    $boolean = true;
+                                }
                             }
                         }
                         if (!$boolean) {
