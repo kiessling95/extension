@@ -553,7 +553,6 @@ class ci_proyectos_extension extends extension_ci {
                 if (isset($fp_imagen)) {
                     header("Content-type:applicattion/pdf");
                     header("Content-Disposition:attachment;filename=" . $this->s__nombre);
-
                     echo(stream_get_contents($fp_imagen));
                     exit;
                 }
@@ -571,7 +570,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
 
-        $this->s__nombre = "aval_" . $this->s__datos[$id_fila]['nombre'] . ".pdf";
+        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
         $this->s__pdf = 'aval';
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion);
         if ($tiene == 1) {
@@ -1720,11 +1719,10 @@ class ci_proyectos_extension extends extension_ci {
 
 
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
-
+        $pe = $this->dep('datos')->tabla('pextension')->get();
         if (isset($this->s__where)) {
-            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where));
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where,$pe['id_pext']));
         } else {
-            $pe = $this->dep('datos')->tabla('pextension')->get();
             $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
         }
     }
@@ -1786,7 +1784,7 @@ class ci_proyectos_extension extends extension_ci {
                         //control de director o codirector no repetido 
                         if (($datos['funcion_p'] == 'D    ' || $datos['funcion_p'] == 'CD-Co')) {
                             foreach ($integrantes as $integrante) {
-                                if ($integrante['funcion_p'] == 'Director' OR $integrante['funcion_p'] == 'Codirector') {
+                                if ($integrante['funcion_p'] == 'Director' AND $integrante['funcion_p'] == 'Codirector') {
                                     $boolean = true;
                                 }
                             }
@@ -1923,11 +1921,10 @@ class ci_proyectos_extension extends extension_ci {
 
 
     function conf__cuadro_int(toba_ei_cuadro $cuadro) {
-
+        $pe = $this->dep('datos')->tabla('pextension')->get();
         if (isset($this->s__where)) {
-            $cuadro->set_datos($this->dep('datos')->tabla('integrante_externo_pe')->get_vigentes($this->s__where));
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_externo_pe')->get_vigentes($this->s__where, $pe['id_pext']));
         } else {
-            $pe = $this->dep('datos')->tabla('pextension')->get();
             $cuadro->set_datos($this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']));
         }
     }
@@ -2169,12 +2166,12 @@ class ci_proyectos_extension extends extension_ci {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
                 //-- Se pasa el contenido al archivo temporal
-                $temp_fp = fopen($temp_archivo['path'], 'w');
-                stream_copy_to_stream($fp_imagen, $temp_fp);
-                fclose($temp_fp);
+                //$temp_fp = fopen($temp_archivo['path'], 'w');
+                //stream_copy_to_stream($fp_imagen, $temp_fp);
+                //fclose($temp_fp);
                 //-- Se muestra la imagen temporal
                 $tamano = round(filesize($temp_archivo['path']) / 1024);
-                $datos['imagen_vista_previa'] = "<a target='_blank' href='{$temp_archivo['url']}' >Aval_Organizacion</a>";
+                //$datos['imagen_vista_previa'] = "<a target='_blank' href='{$temp_archivo['url']}' >Aval_Organizacion</a>";
                 $datos['aval'] = 'tamano: ' . $tamano . ' KB';
             } else {
                 $datos['aval'] = null;

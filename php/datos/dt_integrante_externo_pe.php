@@ -28,17 +28,17 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_vigentes($filtro = null) {
+    function get_vigentes($filtro = null,$id_pext = null) {
 
         $vigente = "hasta = 'Vigentes'";
         if (str_word_count($filtro) == 2) {
-            $where = " WHERE t_e.hasta >= '" . date('Y-m-d') . "'  ";
+            $where = " WHERE t_e.hasta >= '" . date('Y-m-d') . "' AND  id_pext = $id_pext  ";
         } else {
             $vigente = "hasta = 'No Vigentes'";
             if (str_word_count($filtro) == 3) {
-                $where = " WHERE t_e.hasta < '" . date('Y-m-d') . "'  ";
+                $where = " WHERE t_e.hasta < '" . date('Y-m-d') . "' AND  id_pext = $id_pext  ";
             } else {
-                $where = '';
+                $where = "WHERE id_pext = $id_pext ";
             }
         }
 
