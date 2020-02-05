@@ -27,6 +27,10 @@ class ci_bases extends extension_ci {
 //------------------------------------------------------------------------------------
 
     function conf__cuadro(toba_ei_cuadro $cuadro) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil != 'sec_ext_central' && $perfil != 'admin') {
+            $this->dep('cuadro')->evento('seleccion')->ocultar();
+        }
         $this->dep('datos')->resetear();
         if (!is_null($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado($this->s__where);
@@ -62,7 +66,7 @@ class ci_bases extends extension_ci {
         $i = 0;
         $rubros = $this->dep('datos')->tabla('rubro_presup_extension')->get_tipo();
         foreach ($rubros as $rubro) {
-            $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($rubro[id_rubro_extension])[0];
+            $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($rubro[id_rubro_extension], $bases[id_bases])[0];
             $datos[$i][id_rubro_extension] = $rubro[id_rubro_extension];
             $datos[$i][tipo] = $rubro[tipo];
             $datos[$i][monto] = $monto[monto_max];

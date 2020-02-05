@@ -21,9 +21,16 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__organizacion;
     protected $s__nombre;
     protected $s__pdf;
+    protected $s__pextension;
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
+        if (isset($this->s__pextension)) {
+            $pextension['id_pext'] = $this->s__pextension;
+            $this->dep('datos')->tabla('pextension')->resetear(); //limpia
+            $this->dep('datos')->tabla('pextension')->cargar($pextension); //carga el articulo que se selecciono
+        }
+
         if ($this->s__imprimir == 1) {
 
             if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
@@ -50,9 +57,15 @@ class ci_proyectos_extension extends extension_ci {
                 $aux = $datos['eje_tematico'];
                 for ($i = 0; $i < strlen($aux); $i++) {
                     if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
-                        $ejes . array_push($ejes, $aux[$i]);
+                        if ($aux[$i + 1] != '{' AND $aux[$i + 1] != ',' AND $aux[$i + 1] != '}') {
+                            $ejes . array_push($ejes, $aux[$i] . $aux[$i + 1]);
+                            $i++;
+                        } else {
+                            $ejes . array_push($ejes, $aux[$i]);
+                        }
                     }
                 }
+
 
                 $aux = array();
                 foreach ($ejes_conv as $eje_conv) {
@@ -149,14 +162,6 @@ class ci_proyectos_extension extends extension_ci {
 
                 $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
 
-                /*
-                  $pdf->ezText('' . utf8_d_seguro('<b>Director del Proyecto </b>') . ' : ', 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Nombre') . ' :  ' . $director[nombre], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Unidad Académica') . ' :  ' . $director[ua], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Tipo y Nro. de documento') . ' :  ' . $director[tipo_docum] . ' ' . $director[nro_docum], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $director[telefono], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $director[correo_institucional], 10, ['justification' => 'full']);
-                 */
                 //Co-Director 
 
                 $datos_CO = array();
@@ -172,14 +177,7 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp[4] = array('col1' => 'Correo', 'col2' => $co_director[correo_institucional]);
 
                 $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
-                /*
-                  $pdf->ezText('' . utf8_d_seguro('<b>Co-Director del Proyecto </b>') . ' : ', 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Nombre') . ' :  ' . $co_director[nombre], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Unidad Académica') . ' :  ' . $co_director[ua], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Tipo y Nro. de documento') . ' :  ' . $co_director[tipo_docum] . ' ' . $co_director[nro_docum], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Telefono') . ' :  ' . $co_director[telefono], 10, ['justification' => 'full']);
-                  $pdf->ezText('' . utf8_d_seguro('Correo') . ' :  ' . $co_director[correo_institucional], 10, ['justification' => 'full']);
-                 */
+
                 //salto de linea
                 $pdf->ezText("\n", 10, ['justification' => 'full']);
 
@@ -222,18 +220,22 @@ class ci_proyectos_extension extends extension_ci {
 
                 $tabla_dp = array();
                 $tabla_dp[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del Proyecto') . '</b>', 'col2' => $datos['descripcion_situacion']);
-                $tabla_dp[1] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
 
-                $tabla_dp[2] = array('col1' => 'Destinatarios', 'col2' => '');
-                $i = 3;
+                $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+
+                $datos_pext = array();
+                $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
+                $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
+                $tabla_dp[0] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
+                $i = 1;
                 foreach ($destinatarios as $destinatario) {
-                    $text = ' descripcion ' . $destinatario['descripcion'] . "\n";
-                    $text = $text . ' + domicilio : ' . $destinatario['domicilio'] . "\n";
+                    $text = ' + domicilio : ' . $destinatario['domicilio'] . "\n";
                     $text = $text . ' + telefono : ' . $destinatario['telefono'] . "\n";
                     $text = $text . ' + Correo : ' . $destinatario['email'] . "\n";
                     $text = $text . ' + contacto ' . $destinatario['contacto'] . "\n";
 
-                    $tabla_dp[$i] = array('col1' => '', 'col2' => '- ' . $text);
+                    $tabla_dp[$i] = array('col1' => '' . $destinatario['descripcion'], 'col2' => '' . $text);
                     $i = $i + 1;
                 }
                 $i = $i + 1;
@@ -282,7 +284,7 @@ class ci_proyectos_extension extends extension_ci {
                 $i = 0;
                 foreach ($obj_especificos as $obj_especifico) {
                     $tabla_dp[$i] = array('col1' => $i, 'col2' => $obj_especifico[descripcion], 'col3' => $obj_especifico[meta], 'col4' => $obj_especifico[ponderacion]);
-
+                    $i = $i + 1;
                     //$plan_actividades = $this->dep('datos')->tabla('plan_actividades')->get_listado($obj_especifico[id_objetivo]);
                 }
 
@@ -348,6 +350,7 @@ class ci_proyectos_extension extends extension_ci {
 
                 $tabla_dp = array();
                 $i = 0;
+
                 foreach ($integrantes as $integrante) {
                     if ($integrante[funcion_p] == 'Director' || $integrante[funcion_p] == 'Codirector') {
                         if ($i == 0) {
@@ -580,6 +583,15 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
+    function ajax__descargar_pext_completo($id_fila, toba_ajax_respuesta $respuesta) {
+        if ($id_fila != 0) {
+            $id_fila = $id_fila / 2;
+        }
+        $this->s__pextension = $this->s__datos[$id_fila]['id_pext'];
+
+        $respuesta->set($id_fila);
+    }
+
     // METODOS POPUP
     function get_persona($id) {
         
@@ -616,16 +628,19 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function monto_rubro($id_rubro_extension) {
-
+        $pe = $this->dep('datos')->tabla('pextension')->get();
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
-        $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($id_rubro_extension)[0];
-
-        $presupuesto = $this->dep('datos')->tabla('presupuesto_extension')->get_listado_rubro($id_rubro_extension);
-        $count = 0;
-        foreach ($presupuesto as $value) {
-            $count = $count + $value[monto];
+        $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($id_rubro_extension, $bases[id_bases])[0];
+        if ($bases[monto_max] != 0) {
+            $presupuesto = $this->dep('datos')->tabla('presupuesto_extension')->get_listado_rubro($id_rubro_extension);
+            $count = 0;
+            foreach ($presupuesto as $value) {
+                $count = $count + $value[monto];
+            }
+            return ($monto[monto_max] - $count);
+        } else {
+            return 9999;
         }
-        return ($monto[monto_max] - $count);
     }
 
     function convocatorias() {
@@ -843,6 +858,7 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro(toba_ei_cuadro $cuadro) {
+        $this->s__imprimir = 1;
 
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
@@ -858,8 +874,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
 
         if (isset($this->s__where)) {
-            $cuadro->set_datos($this->dep('datos')->tabla('pextension')->get_listado($this->s__where));
+            $this->s__datos = $this->dep('datos')->tabla('pextension')->get_listado($this->s__where);
+        } else {
+            $this->s__datos = $this->dep('datos')->tabla('pextension')->get_listado();
         }
+
+        $cuadro->set_datos($this->s__datos);
     }
 
     function evt__cuadro__seleccion($datos) {
@@ -1387,13 +1407,18 @@ class ci_proyectos_extension extends extension_ci {
             $datos[codigo] = $seg_central[0][codigo];
             $ejes = array();
             $aux = $datos['eje_tematico'];
+
             for ($i = 0; $i < strlen($aux); $i++) {
                 if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
-                    $ejes . array_push($ejes, $aux[$i]);
+                    if ($aux[$i + 1] != '{' AND $aux[$i + 1] != ',' AND $aux[$i + 1] != '}') {
+                        $ejes . array_push($ejes, $aux[$i] . $aux[$i + 1]);
+                        $i++;
+                    } else {
+                        $ejes . array_push($ejes, $aux[$i]);
+                    }
                 }
             }
             $datos['eje_tematico'] = $ejes;
-
             $form->set_datos($datos);
         }
     }
@@ -1452,21 +1477,20 @@ class ci_proyectos_extension extends extension_ci {
         $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos_pe['id_pext']);
 
         if ($datos_pe['fec_desde'] != $datos['fec_desde']) {
-            if (!is_null($datos_integrantes_e) && $datos_pe['fec_desde'] == $datos_integrantes_e['desde']) {
+            if (!is_null($datos_integrantes_e) ) {
                 foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $datos_pe['fec_desde'] == $externo['desde']) {
                         $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fec_desde'] . "' where id_pext = " . $externo[id_pext] .
                                 " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
                         toba::db('extension')->consultar($sql);
                     }
                 }
             }
-            if (!is_null($datos_integrantes_i) && $datos_pe['fec_desde'] == $datos_integrantes_i['desde']) {
+            if (!is_null($datos_integrantes_i) ) {
                 foreach ($datos_integrantes_i as $interno) {
-
                     //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $datos_pe['fec_desde'] == $interno['desde']) {
                         $sql = "UPDATE integrante_interno_pe SET desde ='" . $datos['fec_desde'] . "' where id_pext = " . $datos_pe[id_pext] .
                                 " AND id_designacion = " . $interno['id_designacion'];
                         toba::db('extension')->consultar($sql);
@@ -1721,7 +1745,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         if (isset($this->s__where)) {
-            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where,$pe['id_pext']));
+            $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where, $pe['id_pext']));
         } else {
             $cuadro->set_datos($this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']));
         }
@@ -1768,6 +1792,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_integrantes__alta($datos) {
 
+        $datos[ua] = $this->dep('datos')->tabla('designacion')->get_ua($datos['id_designacion']);
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
@@ -2596,19 +2621,24 @@ class ci_proyectos_extension extends extension_ci {
 
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
         $monto_max = $bases[monto_max];
-        $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension])[0];
-
-        if (($pe[monto] + $datos[monto]) <= $monto_max) {
-            if ($datos[monto] + $count <= $rubro[monto_max]) {
-                $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
-                $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
-                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+        $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension], $bases[id_bases])[0];
+        if ($monto_max != 0) {
+            if (($pe[monto] + $datos[monto]) <= $monto_max) {
+                if ($datos[monto] + $count <= $rubro[monto_max]) {
+                    $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+                    $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+                    $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+                } else {
+                    toba::notificacion()->agregar('Se supero el monto maximo para el rubro seleccionado', 'info');
+                }
             } else {
-                toba::notificacion()->agregar('Se supero el monto maximo para el rubro seleccionado', 'info');
+                $monto_restante = $monto_max - $pe[monto];
+                toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
             }
         } else {
-            $monto_restante = $monto_max - $pe[monto];
-            toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
+            $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+            $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+            $this->dep('datos')->tabla('presupuesto_extension')->resetear();
         }
         $this->s__mostrar_presup = 0;
     }
@@ -2635,19 +2665,24 @@ class ci_proyectos_extension extends extension_ci {
 
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
         $monto_max = $bases[monto_max];
-        $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension])[0];
-
-        if ((($pe[monto] - $presuesto_datos_anterior[monto]) + $datos[monto]) <= $monto_max) {
-            if ($count <= $rubro[monto_max]) {
-                $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
-                $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
-                $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+        $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension], $bases[id_bases])[0];
+        if ($monto_max != 0) {
+            if ((($pe[monto] - $presuesto_datos_anterior[monto]) + $datos[monto]) <= $monto_max) {
+                if ($count <= $rubro[monto_max]) {
+                    $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+                    $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+                    $this->dep('datos')->tabla('presupuesto_extension')->resetear();
+                } else {
+                    toba::notificacion()->agregar('Se supero el monto maximo para el rubro seleccionado', 'info');
+                }
             } else {
-                toba::notificacion()->agregar('Se supero el monto maximo para el rubro seleccionado', 'info');
+                $monto_restante = $monto_max - $pe[monto];
+                toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
             }
         } else {
-            $monto_restante = $monto_max - $pe[monto];
-            toba::notificacion()->agregar('Se supero el monto maximo de presupuesto , restantes: ' . $monto_restante, 'info');
+            $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
+            $this->dep('datos')->tabla('presupuesto_extension')->sincronizar();
+            $this->dep('datos')->tabla('presupuesto_extension')->resetear();
         }
         $this->s__mostrar_presup = 0;
     }
