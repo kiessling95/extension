@@ -356,7 +356,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'1001000189', --objeto_cuadro
 	'1001000525', --objeto_cuadro_col
 	'director', --clave
-	'4', --orden
+	'5', --orden
 	'Director', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -417,8 +417,8 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1001000189', --objeto_cuadro
 	'1001000554', --objeto_cuadro_col
-	'orden_prioridad', --clave
-	'5', --orden
+	'ord_priori', --clave
+	'4', --orden
 	'Orden Prioridad', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo

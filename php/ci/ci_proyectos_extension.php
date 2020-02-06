@@ -1239,6 +1239,7 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[denominacion] = $pe[denominacion];
+            $datos[ord_priori] = $pe[ord_priori];
             $datos[codigo] = $pe[codigo];
 
             $form->set_datos($datos);
@@ -1268,7 +1269,14 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = $ext['nro_docum'];
             $datos['desde'] = $ext['desde'];
         }
-
+        if ($datos[ord_priori] != $pe[ord_priori]) {
+            unset($pe[x_dbr_clave]);
+            $pe[ord_priori] = $datos[ord_priori];
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
+        unset($datos[ord_priori]);
         unset($datos[uni_acad]);
         unset($datos[duracion]);
         unset($datos[financiacion]);
@@ -1326,6 +1334,14 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = null;
             $datos['desde'] = null;
         }
+        if ($datos[ord_priori] != $pe[ord_priori]) {
+            unset($pe[x_dbr_clave]);
+            $pe[ord_priori] = $datos[ord_priori];
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
+        unset($datos[ord_priori]);
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
@@ -1477,7 +1493,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos_pe['id_pext']);
 
         if ($datos_pe['fec_desde'] != $datos['fec_desde']) {
-            if (!is_null($datos_integrantes_e) ) {
+            if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
                     if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $datos_pe['fec_desde'] == $externo['desde']) {
@@ -1487,7 +1503,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
-            if (!is_null($datos_integrantes_i) ) {
+            if (!is_null($datos_integrantes_i)) {
                 foreach ($datos_integrantes_i as $interno) {
                     //Si es integrante vigente
                     if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $datos_pe['fec_desde'] == $interno['desde']) {
