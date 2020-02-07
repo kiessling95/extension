@@ -50,7 +50,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'extension', --proyecto
 	'1001000233', --evento_id
 	'1001000194', --objeto
-	'guardar', --identificador
+	'alta', --identificador
 	'&Guardar', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
