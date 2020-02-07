@@ -17,6 +17,9 @@ class cuadro_descargar extends extension_ei_cuadro {
                     if(vista=='pdf_bases'){
                         this.controlador.ajax('descargar_bases',id_vinculo,this,this.retorno);
                     }
+                    if(vista=='pdf_completo'){
+                        this.controlador.ajax('descargar_pext_completo',id_vinculo,this,this.retorno);
+                    }
                     
                     return false;
 		}
