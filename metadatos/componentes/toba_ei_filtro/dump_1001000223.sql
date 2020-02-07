@@ -248,7 +248,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'1001000028', --objeto_ei_filtro_col
 	'1001000223', --objeto_ei_filtro
 	'extension', --objeto_ei_filtro_proyecto
-	'cadena', --tipo
+	'fecha', --tipo
 	'desde', --nombre
 	'desde', --expresion
 	'Fecha Inicio', --etiqueta
@@ -306,7 +306,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'1001000029', --objeto_ei_filtro_col
 	'1001000223', --objeto_ei_filtro
 	'extension', --objeto_ei_filtro_proyecto
-	'cadena', --tipo
+	'fecha', --tipo
 	'hasta', --nombre
 	'hasta', --expresion
 	'Fecha Fin', --etiqueta

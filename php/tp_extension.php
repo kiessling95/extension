@@ -1,5 +1,5 @@
 <?php
- class tp_designa extends toba_tp_basico
+ class tp_extension extends toba_tp_basico
  
   {
   protected $clase_encabezado = 'encabezado';	
@@ -8,10 +8,10 @@
 	function barra_superior()
 	{ 
 		echo "<div align=center>";
-		echo toba_recurso::imagen_proyecto('logo_designa.png', true);
+		echo toba_recurso::imagen_proyecto('logo.png', true);
                 echo "<br>";
 		echo "<div style='font-size:15px;font-family:Verdana,Helvetica;color:#660033;font-weight:bold;'>";
-		echo "M&oacute;dulo Designaciones Docentes (SDD)";
+		echo "Modulo Proyectos de Extensi&oacute;n";
 		echo "</div>";
 		echo "<div>versi&oacute;n ".toba::proyecto()->get_version();
                 echo " <a href='ManualModuloDesignaciones.pdf'>Descargar Manual Ayuda</a>" ."</div>";
