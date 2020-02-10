@@ -240,9 +240,9 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000172', --objeto
-	'1001000460', --col_id
-	'telefono', --columna
-	'E', --tipo
+	'1001000462', --col_id
+	'mail', --columna
+	'C', --tipo
 	'0', --pk
 	'', --secuencia
 	NULL, --largo
@@ -254,8 +254,8 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000172', --objeto
-	'1001000462', --col_id
-	'mail', --columna
+	'1001000651', --col_id
+	'telefono', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia

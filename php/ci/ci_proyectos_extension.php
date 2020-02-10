@@ -529,121 +529,18 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($presupuestos as $presupuesto) {
-                    if ($presupuesto[rubro] == 'Gastos en personal') {
-                        if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($presupuesto[rubro]) . '</b>');
-                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Concepto </b>", 'col2' => utf8_d_seguro('Cantidad'), 'col3' => 'Monto');
+                    if ($i == 0) {
+                        $cols_dp = array('col1' => "<b> Rubro </b>", 'col2' => "<b> Concepto </b>", 'col3' => utf8_d_seguro('Cantidad'), 'col4' => 'Monto');
 
-                            $tabla_dp = array();
-                        }
-                        $tabla_dp[$i] = array('col1' => $presupuesto[concepto], 'col2' => $presupuesto[cantidad], 'col3' => $presupuesto[monto]);
-
-                        $i = $i + 1;
+                        $tabla_dp = array();
                     }
+                    $tabla_dp[$i] = array('col1' => $presupuesto[rubro], 'col2' => $presupuesto[concepto], 'col3' => $presupuesto[cantidad], 'col4' => $presupuesto[monto]);
+
+                    $i = $i + 1;
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 400), 'col2' => array('width' => 75), 'col3' => array('width' => 75))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 200), 'col3' => array('width' => 75), 'col4' => array('width' => 75))));
                 }
-
-                //salto de linea
-                $pdf->ezText("\n", 10, ['justification' => 'full']);
-
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($presupuestos as $presupuesto) {
-                    if ($presupuesto[rubro] == 'Bienes de consumo') {
-                        if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($presupuesto[rubro]) . '</b>');
-                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Concepto </b>", 'col2' => utf8_d_seguro('Cantidad'), 'col3' => 'Monto');
-
-                            $tabla_dp = array();
-                        }
-                        $tabla_dp[$i] = array('col1' => $presupuesto[concepto], 'col2' => $presupuesto[cantidad], 'col3' => $presupuesto[monto]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 400), 'col2' => array('width' => 75), 'col3' => array('width' => 75))));
-                }
-
-                //salto de linea
-                $pdf->ezText("\n", 10, ['justification' => 'full']);
-
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($presupuestos as $presupuesto) {
-                    if ($presupuesto[rubro] == 'Servicios no personales') {
-                        if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($presupuesto[rubro]) . '</b>');
-                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Concepto </b>", 'col2' => utf8_d_seguro('Cantidad'), 'col3' => 'Monto');
-
-                            $tabla_dp = array();
-                        }
-                        $tabla_dp[$i] = array('col1' => $presupuesto[concepto], 'col2' => $presupuesto[cantidad], 'col3' => $presupuesto[monto]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 400), 'col2' => array('width' => 75), 'col3' => array('width' => 75))));
-                }
-
-                //salto de linea
-                $pdf->ezText("\n", 10, ['justification' => 'full']);
-
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($presupuestos as $presupuesto) {
-                    if ($presupuesto[rubro] == 'Bienes de uso') {
-                        if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($presupuesto[rubro]) . '</b>');
-                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Concepto </b>", 'col2' => utf8_d_seguro('Cantidad'), 'col3' => 'Monto');
-
-                            $tabla_dp = array();
-                        }
-                        $tabla_dp[$i] = array('col1' => $presupuesto[concepto], 'col2' => $presupuesto[cantidad], 'col3' => $presupuesto[monto]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 400), 'col2' => array('width' => 75), 'col3' => array('width' => 75))));
-                }
-
-                //salto de linea
-                $pdf->ezText("\n", 10, ['justification' => 'full']);
-
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($presupuestos as $presupuesto) {
-                    if ($presupuesto[rubro] == 'Transferencias') {
-                        if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($presupuesto[rubro]) . '</b>');
-                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Concepto </b>", 'col2' => utf8_d_seguro('Cantidad'), 'col3' => 'Monto');
-
-                            $tabla_dp = array();
-                        }
-                        $tabla_dp[$i] = array('col1' => $presupuesto[concepto], 'col2' => $presupuesto[cantidad], 'col3' => $presupuesto[monto]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 1, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 400), 'col2' => array('width' => 75), 'col3' => array('width' => 75))));
-                }
-
-                $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Monto total : $' . $pextension[monto]) . '</b>');
-                $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 0, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-
-
-                //salto de linea
-                $pdf->ezText("\n", 10, ['justification' => 'full']);
 
 
                 /*
@@ -1740,6 +1637,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('formulario_destinatarios')->descolapsar();
         } else {
             $this->dep('formulario_destinatarios')->colapsar();
@@ -1909,6 +1807,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrantes')->descolapsar();
         } else {
             $this->dep('form_integrantes')->colapsar();
@@ -2331,6 +2230,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
                 $this->dep('form_organizacion')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('domicilio')->set_obligatorio('true');
@@ -2372,7 +2272,7 @@ class ci_proyectos_extension extends extension_ci {
         //si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
         if (is_array($datos['aval'])) {
             if ($datos['aval']['size'] > $this->tamano_byte) {
-                toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ' ). $this->tamano_mega . 'MB', 'error');
+                toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
                 $fp = null;
             } else {
                 $fp = fopen($datos['aval']['tmp_name'], 'rb');
@@ -2478,6 +2378,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_objetivos_esp')->evento('baja')->ocultar();
                 $this->dep('form_objetivos_esp')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_objetivos_esp')->descolapsar();
             $form->ef('descripcion')->set_obligatorio('true');
             $form->ef('meta')->set_obligatorio('true');
@@ -2595,6 +2496,16 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('plan_actividades')->cargar($plan[0]);
     }
 
+    //------------------------- FORMULARIO INFORMATICO OBJ --------------------------
+
+    function conf__form_obj(toba_ei_formulario $form) {
+        $obj_esp = $this->s__where;
+        $datos = $this->dep('datos')->tabla('objetivo_especifico')->get_datos($obj_esp['id_objetivo'])[0];
+        $form->ef('meta')->set_solo_lectura();
+        $form->ef('descripcion')->set_solo_lectura();
+        $form->set_datos($datos);
+    }
+
     //------------------------- FORMULARIO PLAN ACTIVIDADES -------------------------
 
     function conf__form_actividad(toba_ei_formulario $form) {
@@ -2608,6 +2519,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_actividad')->evento('baja')->ocultar();
                 $this->dep('form_actividad')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_actividad')->descolapsar();
         } else {
             $this->dep('form_actividad')->colapsar();
@@ -2749,6 +2661,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_presupuesto')->evento('baja')->ocultar();
                 $this->dep('form_presupuesto')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_presupuesto')->descolapsar();
             $form->ef('concepto')->set_obligatorio('true');
             $form->ef('cantidad')->set_obligatorio('true');
