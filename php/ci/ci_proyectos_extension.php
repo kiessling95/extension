@@ -1738,8 +1738,9 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->set_solo_lectura();
                 $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
-                $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
+                $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();       
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('formulario_destinatarios')->descolapsar();
         } else {
             $this->dep('formulario_destinatarios')->colapsar();
@@ -1909,6 +1910,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrantes')->descolapsar();
         } else {
             $this->dep('form_integrantes')->colapsar();
@@ -2331,6 +2333,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
                 $this->dep('form_organizacion')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_organizacion')->descolapsar();
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('domicilio')->set_obligatorio('true');
@@ -2478,6 +2481,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_objetivos_esp')->evento('baja')->ocultar();
                 $this->dep('form_objetivos_esp')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_objetivos_esp')->descolapsar();
             $form->ef('descripcion')->set_obligatorio('true');
             $form->ef('meta')->set_obligatorio('true');
@@ -2608,6 +2612,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_actividad')->evento('baja')->ocultar();
                 $this->dep('form_actividad')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_actividad')->descolapsar();
         } else {
             $this->dep('form_actividad')->colapsar();
@@ -2749,6 +2754,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_presupuesto')->evento('baja')->ocultar();
                 $this->dep('form_presupuesto')->evento('cancelar')->ocultar();
             }
+            $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_presupuesto')->descolapsar();
             $form->ef('concepto')->set_obligatorio('true');
             $form->ef('cantidad')->set_obligatorio('true');
