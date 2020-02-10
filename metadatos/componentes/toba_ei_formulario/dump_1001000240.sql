@@ -293,7 +293,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 			<td>
 				&nbsp;</td>
 			<td>
-				<span style="font-size: 20px;"><b>INFORMACION DEL BECARIO</b></span></td>
+				&nbsp;</td>
 		</tr>
 		<tr>
 			<td>

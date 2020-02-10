@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000056]--  Alta Proyecto 
+--[1001000056]--  Formularios 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -13,7 +13,7 @@ INSERT INTO apex_item (item_id, proyecto, item, padre_id, padre_proyecto, padre,
 	'1001000056', --item
 	NULL, --padre_id
 	'extension', --padre_proyecto
-	'1001000051', --padre
+	'1001000050', --padre
 	'0', --carpeta
 	'0', --nivel_acceso
 	'web', --solicitud_tipo
@@ -23,12 +23,12 @@ INSERT INTO apex_item (item_id, proyecto, item, padre_id, padre_proyecto, padre,
 	NULL, --actividad_buffer
 	NULL, --actividad_patron_proyecto
 	NULL, --actividad_patron
-	'Alta Proyecto', --nombre
+	'Formularios', --nombre
 	NULL, --descripcion
 	'1001000004', --punto_montaje
 	NULL, --actividad_accion
 	'1', --menu
-	NULL, --orden
+	'0', --orden
 	'0', --solicitud_registrar
 	NULL, --solicitud_obs_tipo_proyecto
 	NULL, --solicitud_obs_tipo

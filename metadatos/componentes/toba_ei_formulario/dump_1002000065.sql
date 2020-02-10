@@ -50,7 +50,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'extension', --proyecto
 	'1002000052', --evento_id
 	'1002000065', --objeto
-	'guardar', --identificador
+	'alta', --identificador
 	'&Guardar', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
@@ -555,7 +555,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000065', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'anio', --identificador
-	'ef_editable', --elemento_formulario
+	'ef_editable_numero', --elemento_formulario
 	'anio', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio

@@ -5,7 +5,7 @@
 
 class dt_integrante_interno_pe extends extension_datos_tabla {
 
-    function get_integrante($id_docente = null) {
+    function get_integrante($id_docente = null, $id_pext = null) {
         $sql = "SELECT t_ii.*, t_dc.id_docente "
                 . "FROM integrante_interno_pe as t_ii "
                 . "INNER JOIN  ( SELECT t_d.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT t_d.id_designacion,t_d.id_docente FROM designacion as t_d ') as t_d ( id_designacion INTEGER,id_docente INTEGER)) as t_d ON (t_ii.id_designacion = t_d.id_designacion) "
@@ -13,7 +13,7 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                     'SELECT t_dc.id_docente,t_dc.nombre, t_dc.apellido, t_dc.tipo_docum,t_dc.nro_docum, t_dc.fec_nacim,t_dc.tipo_sexo,t_dc.pais_nacim 
                     FROM docente as t_dc ') as t_dc 
                     ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as t_dc ON (t_d.id_docente = t_dc.id_docente) "
-                . "WHERE t_dc.id_docente = $id_docente";
+                . "WHERE t_dc.id_docente = $id_docente AND id_pext = $id_pext" ;
         return toba::db('extension')->consultar($sql);
     }
 
@@ -70,18 +70,18 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_vigentes($filtro = null) {
+    function get_vigentes($filtro = null,$id_pext = null) {
 
         $vigente = "hasta = 'Vigentes'";
 
         if (str_word_count($filtro) == 2) {
-            $where = " WHERE t_i.hasta >= '" . date('Y-m-d') . "'  ";
+            $where = " WHERE t_i.hasta >= '" . date('Y-m-d') . "' AND  id_pext = $id_pext ";
         } else {
             $vigente = "hasta = 'No Vigentes'";
             if (str_word_count($filtro) == 3) {
-                $where = " WHERE t_i.hasta < '" . date('Y-m-d') . "'  ";
+                $where = " WHERE t_i.hasta < '" . date('Y-m-d') . "' AND  id_pext = $id_pext  ";
             } else {
-                $where = '';
+                $where = "WHERE id_pext = $id_pext";
             }
         }
 

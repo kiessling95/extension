@@ -62,8 +62,8 @@ class dt_designacion extends extension_datos_tabla {
                                                                 t_d.desde,
                                                                 t_d.hasta,
                                                                 t_d.uni_acad
-                                                                FROM designacion as t_d, unidad_acad t_u"  
-                                                                .$where. " AND NOT (t_d.hasta is not null AND t_d.hasta<=t_d.desde) AND (extract(year from hasta)+1)>= extract(year from current_date) AND t_d.uni_acad=t_u.sigla
+                                                                FROM designacion as t_d, unidad_acad t_u "  
+                                                                .$where. " AND  ((t_d.hasta is null) OR (extract(year from hasta)+1)>= extract(year from current_date) AND t_d.uni_acad=t_u.sigla)
                                                                 ORDER BY t_d.uni_acad,t_d.desde ') as t_d ( id_designacion INTEGER ,cat_estat CHARACTER VARYING, dedic INTEGER, carac CHARACTER(1), desde DATE, hasta DATE, uni_acad CHARACTER(5))) as t_d";
                                                         //print_r($sql); exit();
             $res = toba::db('extension')->consultar($sql);

@@ -55,7 +55,6 @@ class dt_bases_convocatoria extends extension_datos_tabla {
                 . "FROM bases_convocatoria as b_c "
                 .  $where
                 . "ORDER BY convocatoria";
-
         return toba::db('extension')->consultar($sql);
     }
 
