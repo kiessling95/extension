@@ -55,4 +55,16 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	NULL, --item_id
 	'1001000056'  --item
 );
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'extension', --proyecto
+	'sec_ext_central', --usuario_grupo_acc
+	NULL, --item_id
+	'1001000058'  --item
+);
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'extension', --proyecto
+	'sec_ext_central', --usuario_grupo_acc
+	NULL, --item_id
+	'1001000062'  --item
+);
 --- FIN Grupo de desarrollo 1001

@@ -82,13 +82,15 @@ class dt_pextension extends extension_datos_tabla {
         if (!is_null($where)) {
             $where = ' WHERE ' . $where;
             $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
-            if ('formulador' == $usr) {
+            if ('formulador' == $perfil) {
                 $where = $where . "AND responsable_carga= '" . $usr . "' ";
             }
         } else {
             $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
-            if ('formulador' == $usr) {
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+            if ('formulador' == $perfil) {
                 $where = "WHERE responsable_carga= '" . $usr . "' ";
             }else{
                 $where = '';
