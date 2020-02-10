@@ -242,7 +242,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'2', --orden
 	'Monto restante del Rubro', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'De existir un monto máximo por rubro se vera reflejado caso contrario aparece 9999', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -318,7 +318,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000047', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'id_rubro_extension', --identificador
-	'ef_popup', --elemento_formulario
+	'ef_combo', --elemento_formulario
 	'id_rubro_extension', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
