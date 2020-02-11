@@ -357,6 +357,14 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
+				<strong><span style="font-size:20px;">&nbsp; &nbsp; &nbsp;&nbsp; OBJETIVO GENERAL DEL PROYECTO </span></strong></td>
+		</tr>
+		<tr>
+			<td>
+				[ef id=objetivo]</td>
+		</tr>
+		<tr>
+			<td>
 				&nbsp;</td>
 		</tr>
 		<tr>
@@ -366,18 +374,6 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		<tr>
 			<td>
 				[ef id=impacto]</td>
-		</tr>
-		<tr>
-			<td>
-				<strong><span style="font-size:20px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OBJETIVO GENERAL DEL PROYECTO&nbsp;</span></strong></td>
-		</tr>
-		<tr>
-			<td>
-				[ef id=objetivo]</td>
-		</tr>
-		<tr>
-			<td>
-				&nbsp;</td>
 		</tr>
 		<tr>
 			<td>

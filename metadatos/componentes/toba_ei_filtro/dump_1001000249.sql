@@ -21,7 +21,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Proyectos Extension - CI - filtro_vigentes', --nombre
-	'Integrantes del Proyecto de Extensión Internos', --titulo
+	'Integrantes del Proyecto de Extensión Docentes', --titulo
 	'0', --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
