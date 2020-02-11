@@ -101,8 +101,8 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --grupo
 	'V', --accion
 	NULL, --accion_imphtml_debug
-	'1001000050', --accion_vinculo_carpeta
-	'1001000056', --accion_vinculo_item
+	NULL, --accion_vinculo_carpeta
+	NULL, --accion_vinculo_item
 	NULL, --accion_vinculo_objeto
 	'0', --accion_vinculo_popup
 	NULL, --accion_vinculo_popup_param
@@ -110,11 +110,11 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --accion_vinculo_celda
 	'vista_pdf', --accion_vinculo_servicio
 	'0', --es_seleccion_multiple
-	'0'  --es_autovinculo
+	'1'  --es_autovinculo
 );
 INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, etiqueta, maneja_datos, sobre_fila, confirmacion, estilo, imagen_recurso_origen, imagen, en_botonera, ayuda, orden, ci_predep, implicito, defecto, display_datos_cargados, grupo, accion, accion_imphtml_debug, accion_vinculo_carpeta, accion_vinculo_item, accion_vinculo_objeto, accion_vinculo_popup, accion_vinculo_popup_param, accion_vinculo_target, accion_vinculo_celda, accion_vinculo_servicio, es_seleccion_multiple, es_autovinculo) VALUES (
 	'extension', --proyecto
-	'1001000359', --evento_id
+	'1001000360', --evento_id
 	'1001000189', --objeto
 	'pdf_resumen', --identificador
 	'PDF Resumen', --etiqueta
@@ -132,18 +132,18 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --defecto
 	NULL, --display_datos_cargados
 	NULL, --grupo
-	NULL, --accion
+	'V', --accion
 	NULL, --accion_imphtml_debug
 	NULL, --accion_vinculo_carpeta
 	NULL, --accion_vinculo_item
 	NULL, --accion_vinculo_objeto
-	NULL, --accion_vinculo_popup
+	'0', --accion_vinculo_popup
 	NULL, --accion_vinculo_popup_param
 	NULL, --accion_vinculo_target
 	NULL, --accion_vinculo_celda
-	NULL, --accion_vinculo_servicio
+	'vista_pdf', --accion_vinculo_servicio
 	'0', --es_seleccion_multiple
-	'0'  --es_autovinculo
+	'1'  --es_autovinculo
 );
 --- FIN Grupo de desarrollo 1001
 
