@@ -32,10 +32,12 @@ class dt_pextension extends extension_datos_tabla {
                         
                         d.apellido || ' '|| d.nombre || ' '|| d.tipo_docum || ' '|| d.nro_docum as director,
                         d.correo_institucional as dir_email,
-             
-                        
+               
                         co.apellido || ' '|| co.nombre || ' '|| co.tipo_docum || ' '|| co.nro_docum as co_director,
                         co.correo_institucional as co_email,
+                        
+                        p.apellido || ' '|| p.nombre || ' '|| t_eco.tipo_docum || ' '|| t_eco.nro_docum as co_director_e,
+                        p.mail as co_email_e,
    
  
                         t_p.eje_tematico,
@@ -64,7 +66,10 @@ class dt_pextension extends extension_datos_tabla {
                                      FROM designacion as d LEFT OUTER JOIN docente as dc
                                             ON(dc.id_docente = d.id_docente)') as co 
                                             ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER,correo_institucional CHARACTER(60) )) as co ON (i_co.id_designacion=co.id_designacion)
-                                            
+                        
+                        LEFT OUTER JOIN integrante_externo_pe as t_eco ON (t_p.id_pext = t_eco.id_pext AND t_eco.funcion_p='CD-Co') 
+                        LEFT OUTER JOIN persona as p ON (p.tipo_docum = t_eco.tipo_docum AND p.nro_docum = t_eco.nro_docum ) 
+                        
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)
                         LEFT OUTER JOIN estado_pe as t_e ON (t_e.id_estado = t_p.id_estado)
@@ -92,7 +97,7 @@ class dt_pextension extends extension_datos_tabla {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             if ('formulador' == $perfil) {
                 $where = "WHERE responsable_carga= '" . $usr . "' ";
-            }else{
+            } else {
                 $where = '';
             }
         }
@@ -107,7 +112,8 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.uni_acad,
                         t_p.fec_desde,
                         t_p.fec_hasta,  
-                        t_p.ord_priori
+                        t_p.ord_priori,
+                        t_p.id_estado
                     FROM
                         pextension as t_p INNER JOIN
                         (SELECT t_ua.* FROM dblink('" . $this->dblink_designa() . "','SELECT sigla FROM unidad_acad ') as t_ua (sigla CHARACTER(5) )) as t_ua ON (t_p.uni_acad = t_ua.sigla)

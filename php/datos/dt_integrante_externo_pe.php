@@ -29,7 +29,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_vigentes($filtro = null,$id_pext = null) {
+    function get_vigentes($filtro = null, $id_pext = null) {
 
         $vigente = "hasta = 'Vigentes'";
         if (str_word_count($filtro) == 2) {
@@ -78,7 +78,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_integrante($nro_docum = null,$id_pext = null) {
+    function get_integrante($nro_docum = null, $id_pext = null) {
         $sql = "select t_e.*,trim(apellido)||', '||trim(nombre) as nombre "
                 . "FROM integrante_externo_pe as t_e "
                 . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum) "
@@ -149,6 +149,32 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
             $sql .= " where t_e.id_pext = " . $id_p . " AND t_e.hasta >= '" . date('Y-m-d') . "')";
         }
 
+        return toba::db('extension')->consultar($sql);
+    }
+
+    function get_co_director($id_p = null) {
+        $sql = "select "
+                . "id_pext,"
+                . "trim(apellido)||', '||trim(nombre) as nombre,"
+                . "t_p.tipo_docum,"
+                . "t_p.nro_docum,"
+                . "fec_nacim,"
+                . "tipo_sexo,"
+                . "pais_nacim,"
+                . "f_e.descripcion as funcion_p,"
+                . "carga_horaria,"
+                . "desde,hasta,"
+                . "rescd,"
+                . "t_fe.descripcion as tipo,"
+                . "t_p.telefono,"
+                . "t_p.mail,"
+                . "ad_honorem "
+                . "FROM integrante_externo_pe as t_e "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_e.funcion_p = f_e.id_extension) "
+                . "LEFT OUTER JOIN funcion_extension as t_fe ON (t_e.tipo = t_fe.id_extension) "
+                . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
+                . " where id_pext=" . $id_p . " AND funcion_p='CD-Co' "
+                . " order by nombre,desde";
         return toba::db('extension')->consultar($sql);
     }
 
