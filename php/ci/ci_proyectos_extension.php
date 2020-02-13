@@ -20,6 +20,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__imprimir_resumen = 0;
     protected $s__datos;
     protected $s__organizacion;
+    protected $s__destinatario;
     protected $s__nombre;
     protected $s__pdf;
     protected $s__pextension;
@@ -608,10 +609,27 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
+    function ajax__cargar_aval_destinatario($id_fila, toba_ajax_respuesta $respuesta) {
+        if ($id_fila != 0) {
+            $id_fila = $id_fila / 2;
+        }
+        $this->s_destinatario = $this->s__datos[$id_fila]['id_destinatario'];
+
+        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['contacto']) . ".pdf";
+        $this->s__pdf = 'aval';
+        $tiene = $this->dep('datos')->tabla('destinatarios')->tiene_aval($this->s__organizacion);
+        if ($tiene == 1) {
+            $respuesta->set($id_fila);
+        } else {
+            $respuesta->set(-1);
+        }
+    }
+
     function ajax__descargar_pext_completo($id_fila, toba_ajax_respuesta $respuesta) {
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
+        $this->s__imprimir_resumen = 0;
         $this->s__pextension = $this->s__datos[$id_fila]['id_pext'];
 
         $respuesta->set($id_fila);
@@ -624,7 +642,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__imprimir_resumen = 1;
         $this->s__pextension = $this->s__datos[$id_fila]['id_pext'];
 
-        $respuesta->set($id_fila);
+        $respuesta->set(1);
     }
 
     // METODOS POPUP
@@ -817,18 +835,66 @@ class ci_proyectos_extension extends extension_ci {
             /* Listado condiciones carga :
              * 1) Director 
              * 2) Co Director
-             * 
+             * 3) al menos un destinatario 
              */
 
             //obtengo director 
-            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext]);
-            $director = $director[0];
+            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext])[0];
 
             //obtengo co-director
-            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext]);
-            $co_director = $co_director[0];
+            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext])[0];
+            if (count($co_director) < 1) {
+                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->get_co_director($pextension[id_pext])[0];
+            }
 
-            if (count($director) > 1 && count($co_director) > 1) {
+            // Destinatarios
+            $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($pextension[id_pext]);
+
+            $validacion = "";
+            if (count($director) > 1) {
+                $correcto = true;
+                if (count($proyectos) > 1) {
+                    foreach ($proyectos as $proyecto) {
+                        if ($proyecto['id_pext'] != $pextension['id_pext'] && $proyecto['id_estado'] != 'FORM') {
+                            $director_aux = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($proyecto['id_pext'])[0];
+                            if ($director['id_designacion'] == $director_aux['id_designacion']) {
+                                $validacion = 'El director seleccionado adeuda rendimientos';
+                                toba::notificacion()->agregar($validacion, "error");
+                                $correcto = false;
+                            }
+                        }
+                    }
+                }
+                if ($correcto) {
+                    $validacion = " + Director \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                    $count++;
+                }
+            } else {
+                $validacion = " - Director \n";
+                toba::notificacion()->agregar($validacion, "error");
+            }
+
+            if (count($co_director) > 1) {
+                $validacion = " + Co-Director \n";
+                toba::notificacion()->agregar($validacion, "info");
+                $count++;
+            } else {
+                $validacion = " - Co-Director \n";
+                toba::notificacion()->agregar($validacion, "error");
+            }
+
+            if (count($destinatarios) > 0) {
+                $validacion = " + Destinatarios \n";
+                toba::notificacion()->agregar($validacion, "info");
+                $count++;
+            } else {
+                $validacion = " - Destinatarios \n";
+                toba::notificacion()->agregar($validacion, "error");
+            }
+            
+            
+            if ($count == 3) {
                 // Cambio de estado 
                 $pextension[id_estado] = 'EUA ';
                 $where = array();
@@ -846,8 +912,74 @@ class ci_proyectos_extension extends extension_ci {
                     //Se generó algún error al guardar en la BD
                     toba::notificacion()->agregar(utf8_decode("Error al enviar la información, verifique su conexión a internet"), "info");
                 }
+            }
+        }
+    }
+
+    function evt__validar() {
+        if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
+            $pextension = $this->dep('datos')->tabla('pextension')->get();
+
+            /* Listado condiciones carga :
+             * 1) Director ( control si adeuda )
+             * 2) Co Director
+             * 3) al menos un destinatario 
+             * 4) ponderacion 100 % 
+             */
+
+            // listado de todos los proyectos // hacer metodo que traiga solo los que no esten finalizados 
+            $proyectos = $this->dep('datos')->tabla('pextension')->get_listado();
+
+            //obtengo director 
+            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext])[0];
+
+            //obtengo co-director
+            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext])[0];
+            if (count($co_director) < 1) {
+                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->get_co_director($pextension[id_pext])[0];
+            }
+
+            // Destinatarios
+            $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($pextension[id_pext]);
+
+            $validacion = "";
+            if (count($director) > 1) {
+                $correcto = true;
+                if (count($proyectos) > 1) {
+                    foreach ($proyectos as $proyecto) {
+                        if ($proyecto['id_pext'] != $pextension['id_pext'] && $proyecto['id_estado'] != 'FORM') {
+                            $director_aux = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($proyecto['id_pext'])[0];
+                            if ($director['id_designacion'] == $director_aux['id_designacion']) {
+                                $validacion = 'El director seleccionado adeuda rendimientos';
+                                toba::notificacion()->agregar($validacion, "error");
+                                $correcto = false;
+                            }
+                        }
+                    }
+                }
+                if ($correcto) {
+                    $validacion = " + Director \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                }
             } else {
-                toba::notificacion()->agregar(utf8_decode("Falta alguno de los siguientes datos ( Director/a ,  Director/a)  "), "info");
+                $validacion = " - Director \n";
+                toba::notificacion()->agregar($validacion, "error");
+            }
+
+            if (count($co_director) > 1) {
+                $validacion = " + Co-Director \n";
+                toba::notificacion()->agregar($validacion, "info");
+            } else {
+                $validacion = " - Co-Director \n";
+                toba::notificacion()->agregar($validacion, "error");
+            }
+
+            if (count($destinatarios) > 0) {
+                $validacion = " + Destinatarios \n";
+                toba::notificacion()->agregar($validacion, "info");
+            } else {
+                $validacion = " - Destinatarios \n";
+                toba::notificacion()->agregar($validacion, "error");
             }
         }
     }
@@ -1454,6 +1586,11 @@ class ci_proyectos_extension extends extension_ci {
             $where['id_pext'] = $datos[id_pext];
 
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
+
+            if (count($datos[0]['co_director']) < 1) {
+                $datos[0]['co_director'] = $datos[0]['co_director_e'];
+                $datos['co_email'][0] = $datos[0]['co_email_e'];
+            }
             $datos = $datos[0];
             $datos[codigo] = $seg_central[0][codigo];
             $ejes = array();

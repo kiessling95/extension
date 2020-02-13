@@ -36,6 +36,13 @@ class dt_destinatarios extends extension_datos_tabla {
         }
         return $res;
     }
+    
+    function tiene_aval($id_destinatario = null){
+        $sql="select case when aval is not null then 1 else 0 end as tiene from destinatarios where id_destinatario=$id_destinatario";
+        $res=toba::db('extension')->consultar($sql); 
+        return $res[0]['tiene'];
+    }
+
 
 }
 
