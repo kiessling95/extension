@@ -313,7 +313,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'1001000489', --objeto_cuadro_col
 	'tipo', --clave
 	'1', --orden
-	'Tipo Integrante', --titulo
+	'Claustro', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho

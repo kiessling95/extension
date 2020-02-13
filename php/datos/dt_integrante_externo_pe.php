@@ -15,12 +15,13 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "carga_horaria,"
                 . "desde,hasta,"
                 . "rescd,"
-                . "tipo,"
+                . "t_fe.descripcion as tipo,"
                 . "t_p.telefono,"
                 . "t_p.mail,"
                 . "ad_honorem "
                 . "FROM integrante_externo_pe as t_e "
                 . "LEFT OUTER JOIN funcion_extension as f_e ON (t_e.funcion_p = f_e.id_extension) "
+                . "LEFT OUTER JOIN funcion_extension as t_fe ON (t_e.tipo = t_fe.id_extension) "
                 . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
                 . " where id_pext=" . $id_p
                 . " order by nombre,desde"
@@ -55,12 +56,13 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "carga_horaria,"
                 . "desde,hasta,"
                 . "rescd,"
-                . "tipo,"
+                . "t_fe.descripcion as tipo,"
                 . "t_p.telefono,"
                 . "t_p.mail,"
                 . "ad_honorem "
                 . "FROM integrante_externo_pe as t_e "
                 . "LEFT OUTER JOIN funcion_extension as f_e ON (t_e.funcion_p = f_e.id_extension) "
+                . "LEFT OUTER JOIN funcion_extension as t_fe ON (t_e.tipo = t_fe.id_extension) "
                 . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
                 . $where
                 . " order by nombre,desde";
@@ -122,7 +124,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
 
         $sql .= " UNION" //union con los integrantes externos
                 . " (select "
-                . "t_e.tipo, "
+                . "t_fe.descripcion as tipo, "
                 . "upper(t_p.apellido||', '||t_p.nombre) as nombre, "
                 . "t_e.tipo_docum, "
                 . "t_e.nro_docum, "
@@ -137,6 +139,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "FROM integrante_externo_pe t_e"
                 . " LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum = t_p.tipo_docum and t_e.nro_docum = t_p.nro_docum) "
                 . " LEFT OUTER JOIN funcion_extension t_f ON (t_e.funcion_p = t_f.id_extension) "
+                . "LEFT OUTER JOIN funcion_extension as t_fe ON (t_e.tipo = t_fe.id_extension) "
                 . " LEFT OUTER JOIN pextension p ON (t_e.id_pext = p.id_pext) ";
         if (count($where) > 0) {
             $sql = sql_concatenar_where($sql, $where)
