@@ -365,9 +365,9 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'1001000223', --objeto_ei_filtro
 	'extension', --objeto_ei_filtro_proyecto
 	'opciones', --tipo
-	'descripcion', --nombre
-	'descripcion', --expresion
-	'Tipo Convocatoria', --etiqueta
+	'id_bases', --nombre
+	'id_bases', --expresion
+	'Convocatoria', --etiqueta
 	NULL, --descripcion
 	'0', --obligatorio
 	'0', --inicial
