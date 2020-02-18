@@ -117,7 +117,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1002000048', --evento_id
 	'1002000063', --objeto
 	'modificacion', --identificador
-	'&Modificar', --etiqueta
+	'&Guardar Cambios', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion

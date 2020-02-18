@@ -85,7 +85,17 @@ class dt_pextension extends extension_datos_tabla {
 
     function get_listado($where = null) {
         if (!is_null($where)) {
-            $where = ' WHERE ' . $where;
+            if(str_pad($where, str_word_count($where), "id_bases"))
+            {
+                $where = ' WHERE b_c.' . $where;
+            }
+            else
+            {
+                $where = ' WHERE ' . $where;
+            }
+            
+            
+            
             $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
@@ -120,7 +130,7 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
                         LEFT OUTER JOIN ( SELECT d.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (i.id_designacion = d.id_designacion)
                         LEFT OUTER JOIN ( SELECT dc.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum, dc.nro_docum FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER)) as dc ON (d.id_docente = dc.id_docente)
-                        LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
+                        LEFT OUTER JOIN bases_convocatoria as b_c ON (t_p.id_bases = b_c.id_bases)
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)"
                 . $where;
         $sql = toba::perfil_de_datos()->filtrar($sql);
