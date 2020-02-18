@@ -1613,6 +1613,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
+            
             $datos['eje_tematico'] = $ejes;
             $form->set_datos($datos);
         }
@@ -1726,7 +1727,7 @@ class ci_proyectos_extension extends extension_ci {
         $array = $array . '}';
         $datos['eje_tematico'] = $array;
 
-        $datos['id_estado'] = $datos['id_estado'];
+        $datos[id_estado] = 'FORM';;
 
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
