@@ -229,7 +229,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				[ef id=id_estado]</td>
+				[ef id=descripcion_estado]</td>
 		</tr>
 		<tr>
 			<td>
@@ -2098,9 +2098,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001001190', --objeto_ei_formulario_fila
 	'1001000190', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
-	'id_estado', --identificador
+	'descripcion_estado', --identificador
 	'ef_fijo', --elemento_formulario
-	'id_estado', --columnas
+	'descripcion_estado', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
