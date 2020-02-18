@@ -181,18 +181,4 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --externa
 	'seguimiento_ua'  --tabla
 );
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'extension', --objeto_proyecto
-	'1002000068', --objeto
-	'1002000212', --col_id
-	'estado', --columna
-	'C', --tipo
-	'0', --pk
-	'', --secuencia
-	'1', --largo
-	NULL, --no_nulo
-	'0', --no_nulo_db
-	'0', --externa
-	'seguimiento_ua'  --tabla
-);
 --- FIN Grupo de desarrollo 1002

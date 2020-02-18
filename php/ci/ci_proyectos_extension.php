@@ -892,8 +892,8 @@ class ci_proyectos_extension extends extension_ci {
                 $validacion = " - Destinatarios \n";
                 toba::notificacion()->agregar($validacion, "error");
             }
-            
-            
+
+
             if ($count == 3) {
                 // Cambio de estado 
                 $pextension[id_estado] = 'EUA ';
@@ -1377,6 +1377,7 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
+
         if ($estado == 'FORM' && $perfil != 'admin') {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
@@ -1408,6 +1409,7 @@ class ci_proyectos_extension extends extension_ci {
             $datos[denominacion] = $pe[denominacion];
             $datos[ord_priori] = $pe[ord_priori];
             $datos[codigo] = $pe[codigo];
+            $datos['id_estado'] = $pe['id_estado'];
 
             $form->set_datos($datos);
         } else {
@@ -1436,9 +1438,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = $ext['nro_docum'];
             $datos['desde'] = $ext['desde'];
         }
-        if ($datos[ord_priori] != $pe[ord_priori]) {
+        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
             $pe[ord_priori] = $datos[ord_priori];
+            if ($datos['id_estado'] != null) {
+                $pe['id_estado'] = $datos['id_estado'];
+            }
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1501,9 +1506,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = null;
             $datos['desde'] = null;
         }
-        if ($datos[ord_priori] != $pe[ord_priori]) {
+        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
             $pe[ord_priori] = $datos[ord_priori];
+            if ($datos['id_estado'] != null) {
+                $pe['id_estado'] = $datos['id_estado'];
+            }
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
