@@ -13,7 +13,6 @@ class dt_seguimiento_ua extends extension_datos_tabla {
                     s_u.nro_resol,
                     s_u.fecha_resol,
                     s_u.observacion_ua,
-                    s_u.estado,
                     s_u.tipo_docum,
                     s_u.nro_docum,
                     s_u.desde
