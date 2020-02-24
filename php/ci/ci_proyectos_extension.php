@@ -1094,6 +1094,7 @@ class ci_proyectos_extension extends extension_ci {
 
         //Cambio de estado a en formulacion ( ESTADO INICIAL )
         $datos[id_estado] = 'FORM';
+        $datos[fec_carga] = date('Y-m-d');
 
         //responsable de carga proyecto
         $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
@@ -1584,6 +1585,8 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario')->evento('baja')->ocultar();
                 $this->dep('formulario')->evento('cancelar')->ocultar();
             }
+            $form->ef('fec_carga')->set_solo_lectura();
+            $form->ef('fec_desde')->set_solo_lectura();
 
             $datos = $this->dep('datos')->tabla('pextension')->get();
             $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($datos['id_pext']);
@@ -1593,7 +1596,10 @@ class ci_proyectos_extension extends extension_ci {
             $where['id_pext'] = $datos[id_pext];
 
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
+            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
 
+            $datos[0][fec_desde]= $bases[fecha_hasta];
+            
             if (count($datos[0]['co_director']) < 1) {
                 $datos[0]['co_director'] = $datos[0]['co_director_e'];
                 $datos['co_email'][0] = $datos[0]['co_email_e'];
