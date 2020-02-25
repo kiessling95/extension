@@ -915,6 +915,11 @@ class ci_proyectos_extension extends extension_ci {
                 toba::notificacion()->agregar($validacion, "error");
             }
             
+            if($pextension['denominacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
+            }
+            
             if($pextension['eje_tematico'] == null)
             {
                 toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
@@ -1059,6 +1064,11 @@ class ci_proyectos_extension extends extension_ci {
             } else {
                 $validacion = " - Destinatat_serios \n";
                 toba::notificacion()->agregar($validacion, "error");
+            }
+            
+            if($pextension['denominacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
             }
             
             if($pextension['eje_tematico'] == null)
