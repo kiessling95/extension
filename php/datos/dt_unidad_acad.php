@@ -30,9 +30,9 @@ class dt_unidad_acad extends extension_datos_tabla {
             $sql = toba::perfil_de_datos()->filtrar($sql);
             $resul = toba::db('extension')->consultar($sql);
             
-            $sql = "select * from unidad_acad WHERE sigla<>'AUZA' and sigla<>'ASMA' and sigla<>'" . $resul[0]['sigla'] . "'";
+            $sql = "select * FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) ) WHERE sigla<>'AUZA' and sigla<>'ASMA' and sigla<>'" . $resul[0]['sigla'] . "'";
         } else {
-            $sql = "select * from unidad_acad ";
+            $sql = "SELECT * FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
         }
         return toba::db('extension')->consultar($sql);
     }

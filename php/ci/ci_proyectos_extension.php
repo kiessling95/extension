@@ -665,21 +665,27 @@ class ci_proyectos_extension extends extension_ci {
         return $date;
     }
 
-    function fecha_hasta_proyecto($duracion) {
+    function fecha_hasta_proyecto() {
         $datos = $this->dep('datos')->tabla('pextension')->get();
-        $fecha_desde =$datos['fec_desde'];
-        $fecha_hasta = date("d-m-Y",strtotime($fecha_desde."+".$duracion." month")); 
+        $date = date("d/m/Y", strtotime($datos['fec_hasta']));
+        return $date;
+    }
+
+    function fecha_fin_proyecto($duracion) {
+        $datos = $this->dep('datos')->tabla('pextension')->get();
+        $fecha_desde = $datos['fec_desde'];
+        $fecha_hasta = date("d-m-Y", strtotime($fecha_desde . "+" . $duracion . " month"));
         return date("d/m/Y", strtotime($fecha_hasta));
     }
-    
-    function meses_ejecucion(){
+
+    function meses_ejecucion() {
         $datos = $this->dep('datos')->tabla('pextension')->get();
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_duracion($datos[id_bases])[0];
-        $cant_meses = $bases[duracion_convocatoria]*12;
+        $cant_meses = $bases[duracion_convocatoria] * 12;
         $meses = array();
-        for ($i = 1; $i<=$cant_meses; $i++){
+        for ($i = 1; $i <= $cant_meses; $i++) {
             $meses_aux = array();
-            $meses_aux[id] =$i;
+            $meses_aux[id] = $i;
             $meses_aux[descripcion] = $i;
             $meses[$i] = $meses_aux;
         }
@@ -1615,8 +1621,8 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
 
-            $datos[0][fec_desde]= $bases[fecha_hasta];
-            
+            $datos[0][fec_desde] = $bases[fecha_hasta];
+
             if (count($datos[0]['co_director']) < 1) {
                 $datos[0]['co_director'] = $datos[0]['co_director_e'];
                 $datos['co_email'][0] = $datos[0]['co_email_e'];
@@ -1636,7 +1642,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
-            
+
             $datos['eje_tematico'] = $ejes;
             $form->set_datos($datos);
         }
@@ -2031,11 +2037,23 @@ class ci_proyectos_extension extends extension_ci {
                         $boolean = true;
                         //control de director o codirector no repetido 
                         if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p']) {
+                            $perfil_ua = $this->dep('datos')->tabla('unidad_acad')->get_ua()[0];
+
+                            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+                            if ($perfil == 'admin') {
+                                $perfil_ua = $datos[ua];
+                            }
+
+                            $director_ua = true;
                             if ($datos['funcion_p'] == 'D    ') {
-                                foreach ($integrantes_i as $integrante) {
-                                    if ($integrante['funcion_p'] == 'Director') {
-                                        $boolean = false;
+                                if ($perfil_ua[sigla] == $datos[ua]) {
+                                    foreach ($integrantes_i as $integrante) {
+                                        if ($integrante['funcion_p'] == 'Director') {
+                                            $boolean = false;
+                                        }
                                     }
+                                } else {
+                                    $director_ua = false;
                                 }
                             }
 
@@ -2055,11 +2073,21 @@ class ci_proyectos_extension extends extension_ci {
                             }
                         }
                         if ($boolean) {
-                            $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->get_integrante($datos[id_docente], $pe['id_pext'])[0];
-                            if (!is_null($int_interno)) {
-                                // date('Y-m-d') fecha actual 
-                                if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
-                                    toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
+                            if ($director_ua) {
+                                $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->get_integrante($datos[id_docente], $pe['id_pext'])[0];
+                                if (!is_null($int_interno)) {
+                                    // date('Y-m-d') fecha actual 
+                                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
+                                        toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
+                                    } else {
+                                        $datos['id_pext'] = $pe['id_pext'];
+                                        $datos['tipo'] = 'Docente';
+
+                                        $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+                                        $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+                                        $this->s__mostrar = 0;
+                                    }
                                 } else {
                                     $datos['id_pext'] = $pe['id_pext'];
                                     $datos['tipo'] = 'Docente';
@@ -2070,13 +2098,7 @@ class ci_proyectos_extension extends extension_ci {
                                     $this->s__mostrar = 0;
                                 }
                             } else {
-                                $datos['id_pext'] = $pe['id_pext'];
-                                $datos['tipo'] = 'Docente';
-
-                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                                $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-                                $this->s__mostrar = 0;
+                                toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
                             }
                         } else {
                             toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
@@ -2121,11 +2143,23 @@ class ci_proyectos_extension extends extension_ci {
                         $boolean = true;
                         //control de director o codirector no repetido 
                         if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p']) {
+                            $perfil_ua = $this->dep('datos')->tabla('unidad_acad')->get_ua()[0];
+
+                            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+                            if ($perfil == 'admin') {
+                                $perfil_ua = $datos[ua];
+                            }
+
+                            $director_ua = true;
                             if ($datos['funcion_p'] == 'D    ') {
-                                foreach ($integrantes_i as $integrante) {
-                                    if ($integrante['funcion_p'] == 'Director') {
-                                        $boolean = false;
+                                if ($perfil_ua[sigla] == $datos[ua]) {
+                                    foreach ($integrantes_i as $integrante) {
+                                        if ($integrante['funcion_p'] == 'Director') {
+                                            $boolean = false;
+                                        }
                                     }
+                                } else {
+                                    $director_ua = false;
                                 }
                             }
 
@@ -2147,13 +2181,16 @@ class ci_proyectos_extension extends extension_ci {
 
 
                         if ($boolean) {
+                            if ($director_ua) {
+                                $datos['id_pext'] = $pe['id_pext'];
+                                $datos['tipo'] = 'Docente';
 
-                            $datos['id_pext'] = $pe['id_pext'];
-                            $datos['tipo'] = 'Docente';
-
-                            $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-                            $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                            $this->s__mostrar = 0;
+                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                $this->s__mostrar = 0;
+                            } else {
+                                toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
+                            }
                         } else {
                             toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
                         }
