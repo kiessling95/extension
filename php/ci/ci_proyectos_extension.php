@@ -665,9 +665,25 @@ class ci_proyectos_extension extends extension_ci {
         return $date;
     }
 
-    function fecha_hasta_proyecto() {
+    function fecha_hasta_proyecto($duracion) {
         $datos = $this->dep('datos')->tabla('pextension')->get();
-        return date("d/m/Y", strtotime($datos['fec_hasta']));
+        $fecha_desde =$datos['fec_desde'];
+        $fecha_hasta = date("d-m-Y",strtotime($fecha_desde."+".$duracion." month")); 
+        return date("d/m/Y", strtotime($fecha_hasta));
+    }
+    
+    function meses_ejecucion(){
+        $datos = $this->dep('datos')->tabla('pextension')->get();
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_duracion($datos[id_bases])[0];
+        $cant_meses = $bases[duracion_convocatoria]*12;
+        $meses = array();
+        for ($i = 1; $i<=$cant_meses; $i++){
+            $meses_aux = array();
+            $meses_aux[id] =$i;
+            $meses_aux[descripcion] = $i;
+            $meses[$i] = $meses_aux;
+        }
+        return $meses;
     }
 
     function resolucion_proyecto() {
@@ -1587,6 +1603,7 @@ class ci_proyectos_extension extends extension_ci {
             }
             $form->ef('fec_carga')->set_solo_lectura();
             $form->ef('fec_desde')->set_solo_lectura();
+            $form->ef('fec_hasta')->set_solo_lectura();
 
             $datos = $this->dep('datos')->tabla('pextension')->get();
             $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($datos['id_pext']);
