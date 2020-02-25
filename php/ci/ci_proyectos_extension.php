@@ -667,7 +667,29 @@ class ci_proyectos_extension extends extension_ci {
 
     function fecha_hasta_proyecto() {
         $datos = $this->dep('datos')->tabla('pextension')->get();
-        return date("d/m/Y", strtotime($datos['fec_hasta']));
+        $date = date("d/m/Y", strtotime($datos['fec_hasta']));
+        return $date;
+    }
+
+    function fecha_fin_proyecto($duracion) {
+        $datos = $this->dep('datos')->tabla('pextension')->get();
+        $fecha_desde = $datos['fec_desde'];
+        $fecha_hasta = date("d-m-Y", strtotime($fecha_desde . "+" . $duracion . " month"));
+        return date("d/m/Y", strtotime($fecha_hasta));
+    }
+
+    function meses_ejecucion() {
+        $datos = $this->dep('datos')->tabla('pextension')->get();
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_duracion($datos[id_bases])[0];
+        $cant_meses = $bases[duracion_convocatoria] * 12;
+        $meses = array();
+        for ($i = 1; $i <= $cant_meses; $i++) {
+            $meses_aux = array();
+            $meses_aux[id] = $i;
+            $meses_aux[descripcion] = $i;
+            $meses[$i] = $meses_aux;
+        }
+        return $meses;
     }
 
     function resolucion_proyecto() {
@@ -1098,6 +1120,20 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
+    function evt__corregir() {
+        $pextension = $this->dep('datos')->tabla('pextension')->get();
+        $pextension['id_estado'] = 'MODF';
+        $this->dep('datos')->tabla('pextension')->set($pextension);
+        $this->dep('datos')->tabla('pextension')->sincronizar();
+    }
+    
+    function evt__aprobar_ua() {
+        $pextension = $this->dep('datos')->tabla('pextension')->get();
+        $pextension['id_estado'] = 'PAPR';
+        $this->dep('datos')->tabla('pextension')->set($pextension);
+        $this->dep('datos')->tabla('pextension')->sincronizar();
+    }
+
     //-------------------------------------------------------------------------------
     //-------------------------- PANTALLAS ------------------------------------------
     //-------------------------------------------------------------------------------
@@ -1208,6 +1244,7 @@ class ci_proyectos_extension extends extension_ci {
 
         //Cambio de estado a en formulacion ( ESTADO INICIAL )
         $datos[id_estado] = 'FORM';
+        $datos[fec_carga] = date('Y-m-d');
 
         //responsable de carga proyecto
         $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
@@ -1668,7 +1705,7 @@ class ci_proyectos_extension extends extension_ci {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
 
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->controlador()->evento('enviar')->ocultar();
             } else {
                 if ($perfil != 'admin') {
@@ -1692,12 +1729,15 @@ class ci_proyectos_extension extends extension_ci {
         // Si esta cargado, traigo los datos de la base de datos
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
 
-            if ($estado != 'FORM' && $perfil != 'admin') {
+            if ($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
                 $this->dep('formulario')->evento('baja')->ocultar();
                 $this->dep('formulario')->evento('cancelar')->ocultar();
             }
+            $form->ef('fec_carga')->set_solo_lectura();
+            $form->ef('fec_desde')->set_solo_lectura();
+            $form->ef('fec_hasta')->set_solo_lectura();
 
             $datos = $this->dep('datos')->tabla('pextension')->get();
             $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($datos['id_pext']);
@@ -1707,6 +1747,9 @@ class ci_proyectos_extension extends extension_ci {
             $where['id_pext'] = $datos[id_pext];
 
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
+            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
+
+            $datos[0][fec_desde] = $bases[fecha_hasta];
 
             if (count($datos[0]['co_director']) < 1) {
                 $datos[0]['co_director'] = $datos[0]['co_director_e'];
@@ -1727,7 +1770,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
-            
+
             $datos['eje_tematico'] = $ejes;
             $form->set_datos($datos);
         }
@@ -1841,7 +1884,7 @@ class ci_proyectos_extension extends extension_ci {
         $array = $array . '}';
         $datos['eje_tematico'] = $array;
 
-        $datos[id_estado] = 'FORM';;
+        $datos[id_estado] = $datos_pe[id_estado];
 
         $this->dep('datos')->tabla('pextension')->set($datos);
         $this->dep('datos')->tabla('pextension')->sincronizar();
@@ -1880,7 +1923,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -1907,7 +1950,7 @@ class ci_proyectos_extension extends extension_ci {
             $$perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $perfil != 'admin') {
+            if ($estado != 'FORM'&& $estado != 'MODF' && $perfil != 'admin') {
                 $this->dep('formulario_destinatarios')->set_solo_lectura();
                 $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
@@ -2042,7 +2085,7 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         } else {
             if ($perfil == formulador) {
@@ -2077,7 +2120,7 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->dep('form_integrantes')->set_solo_lectura();
                 $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
@@ -2122,11 +2165,23 @@ class ci_proyectos_extension extends extension_ci {
                         $boolean = true;
                         //control de director o codirector no repetido 
                         if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p']) {
+                            $perfil_ua = $this->dep('datos')->tabla('unidad_acad')->get_ua()[0];
+
+                            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+                            if ($perfil == 'admin') {
+                                $perfil_ua = $datos[ua];
+                            }
+
+                            $director_ua = true;
                             if ($datos['funcion_p'] == 'D    ') {
-                                foreach ($integrantes_i as $integrante) {
-                                    if ($integrante['funcion_p'] == 'Director') {
-                                        $boolean = false;
+                                if ($perfil_ua[sigla] == $datos[ua]) {
+                                    foreach ($integrantes_i as $integrante) {
+                                        if ($integrante['funcion_p'] == 'Director') {
+                                            $boolean = false;
+                                        }
                                     }
+                                } else {
+                                    $director_ua = false;
                                 }
                             }
 
@@ -2146,11 +2201,21 @@ class ci_proyectos_extension extends extension_ci {
                             }
                         }
                         if ($boolean) {
-                            $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->get_integrante($datos[id_docente], $pe['id_pext'])[0];
-                            if (!is_null($int_interno)) {
-                                // date('Y-m-d') fecha actual 
-                                if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
-                                    toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
+                            if ($director_ua) {
+                                $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->get_integrante($datos[id_docente], $pe['id_pext'])[0];
+                                if (!is_null($int_interno)) {
+                                    // date('Y-m-d') fecha actual 
+                                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
+                                        toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
+                                    } else {
+                                        $datos['id_pext'] = $pe['id_pext'];
+                                        $datos['tipo'] = 'Docente';
+
+                                        $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+                                        $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+                                        $this->s__mostrar = 0;
+                                    }
                                 } else {
                                     $datos['id_pext'] = $pe['id_pext'];
                                     $datos['tipo'] = 'Docente';
@@ -2161,13 +2226,7 @@ class ci_proyectos_extension extends extension_ci {
                                     $this->s__mostrar = 0;
                                 }
                             } else {
-                                $datos['id_pext'] = $pe['id_pext'];
-                                $datos['tipo'] = 'Docente';
-
-                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                                $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-                                $this->s__mostrar = 0;
+                                toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
                             }
                         } else {
                             toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
@@ -2212,11 +2271,23 @@ class ci_proyectos_extension extends extension_ci {
                         $boolean = true;
                         //control de director o codirector no repetido 
                         if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p']) {
+                            $perfil_ua = $this->dep('datos')->tabla('unidad_acad')->get_ua()[0];
+
+                            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+                            if ($perfil == 'admin') {
+                                $perfil_ua = $datos[ua];
+                            }
+
+                            $director_ua = true;
                             if ($datos['funcion_p'] == 'D    ') {
-                                foreach ($integrantes_i as $integrante) {
-                                    if ($integrante['funcion_p'] == 'Director') {
-                                        $boolean = false;
+                                if ($perfil_ua[sigla] == $datos[ua]) {
+                                    foreach ($integrantes_i as $integrante) {
+                                        if ($integrante['funcion_p'] == 'Director') {
+                                            $boolean = false;
+                                        }
                                     }
+                                } else {
+                                    $director_ua = false;
                                 }
                             }
 
@@ -2238,13 +2309,16 @@ class ci_proyectos_extension extends extension_ci {
 
 
                         if ($boolean) {
+                            if ($director_ua) {
+                                $datos['id_pext'] = $pe['id_pext'];
+                                $datos['tipo'] = 'Docente';
 
-                            $datos['id_pext'] = $pe['id_pext'];
-                            $datos['tipo'] = 'Docente';
-
-                            $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-                            $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                            $this->s__mostrar = 0;
+                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                $this->s__mostrar = 0;
+                            } else {
+                                toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
+                            }
                         } else {
                             toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
                         }
@@ -2284,7 +2358,7 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         }
         if ($perfil == formulador) {
@@ -2318,7 +2392,7 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->dep('form_integrante_e')->set_solo_lectura();
                 $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
@@ -2520,7 +2594,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         }
         $this->s__imprimir = 0;
@@ -2552,7 +2626,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s__mostrar_org == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->dep('form_organizacion')->set_solo_lectura();
                 $this->dep('form_organizacion')->evento('modificacion')->ocultar();
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
@@ -2560,11 +2634,6 @@ class ci_proyectos_extension extends extension_ci {
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_organizacion')->descolapsar();
-            $form->ef('nombre')->set_obligatorio('true');
-            $form->ef('domicilio')->set_obligatorio('true');
-            $form->ef('telefono')->set_obligatorio('true');
-            $form->ef('email')->set_obligatorio('true');
-            $form->ef('referencia_vinculacion_inst')->set_obligatorio('true');
         } else {
             $this->dep('form_organizacion')->colapsar();
         }
@@ -2670,7 +2739,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -2700,7 +2769,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s__mostrar_obj == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->dep('form_objetivos_esp')->set_solo_lectura();
                 $this->dep('form_objetivos_esp')->evento('modificacion')->ocultar();
                 $this->dep('form_objetivos_esp')->evento('baja')->ocultar();
@@ -2708,9 +2777,6 @@ class ci_proyectos_extension extends extension_ci {
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_objetivos_esp')->descolapsar();
-            $form->ef('descripcion')->set_obligatorio('true');
-            $form->ef('meta')->set_obligatorio('true');
-            $form->ef('ponderacion')->set_obligatorio('true');
         } else {
             $this->dep('form_objetivos_esp')->colapsar();
         }
@@ -2802,7 +2868,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -2846,7 +2912,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s__mostrar_activ == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->dep('form_actividad')->set_solo_lectura();
                 $this->dep('form_actividad')->evento('modificacion')->ocultar();
                 $this->dep('form_actividad')->evento('baja')->ocultar();
@@ -2950,7 +3016,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM') {
+        if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -2988,7 +3054,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s__mostrar_presup == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM') {
+            if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->dep('form_presupuesto')->set_solo_lectura();
                 $this->dep('form_presupuesto')->evento('modificacion')->ocultar();
                 $this->dep('form_presupuesto')->evento('baja')->ocultar();
@@ -2996,9 +3062,6 @@ class ci_proyectos_extension extends extension_ci {
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_presupuesto')->descolapsar();
-            $form->ef('concepto')->set_obligatorio('true');
-            $form->ef('cantidad')->set_obligatorio('true');
-            $form->ef('monto')->set_obligatorio('true');
         } else {
             $this->dep('form_presupuesto')->colapsar();
         }
