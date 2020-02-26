@@ -111,14 +111,11 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --externa
 	'organizaciones_participantes'  --tabla
 );
---- FIN Grupo de desarrollo 1001
-
---- INICIO Grupo de desarrollo 1002
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1002000054', --objeto
-	'1002000090', --col_id
-	'nombre', --columna
+	'1001000658', --col_id
+	'telefono', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
@@ -128,11 +125,14 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --externa
 	'organizaciones_participantes'  --tabla
 );
+--- FIN Grupo de desarrollo 1001
+
+--- INICIO Grupo de desarrollo 1002
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1002000054', --objeto
-	'1002000093', --col_id
-	'telefono', --columna
+	'1002000090', --col_id
+	'nombre', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
