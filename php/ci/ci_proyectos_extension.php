@@ -591,14 +591,12 @@ class ci_proyectos_extension extends extension_ci {
                 unset($this->s__pdf);
             } else {
                 if (isset($this->s__cv_interno)) {
-                    print_r($this->s__cv_interno);
                     $cv['id_pext'] = $this->s__cv_interno[id_pext];
                     $cv['desde'] = $this->s__cv_interno[desde];
                     $cv['id_designacion'] = $this->s__cv_interno[id_designacion];
                     $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); //limpia
                     $this->dep('datos')->tabla('integrante_interno_pe')->cargar($cv); //carga el articulo que se selecciono
-                    $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('cv');
-                    print_r($fp_imagen);
+                    $fp_imagen = $this->dep('datos')->tabla('integrante_interno_pe')->get_blob('cv');
                     if (isset($fp_imagen)) {
                         header("Content-type:applicattion/pdf");
                         header("Content-Disposition:attachment;filename=" . $this->s__nombre);
@@ -618,6 +616,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
+        print_r($id_fila);
         $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
 
         $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
@@ -650,6 +649,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
+        
         $datos['id_pext'] = $this->s__datos[$id_fila]['id_pext'];
         $datos['desde'] = $this->s__datos[$id_fila]['desde'];
         $datos['id_designacion'] = $this->s__datos[$id_fila]['id_designacion'];
@@ -657,7 +657,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
         $this->s__pdf = 'cv';
-        //$tiene = $this->dep('datos')->tabla('integrante_interno')->tiene_cv($this->s__cv_interno);
+        $tiene = $this->dep('datos')->tabla('integrante_interno')->tiene_cv($this->s__cv_interno);
         $tiene = 1;
         if ($tiene == 1) {
             $respuesta->set($id_fila);
@@ -2170,7 +2170,9 @@ class ci_proyectos_extension extends extension_ci {
                                                 $fp = null;
                                             } else {
                                                 $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                                print_r($datos[cv]);
                                                 $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
+                                                print_r($fp);
                                             }
                                         } else {
                                             $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', null);
@@ -2187,6 +2189,7 @@ class ci_proyectos_extension extends extension_ci {
 
                                     //-----------cv interno-----------------------
                                     //si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
+                                    $datos[cv];
                                     if (is_array($datos['cv'])) {
                                         if ($datos['cv']['size'] > $this->tamano_byte) {
                                             toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
@@ -2291,7 +2294,6 @@ class ci_proyectos_extension extends extension_ci {
                             if ($director_ua) {
                                 $datos['id_pext'] = $pe['id_pext'];
                                 $datos['tipo'] = 'Docente';
-
                                 if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
                                     if ($datos['cv']['size'] > 0) {
                                         if ($datos['cv']['size'] > $this->tamano_byte) {
