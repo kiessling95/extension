@@ -616,7 +616,6 @@ class ci_proyectos_extension extends extension_ci {
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
-        print_r($id_fila);
         $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
 
         $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
@@ -646,10 +645,10 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function ajax__descargar_cv_docente($id_fila, toba_ajax_respuesta $respuesta) {
+
         if ($id_fila != 0) {
             $id_fila = $id_fila / 2;
         }
-        
         $datos['id_pext'] = $this->s__datos[$id_fila]['id_pext'];
         $datos['desde'] = $this->s__datos[$id_fila]['desde'];
         $datos['id_designacion'] = $this->s__datos[$id_fila]['id_designacion'];
@@ -657,8 +656,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
         $this->s__pdf = 'cv';
-        $tiene = $this->dep('datos')->tabla('integrante_interno')->tiene_cv($this->s__cv_interno);
-        $tiene = 1;
+        $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($this->s__cv_interno);
         if ($tiene == 1) {
             $respuesta->set($id_fila);
         } else {
@@ -678,7 +676,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['integrante']) . ".pdf";
         $this->s__pdf = 'aval';
-        //$tiene = $this->dep('datos')->tabla('integrante_externo')->tiene_aval($this->s__cv_externo);
+        //$tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_aval($this->s__cv_externo);
         $tiene = 1;
         if ($tiene == 1) {
             $respuesta->set($id_fila);
@@ -2171,7 +2169,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-
+        
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
 
@@ -2294,9 +2292,7 @@ class ci_proyectos_extension extends extension_ci {
                                                 $fp = null;
                                             } else {
                                                 $fp = fopen($datos['cv']['tmp_name'], 'rb');
-                                                print_r($datos[cv]);
                                                 $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
-                                                print_r($fp);
                                             }
                                         } else {
                                             $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', null);
