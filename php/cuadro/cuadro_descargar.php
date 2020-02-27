@@ -17,6 +17,12 @@ class cuadro_descargar extends extension_ei_cuadro {
                     if(vista=='pdf_bases'){
                         this.controlador.ajax('descargar_bases',id_vinculo,this,this.retorno);
                     }
+                    if(vista=='pdf_cv_interno'){
+                        this.controlador.ajax('descargar_cv_docente',id_vinculo,this,this.retorno);
+                    }
+                    if(vista=='pdf_cv_externo'){
+                        this.controlador.ajax('descargar_cv_otro',id_vinculo,this,this.retorno);
+                    }
                     if(vista=='pdf_completo'){
                         this.controlador.ajax('descargar_pext_completo',id_vinculo,this,this.retorno);
                     }else{
@@ -29,7 +35,7 @@ class cuadro_descargar extends extension_ei_cuadro {
 		}
 		 {$this->objeto_js}.retorno = function(datos)
 		{
-                 if(datos==-1){alert('No tiene un aval adjunto');
+                 if(datos==-1){alert('No tiene un archivo adjunto');
                    }else{vinculador.invocar(datos);}
 		}
 		";
