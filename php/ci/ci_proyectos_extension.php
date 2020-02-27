@@ -976,6 +976,68 @@ class ci_proyectos_extension extends extension_ci {
                 $validacion = " - Destinatarios \n";
                 toba::notificacion()->agregar($validacion, "error");
             }
+            
+            if($pextension['denominacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
+            }
+            
+            if($pextension['eje_tematico'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
+            }
+            
+            if($pextension['palabras_clave'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
+            }
+            
+            if($pextension['descripcion_situacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
+            }
+            
+            if($pextension['caracterizacion_poblacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
+            }
+            
+            if($pextension['localizacion_geo'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
+            }
+            
+            if($pextension['impacto'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
+            }
+            
+            if($pextension['objetivo'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Objetivo");
+            }
+            
+            if($pextension['uni_acad'] != null)
+            {
+                
+                $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
+                
+                if($dep != null) 
+                {
+                    if($pextension['departamento'] == null)
+                    {
+                        toba::notificacion()->agregar("Falta completar el campo Departamento");
+                    }
+                    else
+                    {
+                        $areas = $this->dep('datos')->tabla('area')->get_descripciones($pextension['departamento']);
+                        if($areas != null && $pextension['area'] == null)
+                        {
+                            toba::notificacion()->agregar("Falta completar el campo Area");
+                        }
+                    }
+                }
+            }
 
 
             if ($count == 3) {
@@ -1064,6 +1126,68 @@ class ci_proyectos_extension extends extension_ci {
             } else {
                 $validacion = " - Destinatat_serios \n";
                 toba::notificacion()->agregar($validacion, "error");
+            }
+            
+            if($pextension['denominacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
+            }
+            
+            if($pextension['eje_tematico'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
+            }
+            
+            if($pextension['palabras_clave'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
+            }
+            
+            if($pextension['descripcion_situacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
+            }
+            
+            if($pextension['caracterizacion_poblacion'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
+            }
+            
+            if($pextension['localizacion_geo'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
+            }
+            
+            if($pextension['impacto'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
+            }
+            
+            if($pextension['objetivo'] == null)
+            {
+                toba::notificacion()->agregar("Falta completar el campo Objetivo");
+            }
+            
+            if($pextension['uni_acad'] != null)
+            {
+                
+                $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
+                
+                if($dep != null) 
+                {
+                    if($pextension['departamento'] == null)
+                    {
+                        toba::notificacion()->agregar("Falta completar el campo Departamento");
+                    }
+                    else
+                    {
+                        $areas = $this->dep('datos')->tabla('area')->get_descripciones($pextension['departamento']);
+                        if($areas != null && $pextension['area'] == null)
+                        {
+                            toba::notificacion()->agregar("Falta completar el campo Area");
+                        }
+                    }
+                }
             }
         }
     }

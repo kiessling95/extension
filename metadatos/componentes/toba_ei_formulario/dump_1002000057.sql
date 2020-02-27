@@ -962,7 +962,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'domicilio', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'9', --orden
+	'10', --orden
 	'Domicilio (calle y n°)', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1042,7 +1042,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'otra_descripcion', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'10', --orden
+	'9', --orden
 	'Descripcion', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
