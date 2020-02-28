@@ -18,7 +18,10 @@ class ci_proyectos_extension extends extension_ci {
     protected $tamano_mega = 2;
     protected $s__imprimir = 1;
     protected $s__imprimir_resumen = 0;
+    protected $s__datos_docente;
+    protected $s__datos_otro;
     protected $s__datos;
+    protected $s__datos_org;
     protected $s__organizacion;
     protected $s__destinatario;
     protected $s__cv_interno;
@@ -605,6 +608,24 @@ class ci_proyectos_extension extends extension_ci {
                     }
                     unset($this->s__cv_interno);
                     unset($this->s__pdf);
+                } else {
+                    if (isset($this->s__cv_externo)) {
+                        $cv['id_pext'] = $this->s__cv_externo[id_pext];
+                        $cv['desde'] = $this->s__cv_externo[desde];
+                        $cv['tipo_docum'] = $this->s__cv_externo[tipo_docum];
+                        $cv['nro_docum']= $this->s__cv_externo[nro_docum];
+                        $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); //limpia
+                        $this->dep('datos')->tabla('integrante_externo_pe')->cargar($cv); //carga el articulo que se selecciono
+                        $fp_imagen = $this->dep('datos')->tabla('integrante_externo_pe')->get_blob('cv');
+                        if (isset($fp_imagen)) {
+                            header("Content-type:applicattion/pdf");
+                            header("Content-Disposition:attachment;filename=" . $this->s__nombre);
+                            echo(stream_get_contents($fp_imagen));
+                            exit;
+                        }
+                        unset($this->s__cv_externo);
+                        unset($this->s__pdf);
+                    }
                 }
             }
         }
@@ -613,12 +634,9 @@ class ci_proyectos_extension extends extension_ci {
     //esta funcion es invocada desde javascript
     //cuando se presiona el boton pdf_acta
     function ajax__cargar_aval($id_fila, toba_ajax_respuesta $respuesta) {
-        if ($id_fila != 0) {
-            $id_fila = $id_fila / 2;
-        }
-        $this->s__organizacion = $this->s__datos[$id_fila]['id_organizacion'];
+        $this->s__organizacion = $this->s__datos_org[$id_fila]['id_organizacion'];
 
-        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
+        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos_org[$id_fila]['nombre']) . ".pdf";
         $this->s__pdf = 'aval';
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion);
         if ($tiene == 1) {
@@ -628,33 +646,13 @@ class ci_proyectos_extension extends extension_ci {
         }
     }
 
-    function ajax__cargar_aval_destinatario($id_fila, toba_ajax_respuesta $respuesta) {
-        if ($id_fila != 0) {
-            $id_fila = $id_fila / 2;
-        }
-        $this->s_destinatario = $this->s__datos[$id_fila]['id_destinatario'];
-
-        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['contacto']) . ".pdf";
-        $this->s__pdf = 'aval';
-        $tiene = $this->dep('datos')->tabla('destinatarios')->tiene_aval($this->s__organizacion);
-        if ($tiene == 1) {
-            $respuesta->set($id_fila);
-        } else {
-            $respuesta->set(-1);
-        }
-    }
-
     function ajax__descargar_cv_docente($id_fila, toba_ajax_respuesta $respuesta) {
 
-        if ($id_fila != 0) {
-            $id_fila = $id_fila / 2;
-        }
-        $datos['id_pext'] = $this->s__datos[$id_fila]['id_pext'];
-        $datos['desde'] = $this->s__datos[$id_fila]['desde'];
-        $datos['id_designacion'] = $this->s__datos[$id_fila]['id_designacion'];
+        $datos['id_pext'] = $this->s__datos_docente[$id_fila - 1]['id_pext'];
+        $datos['desde'] = $this->s__datos_docente[$id_fila - 1]['desde'];
+        $datos['id_designacion'] = $this->s__datos_docente[$id_fila - 1]['id_designacion'];
         $this->s__cv_interno = $datos;
-
-        $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos[$id_fila]['nombre']) . ".pdf";
+        $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos_docente[$id_fila - 1]['nombre']) . ".pdf";
         $this->s__pdf = 'cv';
         $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($this->s__cv_interno);
         if ($tiene == 1) {
@@ -665,19 +663,15 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function ajax__descargar_cv_otro($id_fila, toba_ajax_respuesta $respuesta) {
-        if ($id_fila != 0) {
-            $id_fila = $id_fila / 2;
-        }
-        $datos['id_pext'] = $this->s__datos[$id_fila]['id_pext'];
-        $datos['desde'] = $this->s__datos[$id_fila]['desde'];
-        $datos['tipo_docum'] = $this->s__datos[$id_fila]['tipo_docum'];
-        $datos['nro_docum'] = $this->s__datos[$id_fila]['nro_docum'];
+        $datos['id_pext'] = $this->s__datos_otro[$id_fila - 1]['id_pext'];
+        $datos['desde'] = $this->s__datos_otro[$id_fila - 1]['desde'];
+        $datos['tipo_docum'] = $this->s__datos_otro[$id_fila - 1]['tipo_docum'];
+        $datos['nro_docum'] = $this->s__datos_otro[$id_fila - 1]['nro_docum'];
         $this->s__cv_externo = $datos;
-
-        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos[$id_fila]['integrante']) . ".pdf";
-        $this->s__pdf = 'aval';
-        //$tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_aval($this->s__cv_externo);
-        $tiene = 1;
+        
+        $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos_otro[$id_fila - 1]['nombre']) . ".pdf";
+        $this->s__pdf = 'cv';
+        $tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_cv($this->s__cv_externo);
         if ($tiene == 1) {
             $respuesta->set($id_fila);
         } else {
@@ -696,13 +690,15 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function ajax__descargar_pext_resumen($id_fila, toba_ajax_respuesta $respuesta) {
-        if ($id_fila != 0) {
-            $id_fila = $id_fila / 2;
+        if ($id_fila != 1) {
+            $id_fila = floor($id_fila / 2); //la parte entera de la division
+        } else {
+            $id_fila = 0;
         }
         $this->s__imprimir_resumen = 1;
         $this->s__pextension = $this->s__datos[$id_fila]['id_pext'];
 
-        $respuesta->set(1);
+        $respuesta->set($id_fila);
     }
 
     // METODOS POPUP
@@ -974,63 +970,49 @@ class ci_proyectos_extension extends extension_ci {
                 $validacion = " - Destinatarios \n";
                 toba::notificacion()->agregar($validacion, "error");
             }
-            
-            if($pextension['denominacion'] == null)
-            {
+
+            if ($pextension['denominacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
             }
-            
-            if($pextension['eje_tematico'] == null)
-            {
+
+            if ($pextension['eje_tematico'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
             }
-            
-            if($pextension['palabras_clave'] == null)
-            {
+
+            if ($pextension['palabras_clave'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
             }
-            
-            if($pextension['descripcion_situacion'] == null)
-            {
+
+            if ($pextension['descripcion_situacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
             }
-            
-            if($pextension['caracterizacion_poblacion'] == null)
-            {
+
+            if ($pextension['caracterizacion_poblacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
             }
-            
-            if($pextension['localizacion_geo'] == null)
-            {
+
+            if ($pextension['localizacion_geo'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
             }
-            
-            if($pextension['impacto'] == null)
-            {
+
+            if ($pextension['impacto'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
             }
-            
-            if($pextension['objetivo'] == null)
-            {
+
+            if ($pextension['objetivo'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Objetivo");
             }
-            
-            if($pextension['uni_acad'] != null)
-            {
-                
+
+            if ($pextension['uni_acad'] != null) {
+
                 $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
-                
-                if($dep != null) 
-                {
-                    if($pextension['departamento'] == null)
-                    {
+
+                if ($dep != null) {
+                    if ($pextension['departamento'] == null) {
                         toba::notificacion()->agregar("Falta completar el campo Departamento");
-                    }
-                    else
-                    {
+                    } else {
                         $areas = $this->dep('datos')->tabla('area')->get_descripciones($pextension['departamento']);
-                        if($areas != null && $pextension['area'] == null)
-                        {
+                        if ($areas != null && $pextension['area'] == null) {
                             toba::notificacion()->agregar("Falta completar el campo Area");
                         }
                     }
@@ -1125,63 +1107,49 @@ class ci_proyectos_extension extends extension_ci {
                 $validacion = " - Destinatat_serios \n";
                 toba::notificacion()->agregar($validacion, "error");
             }
-            
-            if($pextension['denominacion'] == null)
-            {
+
+            if ($pextension['denominacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
             }
-            
-            if($pextension['eje_tematico'] == null)
-            {
+
+            if ($pextension['eje_tematico'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
             }
-            
-            if($pextension['palabras_clave'] == null)
-            {
+
+            if ($pextension['palabras_clave'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
             }
-            
-            if($pextension['descripcion_situacion'] == null)
-            {
+
+            if ($pextension['descripcion_situacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
             }
-            
-            if($pextension['caracterizacion_poblacion'] == null)
-            {
+
+            if ($pextension['caracterizacion_poblacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
             }
-            
-            if($pextension['localizacion_geo'] == null)
-            {
+
+            if ($pextension['localizacion_geo'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
             }
-            
-            if($pextension['impacto'] == null)
-            {
+
+            if ($pextension['impacto'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
             }
-            
-            if($pextension['objetivo'] == null)
-            {
+
+            if ($pextension['objetivo'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Objetivo");
             }
-            
-            if($pextension['uni_acad'] != null)
-            {
-                
+
+            if ($pextension['uni_acad'] != null) {
+
                 $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
-                
-                if($dep != null) 
-                {
-                    if($pextension['departamento'] == null)
-                    {
+
+                if ($dep != null) {
+                    if ($pextension['departamento'] == null) {
                         toba::notificacion()->agregar("Falta completar el campo Departamento");
-                    }
-                    else
-                    {
+                    } else {
                         $areas = $this->dep('datos')->tabla('area')->get_descripciones($pextension['departamento']);
-                        if($areas != null && $pextension['area'] == null)
-                        {
+                        if ($areas != null && $pextension['area'] == null) {
                             toba::notificacion()->agregar("Falta completar el campo Area");
                         }
                     }
@@ -2158,18 +2126,18 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         if (isset($this->s__where)) {
-            $this->s__datos = $this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where, $pe['id_pext']);
+            $this->s__datos_docente = $this->dep('datos')->tabla('integrante_interno_pe')->get_vigentes($this->s__where, $pe['id_pext']);
         } else {
-            $this->s__datos = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
+            $this->s__datos_docente = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
         }
-        $cuadro->set_datos($this->s__datos);
+        $cuadro->set_datos($this->s__datos_docente);
     }
 
     function evt__cuadro_ii__seleccion($datos) {
         $this->s__mostrar = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
 
@@ -2488,11 +2456,11 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_int(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         if (isset($this->s__where)) {
-            $this->s__datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_vigentes($this->s__where, $pe['id_pext']);
+            $this->s__datos_otro = $this->dep('datos')->tabla('integrante_externo_pe')->get_vigentes($this->s__where, $pe['id_pext']);
         } else {
-            $this->s__datos= $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+            $this->s__datos_otro = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
         }
-        $cuadro->set_datos($this->s__datos);
+        $cuadro->set_datos($this->s__datos_otro);
     }
 
     function evt__cuadro_int__seleccion($datos) {
@@ -2774,8 +2742,8 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_organizaciones(toba_ei_cuadro $cuadro) {
         //$cuadro->desactivar_modo_clave_segura();
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $this->s__datos = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
-        $cuadro->set_datos($this->s__datos);
+        $this->s__datos_org = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
+        $cuadro->set_datos($this->s__datos_org);
     }
 
     function evt__cuadro_organizaciones__seleccion($datos) {

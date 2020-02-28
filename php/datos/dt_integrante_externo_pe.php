@@ -178,6 +178,12 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
+    function tiene_cv($datos = array()) {
+        $sql = "select case when cv is not null then 1 else 0 end as tiene from integrante_externo_pe where id_pext =" . $datos['id_pext'] . " AND desde='" . $datos['desde'] . "'  AND tipo_docum='" . $datos['tipo_docum'] . "' AND nro_docum='" . $datos['nro_docum'] . "'";
+        $res = toba::db('extension')->consultar($sql);
+        return $res[0]['tiene'];
+    }
+
 }
 
 ?>
