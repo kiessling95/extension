@@ -13,7 +13,7 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                     'SELECT t_dc.id_docente,t_dc.nombre, t_dc.apellido, t_dc.tipo_docum,t_dc.nro_docum, t_dc.fec_nacim,t_dc.tipo_sexo,t_dc.pais_nacim 
                     FROM docente as t_dc ') as t_dc 
                     ( id_docente INTEGER,nombre CHARACTER VARYING,apellido CHARACTER VARYING,tipo_docum CHARACTER(4) ,nro_docum INTEGER,fec_nacim DATE,tipo_sexo CHARACTER(1),pais_nacim CHARACTER(2)) ) as t_dc ON (t_d.id_docente = t_dc.id_docente) "
-                . "WHERE t_dc.id_docente = $id_docente AND id_pext = $id_pext" ;
+                . "WHERE t_dc.id_docente = $id_docente AND id_pext = $id_pext";
         return toba::db('extension')->consultar($sql);
     }
 
@@ -70,7 +70,7 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
-    function get_vigentes($filtro = null,$id_pext = null) {
+    function get_vigentes($filtro = null, $id_pext = null) {
 
         $vigente = "hasta = 'Vigentes'";
 
@@ -223,6 +223,12 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
                 $where";
         //$sql="select * from integrante_interno_pe";
         return toba::db('extension')->consultar($sql);
+    }
+
+    function tiene_cv($datos = array()) {
+        $sql = "select case when cv is not null then 1 else 0 end as tiene from integrante_interno_pe where id_pext =" .$datos['id_pext']." AND desde='" .$datos['desde']."'  AND id_designacion=" .$datos['id_designacion'];
+        $res = toba::db('extension')->consultar($sql);
+        return $res[0]['tiene'];
     }
 
 }

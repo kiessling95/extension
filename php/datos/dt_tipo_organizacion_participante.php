@@ -6,7 +6,8 @@ class dt_tipo_organizacion_participante extends extension_datos_tabla
     {
         $sql = "SELECT 
                     id_tipo_organizacion, 
-                    descripcion 
+                    descripcion,
+                    otra_descripcion 
                     
                 FROM tipo_organizacion
                 
@@ -18,8 +19,8 @@ class dt_tipo_organizacion_participante extends extension_datos_tabla
     
     function get_tipo_org()
     {
-        $sql = "SELECT id_tipo_organizacion, descripcion
-            FROM tipo_organizacion
+        $sql = "SELECT id_tipo_organizacion, descripcion, otra_descripcion 
+            FROM tipo_organizacion 
             ORDER BY descripcion";
 		return toba::db('extension')->consultar($sql);
                

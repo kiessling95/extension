@@ -60,7 +60,7 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 	'extension', --fuente_datos_proyecto
 	'extension', --fuente_datos
 	'1', --permite_actualizacion_automatica
-	NULL, --esquema
+	'public', --esquema
 	'public'  --esquema_ext
 );
 
@@ -201,6 +201,20 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1001000649', --col_id
 	'tipo', --columna
 	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'integrante_externo_pe'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'extension', --objeto_proyecto
+	'1001000174', --objeto
+	'1001000657', --col_id
+	'cv', --columna
+	'B', --tipo
 	'0', --pk
 	'', --secuencia
 	NULL, --largo

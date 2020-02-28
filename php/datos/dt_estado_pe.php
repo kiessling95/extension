@@ -23,5 +23,22 @@ class dt_estado_pe extends extension_datos_tabla
          return toba::db('extension')->consultar($sql);
     }
     
+    function evaluacion_ua() {
+        $sql = " SELECT id_estado, descripcion FROM estado_pe WHERE id_estado ='MODF' OR id_estado ='PAPR' OR id_estado ='EUA'";
+        return toba::db('extension')->consultar($sql);
+    }
+    
+    function evaluacion_centrar() {
+        $sql = " SELECT id_estado, descripcion FROM estado_pe "
+                . " WHERE "
+                . " id_estado = 'APRB'"
+                . " OR id_estado = 'DES' "
+                . " OR id_estado = 'BAJA'"
+                . " OR id_estado = 'FIN'"
+                . " OR id_estado = 'PRG'";
+        return toba::db('extension')->consultar($sql);
+    }
+    
+    
 }
 ?>
