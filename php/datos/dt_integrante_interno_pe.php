@@ -226,7 +226,7 @@ class dt_integrante_interno_pe extends extension_datos_tabla {
     }
 
     function tiene_cv($datos = array()) {
-        $sql = "select case when cv is not null then 1 else 0 end as tiene from integrante_interno_pe where id_pext =" .$datos['id_pext']." AND desde=" .$datos['desde']."  AND id_designacion=" .$datos['id_designacion'];
+        $sql = "select case when cv is not null then 1 else 0 end as tiene from integrante_interno_pe where id_pext =" .$datos['id_pext']." AND desde='" .$datos['desde']."'  AND id_designacion=" .$datos['id_designacion'];
         $res = toba::db('extension')->consultar($sql);
         return $res[0]['tiene'];
     }
