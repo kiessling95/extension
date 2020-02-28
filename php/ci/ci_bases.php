@@ -14,9 +14,7 @@ class ci_bases extends extension_ci {
     }
 
     function ajax__descargar_bases($id_fila, toba_ajax_respuesta $respuesta) {
-        if ($id_fila != 0) {
-            $id_fila = $id_fila / 2;
-        }
+        
         $this->s__bases = $this->s__datos[$id_fila]['id_bases'];
 
         $respuesta->set($id_fila);
