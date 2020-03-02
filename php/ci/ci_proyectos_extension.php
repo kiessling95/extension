@@ -613,7 +613,7 @@ class ci_proyectos_extension extends extension_ci {
                         $cv['id_pext'] = $this->s__cv_externo[id_pext];
                         $cv['desde'] = $this->s__cv_externo[desde];
                         $cv['tipo_docum'] = $this->s__cv_externo[tipo_docum];
-                        $cv['nro_docum']= $this->s__cv_externo[nro_docum];
+                        $cv['nro_docum'] = $this->s__cv_externo[nro_docum];
                         $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); //limpia
                         $this->dep('datos')->tabla('integrante_externo_pe')->cargar($cv); //carga el articulo que se selecciono
                         $fp_imagen = $this->dep('datos')->tabla('integrante_externo_pe')->get_blob('cv');
@@ -668,7 +668,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos['tipo_docum'] = $this->s__datos_otro[$id_fila - 1]['tipo_docum'];
         $datos['nro_docum'] = $this->s__datos_otro[$id_fila - 1]['nro_docum'];
         $this->s__cv_externo = $datos;
-        
+
         $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos_otro[$id_fila - 1]['nombre']) . ".pdf";
         $this->s__pdf = 'cv';
         $tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_cv($this->s__cv_externo);
@@ -1613,9 +1613,10 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = $ext['nro_docum'];
             $datos['desde'] = $ext['desde'];
         }
-        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado]) {
+        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $datos[fecha_resol] != $pe[fec_desde]) {
             unset($pe[x_dbr_clave]);
             $pe[ord_priori] = $datos[ord_priori];
+            $pe[fec_desde] = $datos[fecha_resol];
             if ($datos['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             }
@@ -1681,9 +1682,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = null;
             $datos['desde'] = null;
         }
-        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado]) {
+        print_r($pe[fec_desde]);
+        print_r($datos[fecha_resol]);
+        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $pe[fec_desde] != $datos[fecha_resol]) {
             unset($pe[x_dbr_clave]);
             $pe[ord_priori] = $datos[ord_priori];
+            $pe[fec_desde] = $datos[fecha_resol];
             if ($datos['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             }
@@ -1772,8 +1776,9 @@ class ci_proyectos_extension extends extension_ci {
 
             $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
-
-            $datos[0][fec_desde] = $bases[fecha_hasta];
+            if ($datos[0][fec_desde] == null) {
+                $datos[0][fec_desde] = $bases[fecha_hasta];
+            }
 
             if (count($datos[0]['co_director']) < 1) {
                 $datos[0]['co_director'] = $datos[0]['co_director_e'];
