@@ -1269,6 +1269,9 @@ class ci_proyectos_extension extends extension_ci {
         //Cambio de estado a en formulacion ( ESTADO INICIAL )
         $datos[id_estado] = 'FORM';
         $datos[fec_carga] = date('Y-m-d');
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
+        $datos[fec_desde] = $bases[fecha_hasta];
+
 
         //responsable de carga proyecto
         $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
@@ -1751,12 +1754,13 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- FORMULARIO PRINCIPAL ---------------------------------
 
     function conf__formulario(toba_ei_formulario $form) {
-        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+
         // si presiono el boton enviar no puede editar nada mas 
         // Si esta cargado, traigo los datos de la base de datos
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
-
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+            $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+            
             if ($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
@@ -1767,24 +1771,20 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('fec_desde')->set_solo_lectura();
             $form->ef('fec_hasta')->set_solo_lectura();
 
-            $datos = $this->dep('datos')->tabla('pextension')->get();
-            $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($datos['id_pext']);
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext']);
 
             $where = array();
-            $where['uni_acad'] = $datos[uni_acad];
-            $where['id_pext'] = $datos[id_pext];
+            $where['uni_acad'] = $pext[uni_acad];
+            $where['id_pext'] = $pext[id_pext];
 
-            $datos = $this->dep('datos')->tabla('pextension')->get_datos($where);
-            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
-            if ($datos[0][fec_desde] == null) {
-                $datos[0][fec_desde] = $bases[fecha_hasta];
-            }
+            $datos = $this->dep('datos')->tabla('pextension')->get_datos($where)[0];
 
-            if (count($datos[0]['co_director']) < 1) {
-                $datos[0]['co_director'] = $datos[0]['co_director_e'];
-                $datos['co_email'][0] = $datos[0]['co_email_e'];
+            if (count($datos['co_director']) < 1) {
+                $datos['co_director'] = $datos['co_director_e'];
+                $datos['co_email'] = $datos['co_email_e'];
             }
-            $datos = $datos[0];
+            
             $datos[codigo] = $seg_central[0][codigo];
             $ejes = array();
             $aux = $datos['eje_tematico'];
