@@ -78,7 +78,7 @@ class dt_bases_convocatoria extends extension_datos_tabla {
         
     }
 
-    function get_datos($where = null) {
+    function get_datos($id_bases = null) {
         $sql = "SELECT
 			t_bc.id_bases,
 			t_bc.convocatoria,
@@ -101,10 +101,10 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 		FROM
 			bases_convocatoria as t_bc
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = t_bc.tipo_convocatoria)";
-        if (!is_null($where)) {
+        if (!is_null($id_bases)) {
             $sql .= "
 			WHERE t_bc.id_bases=
-				$where";
+				$id_bases";
         }
         return toba::db('extension')->consultar($sql);
     }
