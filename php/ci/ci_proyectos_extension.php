@@ -103,6 +103,10 @@ class ci_proyectos_extension extends extension_ci {
 
                 $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($datos[id_pext]);
 
+                // Organizaciones
+                $organizaciones = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($datos[id_pext]);
+
+
                 $presupuestos = $this->dep('datos')->tabla('presupuesto_extension')->get_listado($datos[id_pext]);
 
                 //configuramos el nombre que tendrá el archivo pdf
@@ -128,25 +132,6 @@ class ci_proyectos_extension extends extension_ci {
                 //$pdf->ezText('full');
                 //Luego definimos la ubicación de la fecha en el pie de página.
                 //$pdf->addText(380, 20, 8, 'Mocovi - Extension ' . date('d/m/Y h:i:s a'));
-
-                $titulo = "   ";
-                $opciones = array(
-                    'splitRows' => 0,
-                    'rowGap' => 1, //, the space between the text and the row lines on each row
-                    // 'lineCol' => (r,g,b) array,// defining the colour of the lines, default, black.
-                    'showLines' => 2, //coloca las lineas horizontales
-                    'showHeadings' => true, //muestra el nombre de las columnas
-                    'titleFontSize' => 12,
-                    'fontSize' => 8,
-                    //'shadeCol' => array(1,1,1,1,1,1,1,1,1,1,1,1),
-                    'shadeCol' => array(100, 100, 100), //darle color a las filas intercaladamente
-                    'outerLineThickness' => 0.7,
-                    'innerLineThickness' => 0.7,
-                    'xOrientation' => 'center',
-                    'width' => 820//,
-                        //'cols' =>array('col2'=>array('justification'=>'center') ,'col3'=>array('justification'=>'center'),'col4'=>array('justification'=>'center') ,'col5'=>array('justification'=>'center'),'col6'=>array('justification'=>'center') ,'col7'=>array('justification'=>'center') ,'col8'=>array('justification'=>'center'),'col9'=>array('justification'=>'center') ,'col10'=>array('justification'=>'center') ,'col11'=>array('justification'=>'center') ,'col12'=>array('justification'=>'center'),'col13'=>array('justification'=>'center') ,'col14'=>array('justification'=>'center') )
-                );
-
                 //Configuración de Título.
                 $salida->titulo(utf8_d_seguro('UNIVERSIDAD NACIONAL DEL COMAHUE' . chr(10) . 'SECRETARÍA DE EXTENSIÓN UNIVERSITARIA'));
 
@@ -533,6 +518,26 @@ class ci_proyectos_extension extends extension_ci {
                 $pdf->ezText("\n", 10, ['justification' => 'full']);
 
                 // Organizaciones
+                $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Organizaciones Participantes') . '</b>');
+                $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+
+                $tabla_dp = array();
+                $i = 0;
+                foreach ($organizaciones as $organizacion) {
+                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
+                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                    $cols_dp = array('col1' => "<b> Domicilio </b>", 'col2' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col3' => '<b> e-mail </b>', 'col4' => utf8_d_seguro('<b> Contacto </b>'));
+                    $tabla_dp = array();
+                    $tabla_dp[$i] = array('col1' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col2' => $organizacion[telefono], 'col3' => $organizacion[email], 'col4' => $organizacion[referencia_vinculacion_inst]);
+
+                    $i = $i + 1;
+                }
+                if (count($tabla_dp) >= 1) {
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 170), 'col2' => array('width' => 80), 'col3' => array('width' => 200), 'col4' => array('width' => 100))));
+                }
+
+                //salto de linea
+                $pdf->ezText("\n", 10, ['justification' => 'full']);
                 // Presupuesto
                 $datos_pext = array();
                 $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Presupuesto') . '</b>');
@@ -562,10 +567,20 @@ class ci_proyectos_extension extends extension_ci {
                  */
 
                 //salto de linea
-                $pdf->ezText('  ', 10, ['justification' => 'full']);
+                $pdf->ezText("\n\n\n\n\n", 10, ['justification' => 'full']);
+                if ($this->s__imprimir_resumen == 1) {
+                    // Firmas 
+                    $datos_pext = array();
+                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('FIRMAS') . '</b>');
+                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                    $cols_dp = array('col1' => "<b> Cargo </b>", 'col2' => "<b> Firma </b>", 'col3' => utf8_d_seguro('Aclaración'));
+                    $tabla_dp = array();
+                    $tabla_dp[0] = array('col1' => 'Rector', 'col2' => '', 'col3' => '');
+                    $tabla_dp[1] = array('col1' => utf8_d_seguro('Secretaria de Extensión / Bienestar Estudiantil'), 'col2' => '', 'col3' => '');
+                    $tabla_dp[2] = array('col1' => "Director del Proyecto", 'col2' => '', 'col3' => '');
 
-
-
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 200), 'col3' => array('width' => 150))));
+                }
 
                 // Logos pimera pagina
                 $id = 7;
@@ -1685,8 +1700,6 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = null;
             $datos['desde'] = null;
         }
-        print_r($pe[fec_desde]);
-        print_r($datos[fecha_resol]);
         if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $pe[fec_desde] != $datos[fecha_resol]) {
             unset($pe[x_dbr_clave]);
             $pe[ord_priori] = $datos[ord_priori];
@@ -1760,7 +1773,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-            
+
             if ($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
@@ -1784,7 +1797,7 @@ class ci_proyectos_extension extends extension_ci {
                 $datos['co_director'] = $datos['co_director_e'];
                 $datos['co_email'] = $datos['co_email_e'];
             }
-            
+
             $datos[codigo] = $seg_central[0][codigo];
             $ejes = array();
             $aux = $datos['eje_tematico'];

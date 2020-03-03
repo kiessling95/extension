@@ -41,6 +41,8 @@ class dt_organizaciones_participantes extends extension_datos_tabla {
         $sql = "SELECT
                     o_p.id_organizacion ,
                     o_p.id_tipo_organizacion ,
+                    t_o.descripcion,
+                    t_o.otra_descripcion,
                     o_p.id_pext ,
                     o_p.nombre ,
                     trim(localidad) as localidad  ,
