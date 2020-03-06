@@ -29,6 +29,8 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__nombre;
     protected $s__pdf;
     protected $s__pextension;
+    protected $s__datos_docente_aux;
+    protected $s__datos_otro_aux;
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
@@ -834,10 +836,12 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_interno':
                 $this->s__mostrar = 1;
                 $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+                unset($this->s__datos_docente_aux);
                 break;
             case 'pant_externo':
                 $this->s__mostrar_e = 1;
                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                unset($this->s__datos_otro_aux);
             case 'pant_presup':
                 $this->s__mostrar_presup = 1;
                 $this->dep('datos')->tabla('presupuesto_extension')->resetear();
@@ -2200,6 +2204,10 @@ class ci_proyectos_extension extends extension_ci {
                 $datos['id_docente'] = $docente['id_docente'];
             }
             $form->set_datos($datos);
+        } else {
+            if (!is_null($this->s__datos_docente_aux)) {
+                $form->set_datos($this->s__datos_docente_aux);
+            }
         }
     }
 
@@ -2286,6 +2294,7 @@ class ci_proyectos_extension extends extension_ci {
 
                                         $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
                                         $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+                                        unset($this->s__datos_docente_aux);
                                         $this->s__mostrar = 0;
                                     }
                                 } else {
@@ -2310,24 +2319,31 @@ class ci_proyectos_extension extends extension_ci {
 
                                     $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
                                     $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
+                                    unset($this->s__datos_docente_aux);
                                     $this->s__mostrar = 0;
                                 }
                             } else {
+                                $this->s__datos_docente_aux = $datos;
                                 toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
                             }
                         } else {
+                            $this->s__datos_docente_aux = $datos;
                             toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
                         }
                     } else {
+                        $this->s__datos_docente_aux = $datos;
                         toba::notificacion()->agregar('La fecha de inicio de vigencia dentro del proyecto es inferior a la fecha de inicio de proyecto', 'info');
                     }
                 } else {
+                    $this->s__datos_docente_aux = $datos;
                     toba::notificacion()->agregar('La fecha de fin de vigencia dentro del proyecto excede la fecha de fin de proyecto', 'info');
                 }
             } else {
+                $this->s__datos_docente_aux = $datos;
                 toba::notificacion()->agregar(utf8_d_seguro('La fecha de inicio dentro del proyecto no corresponde a una fecha validad (" fecha desde anterior a fecha actual ")'), 'info');
             }
         } else {
+            $this->s__datos_docente_aux = $datos;
             toba::notificacion()->agregar('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")', 'info');
         }
     }
@@ -2416,6 +2432,7 @@ class ci_proyectos_extension extends extension_ci {
 
                                 $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
                                 $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                unset($this->s__datos_docente_aux);
                                 $this->s__mostrar = 0;
                             } else {
                                 toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
@@ -2528,12 +2545,25 @@ class ci_proyectos_extension extends extension_ci {
             }
 
             $form->set_datos($datos);
+        } else {
+            if (!is_null($this->s__datos_otro_aux)) {
+                //print_r($this->s__datos_otro_aux);
+                $persona = $this->dep('datos')->tabla('persona')->get_datos($this->s__datos_otro_aux['tipo_docum'], $this->s__datos_otro_aux['nro_docum']);
+
+                if (count($persona) > 0) {
+                    $this->s__datos_otro_aux['integrante'] = $persona[0]['nombre'];
+                }
+                $form->set_datos($this->s__datos_otro_aux);
+            }
         }
     }
 
     //ingresa un nuevo integrante 
     function evt__form_integrante_e__alta($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        $datos['tipo_docum'] = $datos['integrante'][0];
+        $datos['nro_docum'] = $datos['integrante'][1];
         $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'][1], $pe['id_pext'])[0];
         if ($datos['hasta'] > $datos['desde']) {
             //control de fecha actual superior a fecha desde
@@ -2543,6 +2573,7 @@ class ci_proyectos_extension extends extension_ci {
                         if (!is_null($int_ext)) {
                             // date('Y-m-d') fecha actual 
                             if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_ext['hasta']))) <= 0) {
+                                $this->s__datos_otro_aux = $datos;
                                 toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
                             } else {
                                 $integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
@@ -2568,7 +2599,6 @@ class ci_proyectos_extension extends extension_ci {
                                     $datos['id_pext'] = $pe['id_pext'];
                                     $datos['tipo_docum'] = $datos['integrante'][0];
                                     $datos['nro_docum'] = $datos['integrante'][1];
-
                                     $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
 
                                     //-----------cv interno-----------------------
@@ -2587,8 +2617,10 @@ class ci_proyectos_extension extends extension_ci {
 
                                     $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                                     $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                                    unset($this->s__datos_otro_aux);
                                     $this->s__mostrar_e = 0;
                                 } else {
+                                    $this->s__datos_otro_aux = $datos;
                                     toba::notificacion()->agregar(utf8_decode('Función duplicada co-director debe ser unico.'), 'info');
                                 }
                             }
@@ -2596,7 +2628,6 @@ class ci_proyectos_extension extends extension_ci {
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo_docum'] = $datos['integrante'][0];
                             $datos['nro_docum'] = $datos['integrante'][1];
-
                             $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
 
                             //-----------cv interno-----------------------
@@ -2615,18 +2646,23 @@ class ci_proyectos_extension extends extension_ci {
 
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                             $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                            unset($this->s__datos_otro_aux);
                             $this->s__mostrar_e = 0;
                         }
                     } else {
+                        $this->s__datos_otro_aux = $datos;
                         toba::notificacion()->agregar('La fecha de inicio de vigencia dentro del proyecto es inferior a la fecha de inicio de proyecto', 'info');
                     }
                 } else {
+                    $this->s__datos_otro_aux = $datos;
                     toba::notificacion()->agregar('La fecha de fin de vigencia dentro del proyecto excede la fecha de fin de proyecto', 'info');
                 }
             } else {
+                $this->s__datos_otro_aux = $datos;
                 toba::notificacion()->agregar(utf8_d_seguro('La fecha de inicio dentro del proyecto no corresponde a una fecha validad (" fecha desde anterior a fecha actual ")'), 'info');
             }
         } else {
+            $this->s__datos_otro_aux = $datos;
             toba::notificacion()->agregar('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")', 'info');
         }
     }
@@ -2641,6 +2677,12 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+        print_r("modif");
+        if (!is_null($this->s__datos_otro_aux)) {
+            $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
+            $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
+            $datos['id_pext'] = $this->s__datos_otro_aux['id_pext'];
+        }
 
         //Si count == 2 se modifico la persona asociada
         $count = count($datos['integrante']);
@@ -2686,7 +2728,7 @@ class ci_proyectos_extension extends extension_ci {
                                     $datos['tipo_docum'] = $datos['integrante'][0];
                                     $datos['nro_docum'] = $datos['integrante'][1];
                                 }
-
+                                print_r($datos);
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
 
                                 //-----------cv interno-----------------------
@@ -2704,6 +2746,7 @@ class ci_proyectos_extension extends extension_ci {
                                 }
                                 $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                                 $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                                unset($this->s__datos_otro_aux);
                                 $this->s__mostrar_e = 0;
                             } else {
                                 toba::notificacion()->agregar(utf8_decode('Función duplicada co-director debe ser unico.'), 'info');
