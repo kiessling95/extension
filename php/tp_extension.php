@@ -14,9 +14,9 @@
 		echo "Modulo Proyectos de Extensi&oacute;n";
 		echo "</div>";
 		echo "<div>versi&oacute;n ".toba::proyecto()->get_version();
-                echo " <a href='ManualModuloDesignaciones.pdf'>Descargar Manual Ayuda</a>" ."</div>";
+                echo " <a href='Manual_de_Uso___Mocovi_Extensi_n.pdf'>Descargar Manual Ayuda</a>" ."</div>";
 		//echo " <a href='Disposicion005-15SH.pdf'>Disposici�n</a>" ."</div>";
-                echo " <a href='resol_0442_2017.pdf'>Resoluci&oacute;n</a>" ."</div>";
+                echo " <a href='CONVOCATORIA UPB 2020.odt'>Bases de Convocatoria 2020</a>" ."</div>";
 		echo "</div>";
 		echo "</div>\n\n";    
 		
