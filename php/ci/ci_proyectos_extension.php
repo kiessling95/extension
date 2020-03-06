@@ -928,7 +928,8 @@ class ci_proyectos_extension extends extension_ci {
     function evt__enviar() {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pextension = $this->dep('datos')->tabla('pextension')->get();
-
+            $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pextension['id_bases'])[0];
+            
             /* Listado condiciones carga :
              * 1) Director 
              * 2) Co Director
@@ -936,127 +937,131 @@ class ci_proyectos_extension extends extension_ci {
              */
 
             //obtengo director 
-            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext])[0];
+            if (!is_null($pextension['id_bases']) && strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($bases['fecha_hasta']))) <= 0) {
+                $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext])[0];
 
-            //obtengo co-director
-            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext])[0];
-            if (count($co_director) < 1) {
-                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->get_co_director($pextension[id_pext])[0];
-            }
+                //obtengo co-director
+                $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext])[0];
+                if (count($co_director) < 1) {
+                    $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->get_co_director($pextension[id_pext])[0];
+                }
 
-            // Destinatarios
-            $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($pextension[id_pext]);
+                // Destinatarios
+                $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($pextension[id_pext]);
 
-            $validacion = "";
-            if (count($director) > 1) {
-                $correcto = true;
-                if (count($proyectos) > 1) {
-                    foreach ($proyectos as $proyecto) {
-                        if ($proyecto['id_pext'] != $pextension['id_pext'] && $proyecto['id_estado'] != 'FORM') {
-                            $director_aux = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($proyecto['id_pext'])[0];
-                            if ($director['id_designacion'] == $director_aux['id_designacion']) {
-                                $validacion = 'El director seleccionado adeuda rendimientos';
-                                toba::notificacion()->agregar($validacion, "error");
-                                $correcto = false;
+                $validacion = "";
+                if (count($director) > 1) {
+                    $correcto = true;
+                    if (count($proyectos) > 1) {
+                        foreach ($proyectos as $proyecto) {
+                            if ($proyecto['id_pext'] != $pextension['id_pext'] && $proyecto['id_estado'] != 'FORM') {
+                                $director_aux = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($proyecto['id_pext'])[0];
+                                if ($director['id_designacion'] == $director_aux['id_designacion']) {
+                                    $validacion = 'El director seleccionado adeuda rendimientos';
+                                    toba::notificacion()->agregar($validacion, "error");
+                                    $correcto = false;
+                                }
+                            }
+                        }
+                    }
+                    if ($correcto) {
+                        $validacion = " + Director \n";
+                        toba::notificacion()->agregar($validacion, "info");
+                        $count++;
+                    }
+                } else {
+                    $validacion = " - Director \n";
+                    toba::notificacion()->agregar($validacion, "error");
+                }
+
+                if (count($co_director) > 1) {
+                    $validacion = " + Co-Director \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                    $count++;
+                } else {
+                    $validacion = " - Co-Director \n";
+                    toba::notificacion()->agregar($validacion, "error");
+                }
+
+                if (count($destinatarios) > 0) {
+                    $validacion = " + Destinatarios \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                    $count++;
+                } else {
+                    $validacion = " - Destinatarios \n";
+                    toba::notificacion()->agregar($validacion, "error");
+                }
+
+                if ($pextension['denominacion'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
+                }
+
+                if ($pextension['eje_tematico'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
+                }
+
+                if ($pextension['palabras_clave'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
+                }
+
+                if ($pextension['descripcion_situacion'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
+                }
+
+                if ($pextension['caracterizacion_poblacion'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
+                }
+
+                if ($pextension['localizacion_geo'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
+                }
+
+                if ($pextension['impacto'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
+                }
+
+                if ($pextension['objetivo'] == null) {
+                    toba::notificacion()->agregar("Falta completar el campo Objetivo");
+                }
+
+                if ($pextension['uni_acad'] != null) {
+
+                    $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
+
+                    if ($dep != null) {
+                        if ($pextension['departamento'] == null) {
+                            toba::notificacion()->agregar("Falta completar el campo Departamento");
+                        } else {
+                            $areas = $this->dep('datos')->tabla('area')->get_descripciones($pextension['departamento']);
+                            if ($areas != null && $pextension['area'] == null) {
+                                toba::notificacion()->agregar("Falta completar el campo Area");
                             }
                         }
                     }
                 }
-                if ($correcto) {
-                    $validacion = " + Director \n";
-                    toba::notificacion()->agregar($validacion, "info");
-                    $count++;
-                }
-            } else {
-                $validacion = " - Director \n";
-                toba::notificacion()->agregar($validacion, "error");
-            }
 
-            if (count($co_director) > 1) {
-                $validacion = " + Co-Director \n";
-                toba::notificacion()->agregar($validacion, "info");
-                $count++;
-            } else {
-                $validacion = " - Co-Director \n";
-                toba::notificacion()->agregar($validacion, "error");
-            }
 
-            if (count($destinatarios) > 0) {
-                $validacion = " + Destinatarios \n";
-                toba::notificacion()->agregar($validacion, "info");
-                $count++;
-            } else {
-                $validacion = " - Destinatarios \n";
-                toba::notificacion()->agregar($validacion, "error");
-            }
+                if ($count == 3) {
+                    // Cambio de estado 
+                    $pextension[id_estado] = 'EUA ';
+                    $where = array();
+                    $where[uni_acad] = $pextension[uni_acad];
+                    $where[id_pext] = $pextension[id_pext];
 
-            if ($pextension['denominacion'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
-            }
+                    $this->dep('datos')->tabla('pextension')->set($pextension);
+                    $this->dep('datos')->tabla('pextension')->sincronizar();
 
-            if ($pextension['eje_tematico'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
-            }
-
-            if ($pextension['palabras_clave'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
-            }
-
-            if ($pextension['descripcion_situacion'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
-            }
-
-            if ($pextension['caracterizacion_poblacion'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
-            }
-
-            if ($pextension['localizacion_geo'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
-            }
-
-            if ($pextension['impacto'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
-            }
-
-            if ($pextension['objetivo'] == null) {
-                toba::notificacion()->agregar("Falta completar el campo Objetivo");
-            }
-
-            if ($pextension['uni_acad'] != null) {
-
-                $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
-
-                if ($dep != null) {
-                    if ($pextension['departamento'] == null) {
-                        toba::notificacion()->agregar("Falta completar el campo Departamento");
+                    $pextension = $this->dep('datos')->tabla('pextension')->get_datos($where);
+                    if (($pextension[0][id_estado] == 'EUA ') == 1) {//Obtengo de la BD y verifico que hizo cambios en la BD
+                        //Se enviaron correctamente los datos
+                        toba::notificacion()->agregar(utf8_decode("Los datos fueron enviados con éxito"), "info");
                     } else {
-                        $areas = $this->dep('datos')->tabla('area')->get_descripciones($pextension['departamento']);
-                        if ($areas != null && $pextension['area'] == null) {
-                            toba::notificacion()->agregar("Falta completar el campo Area");
-                        }
+                        //Se generó algún error al guardar en la BD
+                        toba::notificacion()->agregar(utf8_decode("Error al enviar la información, verifique su conexión a internet"), "info");
                     }
                 }
-            }
-
-
-            if ($count == 3) {
-                // Cambio de estado 
-                $pextension[id_estado] = 'EUA ';
-                $where = array();
-                $where[uni_acad] = $pextension[uni_acad];
-                $where[id_pext] = $pextension[id_pext];
-
-                $this->dep('datos')->tabla('pextension')->set($pextension);
-                $this->dep('datos')->tabla('pextension')->sincronizar();
-
-                $pextension = $this->dep('datos')->tabla('pextension')->get_datos($where);
-                if (($pextension[0][id_estado] == 'EUA ') == 1) {//Obtengo de la BD y verifico que hizo cambios en la BD
-                    //Se enviaron correctamente los datos
-                    toba::notificacion()->agregar(utf8_decode("Los datos fueron enviados con éxito"), "info");
-                } else {
-                    //Se generó algún error al guardar en la BD
-                    toba::notificacion()->agregar(utf8_decode("Error al enviar la información, verifique su conexión a internet"), "info");
-                }
+            } else {
+                toba::notificacion()->agregar(utf8_decode("No hay una convocatoria seleccionada o se vencio el plazo de la misma"), "info");
             }
         }
     }
@@ -2928,10 +2933,11 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+        $pext =$this->dep('datos')->tabla('pextension')->get();
+        $estado = $pext[id_estado];
+        $obj_esp =$this->dep('datos')->tabla('objetivo_especifico')->get_listado($pext['id_pext']);
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM' && $estado != 'MODF') {
+        if ($estado != 'FORM' && $estado != 'MODF' && count($obj_esp)==5) {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
