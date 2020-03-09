@@ -1237,6 +1237,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        
+
 
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('pextension')->get_listado($this->s__where);

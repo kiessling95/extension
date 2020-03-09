@@ -57,8 +57,7 @@ class dt_unidad_acad extends extension_datos_tabla {
         $sql = toba::perfil_de_datos()->filtrar($sql);
 
         $perfil = toba::perfil_de_datos('designa')->get_restricciones_dimension('designa','unidad_acad');
-  
-        #$resul = toba::db('extension')->consultar($sql);
+
 
         if (count($perfil) == 1) {//si solo tiene un registro entonces esta asociado a un perfil de datos departamento
             $condicion = " WHERE sigla='" . $perfil[0] . "'";
