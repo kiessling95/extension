@@ -1591,7 +1591,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
 
-        if (($estado == 'FORM' || $estado == 'MODF') && $perfil != 'admin') {
+        if ($perfil != 'sec_ext_ua' && $perfil != 'admin') {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
@@ -1610,6 +1610,10 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos['nro_docum'] != null) {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
                 $datos[integrante] = $ext[nro_docum];
+            }
+            if($pe['id_estado'] != 'EUA')
+            {
+                $form->ef('id_estado')->set_solo_lectura();
             }
 
             $datos[uni_acad] = $pe[uni_acad];
@@ -1732,6 +1736,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
+        
         unset($datos[ord_priori]);
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
