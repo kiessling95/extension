@@ -110,7 +110,22 @@ class dt_pextension extends extension_datos_tabla {
             if ('formulador' == $perfil) {
                 $where = "WHERE responsable_carga= '" . $usr . "' ";
             } else {
-                $where = '';
+                if($perfil == 'sec_ext_ua')
+                {
+                    $where = "WHERE t_p.id_estado= 'EUA' ";
+                }
+                else
+                {
+                    if($perfil == 'sec_ext_central')
+                    {
+                        $where = "WHERE t_p.id_estado= 'ECEN' ";
+                    }
+                    else
+                    {
+                        $where = '';
+                    }
+                }
+                
             }
         }
 
