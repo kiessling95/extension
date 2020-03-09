@@ -1622,7 +1622,7 @@ class ci_proyectos_extension extends extension_ci {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
                 $datos[integrante] = $ext[nro_docum];
             }
-            if($pe['id_estado'] != 'EUA')
+            if($pe['id_estado'] != 'EUA ')
             {
                 $form->ef('id_estado')->set_solo_lectura();
             }

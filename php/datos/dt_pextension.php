@@ -113,7 +113,7 @@ class dt_pextension extends extension_datos_tabla {
                     $where = "WHERE t_p.id_estado= 'EUA' AND uni_acad='" . $perfil_datos . "'";
                 } else {
                     if ($perfil == 'sec_ext_central') {
-                        $where = "WHERE t_p.id_estado= 'ECEN' AND uni_acad='" . $perfil_datos . "'";
+                        $where = "WHERE t_p.id_estado <> 'MODF' AND t_p.id_estado <> 'FORM' AND t_p.id_estado <> 'EUA '";
                     }
                 }
             }
@@ -138,7 +138,6 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria) "
                 . $where;
         $sql = toba::perfil_de_datos()->filtrar($sql);
-
         return toba::db('extension')->consultar($sql);
     }
 
