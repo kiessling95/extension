@@ -1205,15 +1205,9 @@ class ci_proyectos_extension extends extension_ci {
         if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
         {
             $this->controlador()->evento('nuevo_proyecto')->ocultar();
-            $this->controlador()->evento('enviar')->ocultar();
-            $this->controlador()->evento('validar')->ocultar();
+            
         }
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM' && $estado != 'MODF') {
-            $this->controlador()->evento('validar')->ocultar();
-            $this->controlador()->evento('enviar')->ocultar();
-        }
+        
     }
 
     //-------------------------- FILTRO ---------------------------------------------
@@ -1772,6 +1766,12 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
+        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
+        {
+            $this->controlador()->evento('enviar')->ocultar();
+            $this->controlador()->evento('validar')->ocultar();
+        }
+        
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
 
