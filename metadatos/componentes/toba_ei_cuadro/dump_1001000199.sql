@@ -84,7 +84,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000364', --evento_id
 	'1001000199', --objeto
 	'pdf_cv_interno', --identificador
-	NULL, --etiqueta
+	'CV', --etiqueta
 	'1', --maneja_datos
 	'1', --sobre_fila
 	NULL, --confirmacion
