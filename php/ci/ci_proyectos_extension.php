@@ -112,7 +112,7 @@ class ci_proyectos_extension extends extension_ci {
                 $presupuestos = $this->dep('datos')->tabla('presupuesto_extension')->get_listado($datos[id_pext]);
 
                 //configuramos el nombre que tendrá el archivo pdf
-                $salida->set_nombre_archivo("Formulario Convocatoria.pdf");
+                $salida->set_nombre_archivo(utf8_d_seguro("Formulario\_Proyecto\_de\_Extensión.pdf"));
 
                 //recuperamos el objteo ezPDF para agregar la cabecera y el pie de página 
                 $salida->set_papel_orientacion('portrait'); //landscape
@@ -155,7 +155,7 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp[4] = array('col1' => 'Correo', 'col2' => $director[correo_institucional]);
                 //$cols_dp[] = array('col1' => '', 'col2' => );
 
-                $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
                 //Co-Director 
                 if ($this->s__imprimir_resumen == 0) {
@@ -171,7 +171,7 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp[3] = array('col1' => 'Telefono', 'col2' => $co_director[telefono]);
                     $tabla_dp[4] = array('col1' => 'Correo', 'col2' => $co_director[correo_institucional]);
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
                     //salto de linea
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
@@ -207,7 +207,7 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp[$i] = array('col1' => 'Tipo Convocatoria', 'col2' => $datos['id_conv']);
 
 
-                $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
                 //---------------------------------------------------------------------------------------------------
                 //salto linea
@@ -219,9 +219,9 @@ class ci_proyectos_extension extends extension_ci {
                     //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
 
                     $tabla_dp = array();
-                    $tabla_dp[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del Proyecto') . '</b>', 'col2' => $datos['descripcion_situacion']);
+                    $tabla_dp[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del Proyecto') . '</b>', 'col2' => trim($datos['descripcion_situacion']));
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
@@ -242,7 +242,7 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp[$i] = array('col1' => utf8_d_seguro('Localización geográfica'), 'col2' => $datos['localizacion_geo']);
 
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
                     //--------------------------------------------------------------------------------------------------------
                     //salto de linea
@@ -256,7 +256,7 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp = array();
                     $tabla_dp[0] = array('col1' => utf8_d_seguro('Resultados esperados del proyecto'), 'col2' => $datos[impacto]);
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
                     //-------------------------------------------------------------------------------------------------------------
                     //salto de linea
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
@@ -270,7 +270,7 @@ class ci_proyectos_extension extends extension_ci {
                     //Nombre del Proyecto
                     $tabla_dp[0] = array('col1' => utf8_d_seguro('Objetivo General'), 'col2' => $datos[objetivo]);
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 200), 'col2' => array('width' => 350))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
@@ -289,7 +289,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
 
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 50), 'col2' => array('width' => 167), 'col3' => array('width' => 166), 'col4' => array('width' => 166))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 50), 'col2' => array('width' => 167), 'col3' => array('width' => 266), 'col4' => array('width' => 66))));
 
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
@@ -319,7 +319,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
 
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 40), 'col2' => array('width' => 90), 'col3' => array('width' => 90), 'col4' => array('width' => 90), 'col5' => array('width' => 240))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 40), 'col2' => array('width' => 90), 'col3' => array('width' => 90), 'col4' => array('width' => 90), 'col5' => array('width' => 240))));
 
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
@@ -345,7 +345,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -367,7 +367,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -388,7 +388,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -409,7 +409,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -430,7 +430,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -451,7 +451,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -472,7 +472,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
                 $tabla_dp = array();
                 $i = 0;
@@ -492,7 +492,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 $tabla_dp = array();
@@ -513,7 +513,7 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 20), 'col2' => array('width' => 60), 'col3' => array('width' => 85), 'col4' => array('width' => 85), 'col5' => array('width' => 130), 'col6' => array('width' => 70), 'col7' => array('width' => 100))));
                 }
 
                 //salto de linea
@@ -535,7 +535,7 @@ class ci_proyectos_extension extends extension_ci {
                     $i = $i + 1;
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 170), 'col2' => array('width' => 80), 'col3' => array('width' => 200), 'col4' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 170), 'col2' => array('width' => 80), 'col3' => array('width' => 200), 'col4' => array('width' => 100))));
                 }
 
                 //salto de linea
@@ -572,17 +572,28 @@ class ci_proyectos_extension extends extension_ci {
                 $pdf->ezText("\n\n\n\n\n", 10, ['justification' => 'full']);
                 if ($this->s__imprimir_resumen == 1) {
                     // Firmas 
-                    $datos_pext = array();
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('FIRMAS') . '</b>');
-                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    $cols_dp = array('col1' => "<b> Cargo </b>", 'col2' => "<b> Firma </b>", 'col3' => utf8_d_seguro('Aclaración'));
-                    $tabla_dp = array();
-                    $tabla_dp[0] = array('col1' => 'Rector', 'col2' => '', 'col3' => '');
-                    $tabla_dp[1] = array('col1' => utf8_d_seguro('Secretaria de Extensión / Bienestar Estudiantil'), 'col2' => '', 'col3' => '');
-                    $tabla_dp[2] = array('col1' => "Director del Proyecto", 'col2' => '', 'col3' => '');
+                    $opciones = array(
+                        'showLines' => 0,
+                        'rowGap' => 1,
+                        'showHeadings' => true,
+                        'titleFontSize' => 9,
+                        'fontSize' => 10,
+                        'shadeCol' => array(0.9, 0.9, 0.9),
+                        'outerLineThickness' => 0, //grosor de las lineas exteriores
+                        'innerLineThickness' => 0,
+                        'xOrientation' => 'center',
+                        'width' => 1000,
+                        'cols' => array('col1' => array('width' => 180, 'justification' => 'center'), 'col2' => array('width' => 180, 'justification' => 'center'), 'col3' => array('width' => 180, 'justification' => 'center'))
+                    );
+                    $pdf->ezText('<b>AUTORIZACIONES:</b> ' . "\n\n\n", 10);
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 200), 'col3' => array('width' => 150))));
+                    $datos = array();
+                    $datos[0] = array('col1' => '....................................', 'col2' => '....................................', 'col3' => '....................................');
+                    $datos[1] = array('col1' => 'RECTOR', 'col2' => 'DIRECTOR/CO-DIRECTOR DEL PROYECTO', 'col3' => utf8_d_seguro('SECRETARIO DE EXTENSIÓN / BIENESTAR ESTUDIANTIL '));
+                    //$datos=array(array('col1'=>'SOLICITANTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT','col2'=>'DIRECTOR/CO-DIRECTOR DEL PROYECTO','col3'=>utf8_d_seguro('SECRETARIO DE CIENCIA Y TÉCNICA')));
+                    $pdf->ezTable($datos, array('col1' => '', 'col2' => '', 'col3' => ''), '', $opciones);
                 }
+
 
                 // Logos pimera pagina
                 $id = 7;
@@ -1611,7 +1622,7 @@ class ci_proyectos_extension extends extension_ci {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
                 $datos[integrante] = $ext[nro_docum];
             }
-            if($pe['id_estado'] != 'EUA')
+            if($pe['id_estado'] != 'EUA ')
             {
                 $form->ef('id_estado')->set_solo_lectura();
             }
@@ -1659,12 +1670,23 @@ class ci_proyectos_extension extends extension_ci {
             unset($pe[x_dbr_clave]);
             $pe[ord_priori] = $datos[ord_priori];
             $pe[fec_desde] = $datos[fecha_resol];
+            $pe[fec_hasta] = fecha_fin_proyecto($pe[duracion]);
             if ($datos['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             }
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
+        if (!is_null($datos[nro_resol])) {
+            $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
+
+            foreach ($integrantes as $integrante) {
+                $rescd[rescd] = $datos[nro_resol];
+                $this->dep('datos')->tabla('integrante_externo_pe')->set($pe);
+                $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
+                $this->dep('datos')->tabla('integrante_externo_pe')->cargar($pe);
+            }
         }
         unset($datos[ord_priori]);
         unset($datos[uni_acad]);
@@ -1727,8 +1749,61 @@ class ci_proyectos_extension extends extension_ci {
         }
         if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $pe[fec_desde] != $datos[fecha_resol]) {
             unset($pe[x_dbr_clave]);
+            //Obtengo datos de integrantes externos cargados
+            $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+            //Obtengo datos de integrantes internos cargados
+            $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
+
+
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
+                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $pe['fec_desde'] == $interno['desde']) {
+                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
             $pe[ord_priori] = $datos[ord_priori];
             $pe[fec_desde] = $datos[fecha_resol];
+            $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
+            $pe[fec_hasta] = $fecha_hasta;
+
+
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $pe['fec_hasta'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $pe['fec_hasta'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+
+
+            unset($datos[ord_priori]);
             if ($datos['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             }
@@ -1736,8 +1811,26 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
-        
-        unset($datos[ord_priori]);
+
+
+
+        if (!is_null($datos[nro_resol])) {
+            $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
+
+            foreach ($integrantes as $integrante) {
+
+                $sql = "UPDATE integrante_externo_pe SET rescd ='$datos[nro_resol]' WHERE nro_docum=" . $integrante[nro_docum] . " AND tipo_docum='" . $integrante[tipo_docum] . "' AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
+                toba::db('extension')->consultar($sql);
+            }
+
+            $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos[id_pext]);
+
+            foreach ($integrantes as $integrante) {
+
+                $sql = "UPDATE integrante_interno_pe SET rescd ='$datos[nro_resol]' WHERE id_designacion=" . $integrante[id_designacion] . " AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
+                toba::db('extension')->consultar($sql);
+            }
+        }
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
@@ -2200,7 +2293,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
@@ -2232,7 +2325,6 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
@@ -2541,6 +2633,7 @@ class ci_proyectos_extension extends extension_ci {
 
 
     function conf__cuadro_int(toba_ei_cuadro $cuadro) {
+        unset($this->s__datos_otro);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         if (isset($this->s__where)) {
             $this->s__datos_otro = $this->dep('datos')->tabla('integrante_externo_pe')->get_vigentes($this->s__where, $pe['id_pext']);
@@ -2591,7 +2684,6 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
@@ -2606,7 +2698,6 @@ class ci_proyectos_extension extends extension_ci {
             $form->set_datos($datos);
         } else {
             if (!is_null($this->s__datos_otro_aux)) {
-                //print_r($this->s__datos_otro_aux);
                 $persona = $this->dep('datos')->tabla('persona')->get_datos($this->s__datos_otro_aux['tipo_docum'], $this->s__datos_otro_aux['nro_docum']);
 
                 if (count($persona) > 0) {
@@ -2736,7 +2827,6 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
-        print_r("modif");
         if (!is_null($this->s__datos_otro_aux)) {
             $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
             $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
@@ -2787,7 +2877,6 @@ class ci_proyectos_extension extends extension_ci {
                                     $datos['tipo_docum'] = $datos['integrante'][0];
                                     $datos['nro_docum'] = $datos['integrante'][1];
                                 }
-                                print_r($datos);
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
 
                                 //-----------cv interno-----------------------
@@ -2905,7 +2994,6 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
