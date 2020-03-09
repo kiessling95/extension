@@ -87,7 +87,7 @@ class dt_pextension extends extension_datos_tabla {
 
     function get_listado($where = null) {
         if (!is_null($where)) {
-            if(str_pad($where, str_word_count($where), "id_bases"))
+            if(strpos($where, 'id_bases') != false)
             {
                 $where = ' WHERE b_c.' . $where;
             }
