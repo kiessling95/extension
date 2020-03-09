@@ -1663,6 +1663,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[denominacion]);
         unset($datos[codigo]);
         unset($datos[integrante]);
+        unset($datos[id_estado]);
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
