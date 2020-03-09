@@ -1211,6 +1211,14 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+                
+        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
+        {
+            $this->controlador()->evento('nuevo_proyecto')->ocultar();
+            
+        }
+        
     }
 
     //-------------------------- FILTRO ---------------------------------------------
@@ -1286,6 +1294,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_presupuesto")->ocultar();
+        
     }
 
     //------------------------- FORMULARIO ALTA PROYECTO ----------------------------
@@ -1593,7 +1602,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
 
-        if ($estado == 'FORM' && $perfil != 'admin') {
+        if ($perfil != 'sec_ext_ua' && $perfil != 'admin') {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
@@ -1612,6 +1621,10 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos['nro_docum'] != null) {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
                 $datos[integrante] = $ext[nro_docum];
+            }
+            if($pe['id_estado'] != 'EUA')
+            {
+                $form->ef('id_estado')->set_solo_lectura();
             }
 
             $datos[uni_acad] = $pe[uni_acad];
@@ -1851,12 +1864,19 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
+        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
+        {
+            $this->controlador()->evento('enviar')->ocultar();
+            $this->controlador()->evento('validar')->ocultar();
+        }
+        
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
 
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'FORM' && $estado != 'MODF') {
                 $this->controlador()->evento('enviar')->ocultar();
+                $this->controlador()->evento('validar')->ocultar();
             } else {
                 if ($perfil != 'admin') {
                     $this->pantalla()->tab("pant_seguimiento")->ocultar();
@@ -1879,8 +1899,8 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-
-            if ($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') {
+           
+            if (($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
                 $this->dep('formulario')->evento('baja')->ocultar();
@@ -2069,6 +2089,11 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
+        
+        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
+        {
+            $this->controlador()->evento('alta')->ocultar();
+        }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
@@ -2095,10 +2120,10 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__formulario_destinatarios(toba_ei_formulario $form) {
         if ($this->s__mostrar_dest == 1) {
-            $$perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') {
+            if (($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
                 $this->dep('formulario_destinatarios')->set_solo_lectura();
                 $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
@@ -2168,6 +2193,9 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
+        
+        
+        
         $this->s__imprimir = 0;
     }
 
@@ -2240,6 +2268,10 @@ class ci_proyectos_extension extends extension_ci {
             if ($perfil == formulador) {
                 $this->pantalla()->tab("pant_seguimiento")->ocultar();
             }
+        }
+        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
+        {
+            $this->controlador()->evento('alta')->ocultar();
         }
         $this->s__imprimir = 0;
     }
@@ -2590,6 +2622,10 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
+        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
+        {
+            $this->controlador()->evento('alta')->ocultar();
+        }
         $this->s__imprimir = 0;
     }
 
@@ -2902,6 +2938,10 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
+        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
+        {
+            $this->controlador()->evento('alta')->ocultar();
+        }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
@@ -3045,11 +3085,15 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        $pext = $this->dep('datos')->tabla('pextension')->get();
+        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
+        {
+            $this->controlador()->evento('alta')->ocultar();
+        }
+        $pext =$this->dep('datos')->tabla('pextension')->get();
         $estado = $pext[id_estado];
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pext['id_pext']);
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM' && $estado != 'MODF' && count($obj_esp) == 5) {
+        if (($estado != 'FORM' && $estado != 'MODF') || count($obj_esp) == 5) {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -3174,6 +3218,10 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
+        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
+        {
+            $this->controlador()->evento('alta')->ocultar();
         }
 
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -3323,6 +3371,10 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
+        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
+        {
+            $this->controlador()->evento('alta')->ocultar();
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
         // si presiono el boton enviar no puede editar nada mas 
