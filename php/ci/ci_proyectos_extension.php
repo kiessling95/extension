@@ -929,7 +929,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pextension = $this->dep('datos')->tabla('pextension')->get();
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pextension['id_bases'])[0];
-            
+
             /* Listado condiciones carga :
              * 1) Director 
              * 2) Co Director
@@ -1237,7 +1237,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
-        
+
 
 
         if (isset($this->s__where)) {
@@ -2167,7 +2167,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-
+        
+        $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
         $this->dep('datos')->tabla('integrante_interno_pe')->cargar($datos);
     }
 
@@ -2198,6 +2199,12 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
+                //print_r($temp_archivo['path']);
+                //-- Se pasa el contenido al archivo temporal
+                $temp_fp = fopen($temp_archivo['path'], 'w');
+                stream_copy_to_stream($fp_imagen, $temp_fp);
+                fclose($temp_fp);
+                //-- Se muestra la imagen temporal
                 $tamano = round(filesize($temp_archivo['path']) / 1024);
                 $datos['cv'] = 'tamano: ' . $tamano . ' KB';
             } else {
@@ -2510,6 +2517,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_e = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
         $this->dep('datos')->tabla('integrante_externo_pe')->cargar($datos);
     }
 
@@ -2546,6 +2554,12 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
+                //print_r($temp_archivo['path']);
+                //-- Se pasa el contenido al archivo temporal
+                $temp_fp = fopen($temp_archivo['path'], 'w');
+                stream_copy_to_stream($fp_imagen, $temp_fp);
+                fclose($temp_fp);
+                //-- Se muestra la imagen temporal
                 $tamano = round(filesize($temp_archivo['path']) / 1024);
                 $datos['cv'] = 'tamano: ' . $tamano . ' KB';
             } else {
@@ -2820,7 +2834,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_org = 1;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-
+        $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
         $this->dep('datos')->tabla('organizaciones_participantes')->cargar($datos);
     }
 
@@ -2850,6 +2864,12 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
+                //print_r($temp_archivo['path']);
+                //-- Se pasa el contenido al archivo temporal
+                $temp_fp = fopen($temp_archivo['path'], 'w');
+                stream_copy_to_stream($fp_imagen, $temp_fp);
+                fclose($temp_fp);
+                //-- Se muestra la imagen temporal
                 $tamano = round(filesize($temp_archivo['path']) / 1024);
                 $datos['aval'] = 'tamano: ' . $tamano . ' KB';
             } else {
@@ -2936,11 +2956,11 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        $pext =$this->dep('datos')->tabla('pextension')->get();
+        $pext = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pext[id_estado];
-        $obj_esp =$this->dep('datos')->tabla('objetivo_especifico')->get_listado($pext['id_pext']);
+        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pext['id_pext']);
         // si presiono el boton enviar no puede editar nada mas 
-        if ($estado != 'FORM' && $estado != 'MODF' && count($obj_esp)==5) {
+        if ($estado != 'FORM' && $estado != 'MODF' && count($obj_esp) == 5) {
             $this->controlador()->evento('alta')->ocultar();
         }
     }

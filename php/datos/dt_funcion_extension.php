@@ -23,7 +23,7 @@ class dt_funcion_extension extends extension_datos_tabla
 	{
 		$sql = "SELECT id_extension, descripcion "
                         . "FROM funcion_extension "
-                        . "WHERE id_extension='G' OR id_extension='EST' OR id_extension='ND' OR id_extension='I' OR id_extension='EXT'"
+                        . "WHERE id_extension='G' OR id_extension='EST' OR id_extension='ND' OR id_extension='EXT'"
                         . "ORDER BY descripcion";
 		return toba::db('extension')->consultar($sql);
 	}
