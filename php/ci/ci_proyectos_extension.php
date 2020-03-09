@@ -1658,7 +1658,6 @@ class ci_proyectos_extension extends extension_ci {
             $pe[ord_priori] = $datos[ord_priori];
             $pe[fec_desde] = $datos[fecha_resol];
             $pe[fec_hasta] = fecha_fin_proyecto($pe[duracion]);
-            print_r($pe[fecha_hasta]);
             if ($datos['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             }
@@ -1737,7 +1736,6 @@ class ci_proyectos_extension extends extension_ci {
         }
         if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $pe[fec_desde] != $datos[fecha_resol]) {
             unset($pe[x_dbr_clave]);
-            print_r($pe);
             //Obtengo datos de integrantes externos cargados
             $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
             //Obtengo datos de integrantes internos cargados
@@ -1747,7 +1745,6 @@ class ci_proyectos_extension extends extension_ci {
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
-                    print_r(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']);
                     if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
                         $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $externo[id_pext] .
                                 " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
@@ -2296,7 +2293,6 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
@@ -2641,7 +2637,6 @@ class ci_proyectos_extension extends extension_ci {
         //para la edicion de los integrantes ya cargados
         if ($this->dep('datos')->tabla('integrante_externo_pe')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get();
-            print_r($datos);
             $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
             $datos['tipo'] = str_pad($datos['tipo'], 5);
             $persona = $this->dep('datos')->tabla('persona')->get_datos($datos['tipo_docum'], $datos['nro_docum']);
@@ -2653,7 +2648,6 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
@@ -2668,7 +2662,6 @@ class ci_proyectos_extension extends extension_ci {
             $form->set_datos($datos);
         } else {
             if (!is_null($this->s__datos_otro_aux)) {
-                //print_r($this->s__datos_otro_aux);
                 $persona = $this->dep('datos')->tabla('persona')->get_datos($this->s__datos_otro_aux['tipo_docum'], $this->s__datos_otro_aux['nro_docum']);
 
                 if (count($persona) > 0) {
@@ -2798,7 +2791,6 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_integrante_e__modificacion($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
-        print_r("modif");
         if (!is_null($this->s__datos_otro_aux)) {
             $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
             $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
@@ -2849,7 +2841,6 @@ class ci_proyectos_extension extends extension_ci {
                                     $datos['tipo_docum'] = $datos['integrante'][0];
                                     $datos['nro_docum'] = $datos['integrante'][1];
                                 }
-                                print_r($datos);
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
 
                                 //-----------cv interno-----------------------
@@ -2963,7 +2954,6 @@ class ci_proyectos_extension extends extension_ci {
             if (isset($fp_imagen)) {
                 $temp_nombre = md5(uniqid(time())) . '.pdf';
                 $temp_archivo = toba::proyecto()->get_www_temp($temp_nombre);
-                //print_r($temp_archivo['path']);
                 //-- Se pasa el contenido al archivo temporal
                 $temp_fp = fopen($temp_archivo['path'], 'w');
                 stream_copy_to_stream($fp_imagen, $temp_fp);
