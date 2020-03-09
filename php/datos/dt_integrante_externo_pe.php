@@ -85,6 +85,10 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "WHERE t_e.nro_docum = $nro_docum AND t_e.id_pext = $id_pext ";
         return toba::db('extension')->consultar($sql);
     }
+     function get_datos($nro_docum = null, $id_pext = null) {
+        $sql = "SELECT * FROM integrante_externo_pe WHERE nro_docum = $nro_docum AND id_pext = $id_pext" ;
+        return toba::db('extension')->consultar($sql);
+    }
 
     function get_plantilla($id_p, $filtro = array()) {
         $where = array();
