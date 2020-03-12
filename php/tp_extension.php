@@ -16,7 +16,7 @@
 		echo "<div>versi&oacute;n ".toba::proyecto()->get_version();
                 echo " <a href='Manual_de_Uso___Mocovi_Extensi_n.pdf'>Descargar Manual Ayuda</a>" ."</div>";
 		//echo " <a href='Disposicion005-15SH.pdf'>Disposici�n</a>" ."</div>";
-                echo " <a href='CONVOCATORIA UPB 2020.odt'>Bases de Convocatoria 2020</a>" ."</div>";
+                echo " <a href='CONVOCATORIA UPB 2020 - CDE.pdf'>Bases de Convocatoria 2020</a>" ."</div>";
 		echo "</div>";
 		echo "</div>\n\n";    
 		
