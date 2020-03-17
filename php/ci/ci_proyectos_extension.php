@@ -1517,7 +1517,6 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[id_estado] = $pe[id_estado];
-            print_r($datos[id_estado]);
 
             if (!is_null($int)) {
                 $datos[nombre_becario] = $int[0][nombre];
