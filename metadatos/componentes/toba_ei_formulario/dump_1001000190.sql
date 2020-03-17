@@ -229,7 +229,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				[ef id=descripcion_estado]</td>
+				<strong>[ef id=descripcion_estado]</strong></td>
 		</tr>
 		<tr>
 			<td>
@@ -269,7 +269,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				<p><strong style="font-size: 20px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IDENTIFICACION DEL PROYECTO</strong></p></td>
+				<p style="text-align: center;"><strong style="font-size: 20px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IDENTIFICACION DEL PROYECTO</strong></p></td>
 		</tr>
 		<tr>
 			<td>
@@ -336,7 +336,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 				&nbsp;</td>
 		</tr>
 		<tr>
-			<td>
+			<td style="text-align: center;">
 				<span style="font-size:20px;"><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FUNDAMENTACI&Oacute;N DEL ORIGEN DEL PROYECTO</strong></span></td>
 		</tr>
 		<tr>
@@ -360,7 +360,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 				&nbsp;</td>
 		</tr>
 		<tr>
-			<td>
+			<td style="text-align: center;">
 				<strong><span style="font-size:20px;">&nbsp; &nbsp; &nbsp;&nbsp; OBJETIVO GENERAL DEL PROYECTO </span></strong></td>
 		</tr>
 		<tr>
@@ -373,7 +373,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 		</tr>
 		<tr>
 			<td>
-				<p><span style="font-size: 20px;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RESULTADOS ESPERADOS</b></span></p></td>
+				<p style="text-align: center;"><span style="font-size: 20px;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RESULTADOS ESPERADOS</b></span></p></td>
 		</tr>
 		<tr>
 			<td>
@@ -670,7 +670,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'14', --orden
 	'Fecha Fin Proyecto', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'Se calcula en base a la cantidad de meses de ejecución seleccionada', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -2190,7 +2190,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'12', --orden
 	'Duración en Meses', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'Por defecto se le asigna la cantidad máxima disponible de la convocatoria', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo

@@ -1212,13 +1212,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-                
-        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
-        {
+
+        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('nuevo_proyecto')->ocultar();
-            
         }
-        
     }
 
     //-------------------------- FILTRO ---------------------------------------------
@@ -1294,7 +1291,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_presupuesto")->ocultar();
-        
     }
 
     //------------------------- FORMULARIO ALTA PROYECTO ----------------------------
@@ -1316,6 +1312,10 @@ class ci_proyectos_extension extends extension_ci {
         $datos[id_estado] = 'FORM';
         $datos[fec_carga] = date('Y-m-d');
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases])[0];
+
+        $duracion = $this->dep('datos')->tabla('bases_convocatoria')->get_duracion($datos[id_bases])[0];
+
+        $datos[duracion] = $duracion[duracion_convocatoria] * 12;
         $datos[fec_desde] = $bases[fecha_hasta];
 
 
@@ -1566,6 +1566,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
     }
 
+    // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
     function evt__formulario_seguimiento__baja() {
         $this->dep('datos')->tabla('seguimiento_central')->eliminar_todo();
         $this->dep('datos')->tabla('seguimiento_central')->resetear();
@@ -1622,8 +1623,7 @@ class ci_proyectos_extension extends extension_ci {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
                 $datos[integrante] = $ext[nro_docum];
             }
-            if($pe['id_estado'] != 'EUA ')
-            {
+            if ($pe['id_estado'] != 'EUA ') {
                 $form->ef('id_estado')->set_solo_lectura();
             }
 
@@ -1836,6 +1836,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
     }
 
+    // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
     function evt__formulario_seg_ua__baja() {
         $this->dep('datos')->tabla('seguimiento_ua')->eliminar_todo();
         $this->dep('datos')->tabla('seguimiento_ua')->resetear();
@@ -1864,12 +1865,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
-        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
-        {
+        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('enviar')->ocultar();
             $this->controlador()->evento('validar')->ocultar();
         }
-        
+
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
 
@@ -1899,7 +1899,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-           
+
             if (($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
@@ -2058,6 +2058,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('pextension')->sincronizar();
     }
 
+    // ACTUALMENTE INHABILITADO -> HABILIDARLO PARA ADMIN
     function evt__formulario__baja() {
         $this->dep('datos')->tabla('pextension')->eliminar_todo();
         $this->dep('datos')->tabla('pextension')->resetear();
@@ -2089,9 +2090,8 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        
-        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
-        {
+
+        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -2159,7 +2159,8 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->s__mostrar_dest = 0;
     }
-
+    
+    // PUEDE GENERAR CONFLICTOS CUANDO ESTAN SELECCIONADO DENTRO DE PLAN ACTIVIDADES -> REVISAR 
     function evt__formulario_destinatarios__baja($datos) {
         $this->dep('datos')->tabla('destinatarios')->eliminar_todo();
         $this->dep('datos')->tabla('destinatarios')->resetear();
@@ -2193,9 +2194,9 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        
-        
-        
+
+
+
         $this->s__imprimir = 0;
     }
 
@@ -2269,8 +2270,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->pantalla()->tab("pant_seguimiento")->ocultar();
             }
         }
-        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
-        {
+        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         }
         $this->s__imprimir = 0;
@@ -2487,7 +2487,7 @@ class ci_proyectos_extension extends extension_ci {
             toba::notificacion()->agregar('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")', 'info');
         }
     }
-
+    // DE MOMENTO NO SE USAR EN NINGUN LUGAR COMO FORANEAR 
     function evt__form_integrantes__baja($datos) {
         $this->dep('datos')->tabla('integrante_interno_pe')->eliminar_todo();
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
@@ -2622,8 +2622,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        if($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua')
-        {
+        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         }
         $this->s__imprimir = 0;
@@ -2816,7 +2815,8 @@ class ci_proyectos_extension extends extension_ci {
             toba::notificacion()->agregar('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")', 'info');
         }
     }
-
+    
+    // NO GENERA CONFLICTO
     function evt__form_integrante_e__baja($datos) {
         $this->dep('datos')->tabla('integrante_externo_pe')->eliminar_todo();
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
@@ -2938,8 +2938,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
-        {
+        if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -3031,7 +3030,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
         $this->s__mostrar_org = 0;
     }
-
+    
+    // NO GENERA CONFLICTO 
     function evt__form_organizacion__baja($datos) {
         $this->dep('datos')->tabla('organizaciones_participantes')->eliminar_todo();
         $this->dep('datos')->tabla('organizaciones_participantes')->resetear();
@@ -3085,11 +3085,10 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
-        {
+        if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
         }
-        $pext =$this->dep('datos')->tabla('pextension')->get();
+        $pext = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pext[id_estado];
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pext['id_pext']);
         // si presiono el boton enviar no puede editar nada mas 
@@ -3167,8 +3166,16 @@ class ci_proyectos_extension extends extension_ci {
             toba::notificacion()->agregar(utf8_decode('Maximo de Objeticos Especificos superado ( Maximo 5 Objetivos Especificos ).'), 'info');
         }
     }
-
+    
+    // CLAVE FORANEA EN PLAN ACTIVIDADES CAPTURAR ERROR Y TRABAJARLO 
     function evt__form_objetivos_esp__baja() {
+        $pext=$this->dep('datos')->tabla('pextension')->get();
+        $objetivo_esp=$this->dep('datos')->tabla('objetivo_especifico')->get();
+        $plan_act = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($objetivo_esp[id_objetivo]);
+        if(count($plan_act)>0){
+            $sql = "DELETE FROM plan_actividades USING objetivo_especifico WHERE plan_actividades.id_obj_especifico =".$objetivo_esp[id_objetivo]." AND id_pext=".$pext[id_pext].";";
+            toba::db('extension')->consultar($sql);
+        }
         $this->dep('datos')->tabla('objetivo_especifico')->eliminar_todo();
         $this->dep('datos')->tabla('objetivo_especifico')->resetear();
         toba::notificacion()->agregar(utf8_decode('El objetivo se ha eliminado correctamente.'), 'info');
@@ -3219,8 +3226,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
-        {
+        if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
         }
 
@@ -3372,8 +3378,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == formulador) {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-        if($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')
-        {
+        if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
         }
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
