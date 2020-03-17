@@ -3484,7 +3484,7 @@ class ci_proyectos_extension extends extension_ci {
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
         $monto_max = $bases[monto_max];
         $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension], $bases[id_bases])[0];
-        if ($monto_max != 0) {
+        if ($monto_max != 0 || !is_null($monto_max)) {
             if (($pe[monto] + $datos[monto]) <= $monto_max) {
                 if ($datos[monto] + $count <= $rubro[monto_max]) {
                     $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
@@ -3528,7 +3528,7 @@ class ci_proyectos_extension extends extension_ci {
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pe[id_bases])[0];
         $monto_max = $bases[monto_max];
         $rubro = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($datos[id_rubro_extension], $bases[id_bases])[0];
-        if ($monto_max != 0) {
+        if ($monto_max != 0 || !is_null($monto_max)) {
             if ((($pe[monto] - $presuesto_datos_anterior[monto]) + $datos[monto]) <= $monto_max) {
                 if ($count <= $rubro[monto_max]) {
                     $this->dep('datos')->tabla('presupuesto_extension')->set($datos);
