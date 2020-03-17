@@ -1212,8 +1212,18 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-
-        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
+        
+        // Restriccón proyectos mo finalizados 
+        $carga = true;
+        if($perfil == 'formulador' ){
+            $pextension = $this->dep('datos')->tabla('pextension')->get_listado();
+            foreach ($pextension as $proyecto) {
+                if($proyecto['id_estado']!='FIN' || $proyecto['id_estado']!='BAJA'){
+                    $carga = false;
+                }
+            }
+        }
+        if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua' || !$carga) {
             $this->controlador()->evento('nuevo_proyecto')->ocultar();
         }
     }
@@ -1506,6 +1516,8 @@ class ci_proyectos_extension extends extension_ci {
             $datos[monto] = $pe[monto];
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
+            $datos[id_estado] = $pe[id_estado];
+            print_r($datos[id_estado]);
 
             if (!is_null($int)) {
                 $datos[nombre_becario] = $int[0][nombre];
@@ -1531,6 +1543,19 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
+
+        if ($datos[id_estado] != $pe[id_estado] ) {
+            unset($pe[x_dbr_clave]);
+            if ($datos['id_estado'] != null) {
+                $pe['id_estado'] = $datos['id_estado'];
+            }else{
+               $pe['id_estado'] = 'ECEN';
+            }
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
+
         // ACTUALIZO FECHA DE PROYECTO DE HABER PRORROGA
         if ($datos['fecha_prorroga2'] != null) {
             $sql = "UPDATE pextension SET fec_hasta ='" . $datos['fecha_prorroga2'] . "' WHERE id_pext =" . $pe[id_pext];
@@ -1545,6 +1570,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fec_hasta]);
         unset($datos[nombre_becario]);
         unset($datos[dni_becario]);
+        unset($datos[id_estado]);
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
@@ -1666,18 +1692,22 @@ class ci_proyectos_extension extends extension_ci {
             $datos['nro_docum'] = $ext['nro_docum'];
             $datos['desde'] = $ext['desde'];
         }
+        
         if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $datos[fecha_resol] != $pe[fec_desde]) {
             unset($pe[x_dbr_clave]);
+            
             $pe[ord_priori] = $datos[ord_priori];
             $pe[fec_desde] = $datos[fecha_resol];
-            $pe[fec_hasta] = fecha_fin_proyecto($pe[duracion]);
+            $pe[fec_hasta] = $this->fecha_fin_proyecto($pe[duracion]);
             if ($datos['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             }
+            
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
+        
         if (!is_null($datos[nro_resol])) {
             $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
 
@@ -1701,7 +1731,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[codigo]);
         unset($datos[integrante]);
         unset($datos[id_estado]);
-
+        
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
