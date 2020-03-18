@@ -14,7 +14,7 @@ class ci_bases extends extension_ci {
     }
 
     function ajax__descargar_bases($id_fila, toba_ajax_respuesta $respuesta) {
-        
+
         $this->s__bases = $this->s__datos[$id_fila]['id_bases'];
 
         $respuesta->set($id_fila);
@@ -141,13 +141,19 @@ class ci_bases extends extension_ci {
     }
 
     function conf__pant_edicion(toba_ei_pantalla $pantalla) {
+
         $this->s__pantalla = "pant_edicion";
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+
 
         $this->pantalla()->tab("pant_cuadro")->desactivar();
         #$this->pantalla()->tab("pant_ejes")->desactivar();
 
         $this->pantalla()->tab("pant_cuadro")->ocultar();
         #$this->pantalla()->tab("pant_ejes")->ocultar();
+        if (!$bases[tiene_monto]) {
+            $this->pantalla()->tab("pant_rubros")->ocultar();
+        }
     }
 
     function conf__pant_cuadro(toba_ei_pantalla $pantalla) {
@@ -163,16 +169,20 @@ class ci_bases extends extension_ci {
 
     function conf__pant_ejes(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_ejes";
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
 
         $this->pantalla()->tab("pant_cuadro")->desactivar();
         #$this->pantalla()->tab("pant_ejes")->desactivar();
 
         $this->pantalla()->tab("pant_cuadro")->ocultar();
         #$this->pantalla()->tab("pant_ejes")->ocultar();
+        if (!$bases[tiene_monto]) {
+            $this->pantalla()->tab("pant_rubros")->ocultar();
+        }
     }
 
     function conf__pant_rubros(toba_ei_pantalla $pantalla) {
-        $this->s__pantalla = "pant_ejes";
+        $this->s__pantalla = "pant_rubros";
 
         $this->pantalla()->tab("pant_cuadro")->desactivar();
         #$this->pantalla()->tab("pant_ejes")->desactivar();
@@ -233,11 +243,11 @@ class ci_bases extends extension_ci {
     function evt__form_ejes__modificacion($datos) {
         $ejes = $this->dep('datos')->tabla('eje_tematico_conv')->get();
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
-        if($ejes['descripcion']==$datos['descripcion']){
+        if ($ejes['descripcion'] == $datos['descripcion']) {
             $datos['descripcion'] = $ejes['id_eje'];
         }
         $tipo = $this->dep('datos')->tabla('tipos_ejes_tematicos')->get_tipo($datos['descripcion'])[0];
-        
+
         $correcto = true;
         $ejes_conv = $this->dep('datos')->tabla('eje_tematico_conv')->get_listado($bases['id_bases']);
         // Control Ejes no repetidos 
@@ -297,7 +307,6 @@ class ci_bases extends extension_ci {
         $datos[id_rubro_extension] = $this->s__rubro;
         if ($bases[monto_max] != null) {
             $rubros = $this->dep('datos')->tabla('montos_convocatoria')->get_listado($bases[id_bases]);
-            //print_r($rubros);
             $count = 0;
             foreach ($rubros as $value) {
                 $count = $count + $value[monto_max];
@@ -329,7 +338,6 @@ class ci_bases extends extension_ci {
 
         if ($bases[monto_max] != null) {
             $rubros = $this->dep('datos')->tabla('montos_convocatoria')->get_listado($bases[id_bases]);
-            //print_r($rubros);
             $count = 0;
             foreach ($rubros as $value) {
                 if ($datos[id_rubro_extension] != $value[id_rubro_extension])

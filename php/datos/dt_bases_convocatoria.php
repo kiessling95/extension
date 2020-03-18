@@ -21,7 +21,8 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 			t_bc.consulta,
 			t_bc.bases_titulo,
 			t_bc.ordenanza,
-			t_c.descripcion
+			t_c.descripcion,
+                        t_bc.tiene_monto
 		FROM
 			bases_convocatoria as t_bc
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = t_bc.tipo_convocatoria)";
@@ -97,7 +98,8 @@ class dt_bases_convocatoria extends extension_datos_tabla {
 			t_bc.consulta,
 			t_bc.bases_titulo,
 			t_bc.ordenanza,
-			t_c.descripcion
+			t_c.descripcion,
+                        t_bc.tiene_monto
 		FROM
 			bases_convocatoria as t_bc
                         LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = t_bc.tipo_convocatoria)";
