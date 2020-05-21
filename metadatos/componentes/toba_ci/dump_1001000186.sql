@@ -728,7 +728,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000074', --pantalla
 	'pant_integrantesi', --identificador
-	'9', --orden
+	'10', --orden
 	'3-1-Integrantes Docentes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -747,7 +747,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000075', --pantalla
 	'pant_integrantese', --identificador
-	'10', --orden
+	'11', --orden
 	'3-2-Integrantes Otros', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -766,7 +766,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000076', --pantalla
 	'pant_planilla', --identificador
-	'8', --orden
+	'9', --orden
 	'3-Planilla de Personal Afectado', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -785,7 +785,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
-	'6', --orden
+	'7', --orden
 	'1-Identificación del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -804,7 +804,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000087', --pantalla
 	'pant_organizaciones', --identificador
-	'11', --orden
+	'12', --orden
 	'4- Organizaciones Participantes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -823,7 +823,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000088', --pantalla
 	'pant_objetivos', --identificador
-	'12', --orden
+	'13', --orden
 	'5- Objetivos y Metas a alcanzar', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -861,7 +861,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000095', --pantalla
 	'pant_destinatarios', --identificador
-	'7', --orden
+	'8', --orden
 	'2-Destinatarios del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -913,6 +913,25 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	NULL, --template_impresion
 	'1001000004'  --punto_montaje
 );
+INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, identificador, orden, etiqueta, descripcion, tip, imagen_recurso_origen, imagen, objetos, eventos, subclase, subclase_archivo, template, template_impresion, punto_montaje) VALUES (
+	'extension', --objeto_ci_proyecto
+	'1001000186', --objeto_ci
+	'1001000110', --pantalla
+	'pant_solicitud', --identificador
+	'5', --orden
+	'Solicitudes', --etiqueta
+	NULL, --descripcion
+	NULL, --tip
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	NULL, --objetos
+	NULL, --eventos
+	NULL, --subclase
+	NULL, --subclase_archivo
+	NULL, --template
+	NULL, --template_impresion
+	NULL  --punto_montaje
+);
 --- FIN Grupo de desarrollo 1001
 
 --- INICIO Grupo de desarrollo 1002
@@ -921,7 +940,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000009', --pantalla
 	'pant_presupuesto', --identificador
-	'14', --orden
+	'15', --orden
 	'6-Presupuesto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -940,7 +959,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000011', --pantalla
 	'pant_actividad', --identificador
-	'13', --orden
+	'14', --orden
 	'5-1-Plan de Actividad', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -959,7 +978,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000012', --pantalla
 	'pant_seguimiento_ua', --identificador
-	'5', --orden
+	'6', --orden
 	'Seguimiento de Unidad Academica', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
