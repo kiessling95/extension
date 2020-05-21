@@ -1592,6 +1592,19 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
+
+        if ($datos[id_estado] != $pe[id_estado]) {
+            unset($pe[x_dbr_clave]);
+            if ($datos['id_estado'] != null) {
+                $pe['id_estado'] = $datos['id_estado'];
+            } else {
+                $pe['id_estado'] = 'ECEN';
+            }
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
+
         if ($datos['fecha_prorroga2'] != null) {
             $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
@@ -2094,7 +2107,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->controlador()->evento('enviar')->ocultar();
             $this->controlador()->evento('validar')->ocultar();
         }
-        if ($estado != 'APRB' || $estado != 'PRG ') {
+        if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN'|| $estado == 'EUA ') {
             $this->pantalla()->tab("pant_solicitud")->ocultar();
         }
 
