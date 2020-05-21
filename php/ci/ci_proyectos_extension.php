@@ -1972,7 +1972,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('cancelar')->ocultar();
             } else {
-                if ($perfil == 'formulador') {
+                if ($perfil != 'sec_ext_central') {
                     $form->ef('estado_solicitud')->set_solo_lectura();
                     $form->ef('obs_resolucion')->set_solo_lectura();
                     $form->ef('id_estado')->set_solo_lectura();
@@ -2087,11 +2087,15 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
 
+
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('enviar')->ocultar();
             $this->controlador()->evento('validar')->ocultar();
+        }
+        if ($estado != 'APRB' || $estado != 'PRG ') {
+            $this->pantalla()->tab("pant_solicitud")->ocultar();
         }
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
