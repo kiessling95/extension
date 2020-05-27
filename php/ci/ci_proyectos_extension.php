@@ -1985,15 +1985,15 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('cancelar')->ocultar();
             } else {
-                if ($perfil != 'sec_ext_central') {
-                    $form->ef('estado_solicitud')->set_solo_lectura();
-                    $form->ef('obs_resolucion')->set_solo_lectura();
+                if ($perfil != 'sec_ext_central' && $perfil != 'admin') {
                     $form->ef('id_estado')->set_solo_lectura();
+                    $form->ef('recibido')->set_solo_lectura();
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 }
             }
-
-
+            
+            $form->ef('fecha_solicitud')->set_solo_lectura();
+            $form->ef('fecha_recepcion')->set_solo_lectura();
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_solicitud')->descolapsar();
         } else {
@@ -2037,6 +2037,11 @@ class ci_proyectos_extension extends extension_ci {
             }
         }
         unset($datos[id_estado]);
+        unset($datos[nro_acta_resolucion]);
+        unset($datos[num_acta_prorroga]);
+        unset($datos[observacion_prorroga]);
+        unset($datos[fecha_fin_prorroga]);
+        unset($datos[id_estado]);
 
         if ($carga) {
             $this->dep('datos')->tabla('solicitud')->set($datos);
@@ -2064,8 +2069,20 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
+        //Control por si Central se olvida de cambiar estado a Recibida
+        if ($datos['recibido'] == 1) {
+            if ($datos['estado_solicitud'] == 'Enviada') {
+                $datos['estado_solicitud'] = 'Recibida';
+            }
+            $datos['fecha_recepcion'] = date('Y-m-d');
+        }
 
         unset($datos[id_estado]);
+
+        unset($datos[fecha_fin_prorroga]);
+        unset($datos[id_estado]);
+
+
         $this->dep('datos')->tabla('solicitud')->set($datos);
         $this->dep('datos')->tabla('solicitud')->sincronizar();
         $this->dep('datos')->tabla('solicitud')->cargar($datos);
@@ -2107,7 +2124,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->controlador()->evento('enviar')->ocultar();
             $this->controlador()->evento('validar')->ocultar();
         }
-        if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN'|| $estado == 'EUA ') {
+        if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN' || $estado == 'EUA ') {
             $this->pantalla()->tab("pant_solicitud")->ocultar();
         }
 
