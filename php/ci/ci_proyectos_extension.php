@@ -821,14 +821,6 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->set_pantalla('pant_alta_proyecto');
 
-        $this->pantalla()->tab("pant_integrantesi")->desactivar();
-        $this->pantalla()->tab("pant_integrantese")->desactivar();
-        $this->pantalla()->tab("pant_planilla")->desactivar();
-        $this->pantalla()->tab("pant_presupuesto")->desactivar();
-        $this->pantalla()->tab("pant_organizaciones")->desactivar();
-        $this->pantalla()->tab("pant_objetivos")->desactivar();
-        $this->pantalla()->tab("pant_actividad")->desactivar();
-
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_planilla")->ocultar();
@@ -839,6 +831,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
         $this->pantalla()->tab("pant_destinatarios")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
     }
 
     function evt__alta() {
@@ -881,6 +874,10 @@ class ci_proyectos_extension extends extension_ci {
             case 'pant_solicitud':
                 $this->s_mostrar_solicitud = 1;
                 $this->dep('datos')->tabla('solicitud')->resetear();
+                break;
+            case 'pant_avance':
+                $this->s_mostrar_avance = 1;
+                $this->dep('datos')->tabla('avance')->resetear();
                 break;
         }
     }
@@ -929,6 +926,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_obj = 0;
         $this->s__mostrar_activ = 0;
         $this->s__mostrar_dest = 0;
+        $this->s__mostrar_avance = 0;
+        $this->s_mostrar_solicitud = 0;
     }
 
     function evt__integrantesi() {
@@ -1218,6 +1217,13 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_seguimiento")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_planilla")->ocultar();
+        $this->pantalla()->tab("pant_formulario")->ocultar();
+        $this->pantalla()->tab("pant_presupuesto")->ocultar();
+        $this->pantalla()->tab("pant_organizaciones")->ocultar();
+        $this->pantalla()->tab("pant_objetivos")->ocultar();
+        $this->pantalla()->tab("pant_destinatarios")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
@@ -1258,21 +1264,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro(toba_ei_cuadro $cuadro) {
         $this->s__imprimir = 1;
-
-        $this->pantalla()->tab("pant_integrantesi")->ocultar();
-        $this->pantalla()->tab("pant_integrantese")->ocultar();
-        $this->pantalla()->tab("pant_planilla")->ocultar();
-        $this->pantalla()->tab("pant_formulario")->ocultar();
-        $this->pantalla()->tab("pant_presupuesto")->ocultar();
-        $this->pantalla()->tab("pant_organizaciones")->ocultar();
-        $this->pantalla()->tab("pant_objetivos")->ocultar();
-        $this->pantalla()->tab("pant_actividad")->ocultar();
-        $this->pantalla()->tab("pant_destinatarios")->ocultar();
-        $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
-        $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
-        $this->pantalla()->tab("pant_seguimiento")->ocultar();
-
-
 
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('pextension')->get_listado($this->s__where);
@@ -1365,6 +1356,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
     }
 
     // ------------------------------------------------------------------------------
@@ -1486,6 +1478,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
     }
 
     //--------------------------------------------------------------------------------
@@ -1640,6 +1633,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
     }
 
     //-------------------------------------------------------------------------------
@@ -1915,6 +1909,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
@@ -2097,6 +2092,208 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_solicitud__cancelar() {
+        $this->dep('datos')->tabla('solicitud')->resetear();
+        $this->set_pantalla('pant_solicitud');
+        $this->s_mostrar_solicitud = 0;
+    }
+    
+    //-------------------------------------------------------------------------------
+    //-------------------------   PANTALLA FORMULARIO AVANCE   ----------------------
+    //-------------------------------------------------------------------------------
+
+    function conf__pant_avance(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_avance";
+
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        $this->pantalla()->tab("pant_solicitud")->ocultar();
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $estado = $pe[id_estado];
+
+        if (($estado == 'BAJA' || $estado == 'FIN ')) {
+            $this->controlador()->evento('alta')->ocultar();
+        }
+    }
+
+    //-------------------------- FILTRO ---------------------------------------------
+
+    function conf__filtro_avance(toba_ei_filtro $filtro) {
+        if (isset($this->s__datos_filtro)) {
+            $filtro->set_datos($this->s__datos_filtro);
+        }
+    }
+
+    function evt__filtro_avance__filtrar($datos) {
+        $this->s__datos_filtro = $datos;
+        $this->s__where = $this->dep('filtro')->get_sql_where();
+    }
+
+    function evt__filtro_avance__cancelar() {
+        unset($this->s__datos_filtro);
+        unset($this->s__where);
+    }
+
+    //------------------------- CUADRO ----------------------------------------------
+
+    function conf__cuadro_avance(toba_ei_cuadro $cuadro) {
+        $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
+        if (isset($this->s__where)) {
+            $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
+        } else {
+            $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext);
+        }
+
+        $cuadro->set_datos($this->s__datos);
+    }
+
+    function evt__cuadro_avance__seleccion($datos) {
+
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        $datos['id_estado'] = $pe['id_estado'];
+        $datos = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos)[0];
+
+
+        $this->set_pantalla('pant_solicitud');
+        $this->dep('datos')->tabla('solicitud')->cargar($datos);
+        $this->s_mostrar_solicitud = 1;
+    }
+
+    //------------------------- FORMULARIO SOLICITUDES  -----------------------------
+
+    function conf__form_avance(toba_ei_formulario $form) {
+
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $estado = $pe[id_estado];
+
+        if ($this->s_mostrar_solicitud == 1) {
+            // si presiono el boton enviar no puede editar nada mas 
+            if (($estado != 'APRB' && $estado != 'PRG ')) {
+                $this->dep('form_solicitud')->set_solo_lectura();
+                $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                $this->dep('form_solicitud')->evento('baja')->ocultar();
+                $this->dep('form_solicitud')->evento('cancelar')->ocultar();
+            } else {
+                if ($perfil != 'sec_ext_central' && $perfil != 'admin') {
+                    $form->ef('id_estado')->set_solo_lectura();
+                    $form->ef('recibido')->set_solo_lectura();
+                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                }
+            }
+            
+            $form->ef('fecha_solicitud')->set_solo_lectura();
+            $form->ef('fecha_recepcion')->set_solo_lectura();
+            $this->controlador()->evento('alta')->ocultar();
+            $this->dep('form_solicitud')->descolapsar();
+        } else {
+            $this->dep('form_solicitud')->colapsar();
+        }
+
+
+
+        if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
+            $datos = $this->dep('datos')->tabla('solicitud')->get();
+            $datos[id_estado] = $estado;
+            if ($datos[estado_solicitud] != "Enviada") {
+                $this->dep('form_solicitud')->evento('baja')->ocultar();
+                if ($datos[estado_solicitud] != "Recibida") {
+                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                }
+            }
+
+
+            $form->set_datos($datos);
+        }
+    }
+
+    function evt__form_avance__alta($datos) {
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+
+
+        $datos['fecha_solicitud'] = date('Y-m-d');
+        $datos['estado_solicitud'] = 'Enviada';
+
+
+        $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos);
+
+        $carga = true;
+
+        foreach ($solicitudes as $solicitud) {
+            if ($solicitud[estado_solicitud] != 'Finalizada' && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
+                $carga = false;
+            }
+        }
+        unset($datos[id_estado]);
+        unset($datos[nro_acta_resolucion]);
+        unset($datos[num_acta_prorroga]);
+        unset($datos[observacion_prorroga]);
+        unset($datos[fecha_fin_prorroga]);
+        unset($datos[id_estado]);
+
+        if ($carga) {
+            $this->dep('datos')->tabla('solicitud')->set($datos);
+            $this->dep('datos')->tabla('solicitud')->sincronizar();
+            $this->dep('datos')->tabla('solicitud')->cargar($datos);
+
+            toba::notificacion()->agregar('La solicitud se registro correctamente', 'info');
+        } else {
+            toba::notificacion()->agregar('Ya existe una solicitud del tipo seleccionado', 'info');
+        }
+    }
+
+    function evt__form_avance__modificacion($datos) {
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+
+        if ($datos[id_estado] != $pe[id_estado]) {
+            unset($pe[x_dbr_clave]);
+            if ($datos['id_estado'] != null) {
+                $pe['id_estado'] = $datos['id_estado'];
+            } else {
+                $pe['id_estado'] = 'APRB';
+            }
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
+        //Control por si Central se olvida de cambiar estado a Recibida
+        if ($datos['recibido'] == 1) {
+            if ($datos['estado_solicitud'] == 'Enviada') {
+                $datos['estado_solicitud'] = 'Recibida';
+            }
+            $datos['fecha_recepcion'] = date('Y-m-d');
+        }
+
+        unset($datos[id_estado]);
+
+        unset($datos[fecha_fin_prorroga]);
+        unset($datos[id_estado]);
+
+
+        $this->dep('datos')->tabla('solicitud')->set($datos);
+        $this->dep('datos')->tabla('solicitud')->sincronizar();
+        $this->dep('datos')->tabla('solicitud')->cargar($datos);
+    }
+
+    // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
+    function evt__form_avance__baja() {
+        $this->dep('datos')->tabla('solicitud')->eliminar_todo();
+        $this->dep('datos')->tabla('solicitud')->resetear();
+        $this->set_pantalla('pant_solicitud');
+        $this->s_mostrar_solicitud = 0;
+    }
+
+    function evt__form_avance__cancelar() {
         $this->dep('datos')->tabla('solicitud')->resetear();
         $this->set_pantalla('pant_solicitud');
         $this->s_mostrar_solicitud = 0;
@@ -2343,6 +2540,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
@@ -2449,6 +2647,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -2520,6 +2719,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -2875,6 +3075,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -3196,6 +3397,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -3343,6 +3545,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -3484,6 +3687,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -3637,6 +3841,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
