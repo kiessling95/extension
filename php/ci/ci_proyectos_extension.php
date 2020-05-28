@@ -1984,6 +1984,9 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('id_estado')->set_solo_lectura();
                     $form->ef('recibido')->set_solo_lectura();
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                }else{
+                    $form->ef('tipo_solicitud')->set_solo_lectura();
+                    $form->ef('motivo')->set_solo_lectura();
                 }
             }
             
@@ -2355,7 +2358,7 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
 
-            if (($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
+            if (($estado != 'FORM' && $estado != 'MODF') || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
                 $this->dep('formulario')->evento('baja')->ocultar();
@@ -2580,7 +2583,7 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'FORM' && $estado != 'MODF' && $perfil != 'admin') || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
+            if (($estado != 'FORM' && $estado != 'MODF' ) || ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central')) {
                 $this->dep('formulario_destinatarios')->set_solo_lectura();
                 $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
