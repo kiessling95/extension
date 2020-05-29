@@ -12,6 +12,8 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__mostrar_activ;
     protected $s__mostrar_dest;
     protected $s__mostrar_solicitud;
+    protected $s__mostrar_avance;
+    protected $s__mostrar_obj_avance;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
@@ -32,6 +34,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__pextension;
     protected $s__datos_docente_aux;
     protected $s__datos_otro_aux;
+    protected $s__id_obj_esp;
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
@@ -928,6 +931,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_dest = 0;
         $this->s__mostrar_avance = 0;
         $this->s_mostrar_solicitud = 0;
+        $this->s_mostrar_avance = 0;
+        $this->s__mostrar_obj_avance = 0;
     }
 
     function evt__integrantesi() {
@@ -1984,12 +1989,12 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('id_estado')->set_solo_lectura();
                     $form->ef('recibido')->set_solo_lectura();
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
-                }else{
+                } else {
                     $form->ef('tipo_solicitud')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
                 }
             }
-            
+
             $form->ef('fecha_solicitud')->set_solo_lectura();
             $form->ef('fecha_recepcion')->set_solo_lectura();
             $this->controlador()->evento('alta')->ocultar();
@@ -2099,7 +2104,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->set_pantalla('pant_solicitud');
         $this->s_mostrar_solicitud = 0;
     }
-    
+
     //-------------------------------------------------------------------------------
     //-------------------------   PANTALLA FORMULARIO AVANCE   ----------------------
     //-------------------------------------------------------------------------------
@@ -2145,11 +2150,21 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro_avance(toba_ei_cuadro $cuadro) {
-        $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
-        if (isset($this->s__where)) {
-            $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
+
+        if ($this->s__mostrar_obj_avance == 1) {
+
+            $this->dep('cuadro_avance')->descolapsar();
         } else {
-            $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext);
+            $this->dep('cuadro_avance')->colapsar();
+        }
+
+        $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
+        if (isset($this->s__id_obj_esp)) {
+            if (isset($this->s__where)) {
+                $this->s__datos = $this->dep('datos')->tabla('avance')->get_listado($this->s__id_obj_esp[id_objetivo]);
+            } else {
+                $this->s__datos = $this->dep('datos')->tabla('avance')->get_listado($this->s__id_obj_esp[id_objetivo]);
+            }
         }
 
         $cuadro->set_datos($this->s__datos);
@@ -2157,16 +2172,26 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__cuadro_avance__seleccion($datos) {
 
-
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-        $datos['id_estado'] = $pe['id_estado'];
-        $datos = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos)[0];
 
+        $datos = $this->dep('datos')->tabla('avance')->get_avance($datos)[0];
+        print_r($datos);
+        $this->dep('datos')->tabla('avance')->cargar($datos);
+        $this->s_mostrar_avance = 1;
+    }
 
-        $this->set_pantalla('pant_solicitud');
-        $this->dep('datos')->tabla('solicitud')->cargar($datos);
-        $this->s_mostrar_solicitud = 1;
+    //------------------------- CUADRO OBJETIVOS ESPECIFICOS AVANCES ----------------
+
+    function conf__cuadro_obj_avance(toba_ei_cuadro $cuadro) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
+    }
+
+    function evt__cuadro_obj_avance__seleccion($datos) {
+        $this->s__mostrar_obj_avance = 1;
+        $this->s__where = $datos;
+        $this->s__id_obj_esp = $datos;
+        //$this->set_pantalla('pant_avance');
     }
 
     //------------------------- FORMULARIO SOLICITUDES  -----------------------------
@@ -2177,129 +2202,50 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
 
-        if ($this->s_mostrar_solicitud == 1) {
+        if ($this->s_mostrar_avance == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
-                $this->dep('form_solicitud')->set_solo_lectura();
-                $this->dep('form_solicitud')->evento('modificacion')->ocultar();
-                $this->dep('form_solicitud')->evento('baja')->ocultar();
-                $this->dep('form_solicitud')->evento('cancelar')->ocultar();
-            } else {
-                if ($perfil != 'sec_ext_central' && $perfil != 'admin') {
-                    $form->ef('id_estado')->set_solo_lectura();
-                    $form->ef('recibido')->set_solo_lectura();
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
-                }
+            if (($estado != 'APRB' && $estado != 'PRG ' && $perfil != 'admin')) {
+                $this->dep('form_avance')->set_solo_lectura();
+                $this->dep('form_avance')->evento('modificacion')->ocultar();
+                $this->dep('form_avance')->evento('baja')->ocultar();
+                $this->dep('form_avance')->evento('cancelar')->ocultar();
             }
-            
-            $form->ef('fecha_solicitud')->set_solo_lectura();
-            $form->ef('fecha_recepcion')->set_solo_lectura();
-            $this->controlador()->evento('alta')->ocultar();
-            $this->dep('form_solicitud')->descolapsar();
+
+            $this->dep('form_avance')->descolapsar();
         } else {
-            $this->dep('form_solicitud')->colapsar();
+            $this->dep('form_avance')->colapsar();
         }
 
 
 
-        if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
-            $datos = $this->dep('datos')->tabla('solicitud')->get();
-            $datos[id_estado] = $estado;
-            if ($datos[estado_solicitud] != "Enviada") {
-                $this->dep('form_solicitud')->evento('baja')->ocultar();
-                if ($datos[estado_solicitud] != "Recibida") {
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
-                }
-            }
-
+        if ($this->dep('datos')->tabla('avance')->esta_cargada()) {
+            $datos = $this->dep('datos')->tabla('avance')->get();
 
             $form->set_datos($datos);
         }
     }
 
     function evt__form_avance__alta($datos) {
+        print_r($this->s__id_obj_esp);
+        $datos['id_obj_esp'] = $this->s__id_obj_esp['id_objetivo'];
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-
-
-        $datos['fecha_solicitud'] = date('Y-m-d');
-        $datos['estado_solicitud'] = 'Enviada';
-
-
-        $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos);
-
-        $carga = true;
-
-        foreach ($solicitudes as $solicitud) {
-            if ($solicitud[estado_solicitud] != 'Finalizada' && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
-                $carga = false;
-            }
-        }
-        unset($datos[id_estado]);
-        unset($datos[nro_acta_resolucion]);
-        unset($datos[num_acta_prorroga]);
-        unset($datos[observacion_prorroga]);
-        unset($datos[fecha_fin_prorroga]);
-        unset($datos[id_estado]);
-
-        if ($carga) {
-            $this->dep('datos')->tabla('solicitud')->set($datos);
-            $this->dep('datos')->tabla('solicitud')->sincronizar();
-            $this->dep('datos')->tabla('solicitud')->cargar($datos);
-
-            toba::notificacion()->agregar('La solicitud se registro correctamente', 'info');
-        } else {
-            toba::notificacion()->agregar('Ya existe una solicitud del tipo seleccionado', 'info');
-        }
-    }
-
-    function evt__form_avance__modificacion($datos) {
-
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-
-        if ($datos[id_estado] != $pe[id_estado]) {
-            unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
-            } else {
-                $pe['id_estado'] = 'APRB';
-            }
-            $this->dep('datos')->tabla('pextension')->set($pe);
-            $this->dep('datos')->tabla('pextension')->sincronizar();
-            $this->dep('datos')->tabla('pextension')->cargar($pe);
-        }
-        //Control por si Central se olvida de cambiar estado a Recibida
-        if ($datos['recibido'] == 1) {
-            if ($datos['estado_solicitud'] == 'Enviada') {
-                $datos['estado_solicitud'] = 'Recibida';
-            }
-            $datos['fecha_recepcion'] = date('Y-m-d');
-        }
-
-        unset($datos[id_estado]);
-
-        unset($datos[fecha_fin_prorroga]);
-        unset($datos[id_estado]);
-
-
-        $this->dep('datos')->tabla('solicitud')->set($datos);
-        $this->dep('datos')->tabla('solicitud')->sincronizar();
-        $this->dep('datos')->tabla('solicitud')->cargar($datos);
+        $this->dep('datos')->tabla('avance')->set($datos);
+        $this->dep('datos')->tabla('avance')->sincronizar();
+        $this->dep('datos')->tabla('avance')->cargar($datos);
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
     function evt__form_avance__baja() {
-        $this->dep('datos')->tabla('solicitud')->eliminar_todo();
-        $this->dep('datos')->tabla('solicitud')->resetear();
-        $this->set_pantalla('pant_solicitud');
-        $this->s_mostrar_solicitud = 0;
+        $this->dep('datos')->tabla('avance')->eliminar_todo();
+        $this->dep('datos')->tabla('avance')->resetear();
+        $this->set_pantalla('pant_avance');
+        $this->s_mostrar_avance = 0;
     }
 
     function evt__form_avance__cancelar() {
-        $this->dep('datos')->tabla('solicitud')->resetear();
-        $this->set_pantalla('pant_solicitud');
-        $this->s_mostrar_solicitud = 0;
+        $this->dep('datos')->tabla('avance')->resetear();
+        $this->set_pantalla('pant_avance');
+        $this->s_mostrar_avance = 0;
     }
 
     //-------------------------------------------------------------------------------
