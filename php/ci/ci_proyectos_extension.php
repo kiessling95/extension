@@ -789,6 +789,11 @@ class ci_proyectos_extension extends extension_ci {
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         return $this->dep('datos')->tabla('destinatarios')->get_listado($id_pext);
     }
+    
+    function objetivos() {
+        $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
+        return $this->dep('datos')->tabla('objetivo_especifico')->get_descripcion($id_pext);
+    }
 
     function monto_rubro($id_rubro_extension) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
@@ -2150,22 +2155,42 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro_avance(toba_ei_cuadro $cuadro) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos_aux=array();
 
-        if ($this->s__mostrar_obj_avance == 1) {
-
-            $this->dep('cuadro_avance')->descolapsar();
+        if (isset($this->s__where)) {
+            $datos = $this->dep('datos')->tabla('avance')->get_listado_cuadro($pe['id_pext'],$this->s__where);
+            
         } else {
-            $this->dep('cuadro_avance')->colapsar();
-        }
+            $datos = $this->dep('datos')->tabla('avance')->get_listado_cuadro($pe['id_pext']);
 
-        $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
-        if (isset($this->s__id_obj_esp)) {
-            if (isset($this->s__where)) {
-                $this->s__datos = $this->dep('datos')->tabla('avance')->get_listado($this->s__id_obj_esp[id_objetivo]);
-            } else {
-                $this->s__datos = $this->dep('datos')->tabla('avance')->get_listado($this->s__id_obj_esp[id_objetivo]);
-            }
         }
+        
+        $objetivos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']);
+
+        $aux = 0;
+        foreach ($objetivos as $objetivo) {
+            $avances = $this->dep('datos')->tabla('avance')->get_listado($objetivo[id_objetivo]);
+            $avance_total = 0;
+            foreach ($avances as $avance) {
+                $avance_total = $avance_total + $avance['ponderacion'];
+            }
+            $datos_aux[$aux]['total_avance'] = $avance_total;
+            $datos_aux[$aux]['id_obj_esp'] = $objetivo[id_objetivo];
+            $aux++;
+        }
+        $aux = 0;
+        foreach ($datos as $avance) {
+            foreach ($datos_aux as $objetivo){
+                if($avance[id_obj_esp]==$objetivo[id_obj_esp]){
+                    $datos[$aux]['total_avance'] = $objetivo[total_avance];
+                }
+            }
+            $aux++;
+        }
+        
+        $this->s__datos = $datos;
+
 
         $cuadro->set_datos($this->s__datos);
     }
@@ -2175,7 +2200,6 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $datos = $this->dep('datos')->tabla('avance')->get_avance($datos)[0];
-        print_r($datos);
         $this->dep('datos')->tabla('avance')->cargar($datos);
         $this->s_mostrar_avance = 1;
     }
@@ -2184,7 +2208,21 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_obj_avance(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
+        $objetivos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']);
+
+        $aux = 0;
+        foreach ($objetivos as $objetivo) {
+            $avances = $this->dep('datos')->tabla('avance')->get_listado($objetivo[id_objetivo]);
+            $avance_total = 0;
+            foreach ($avances as $avance) {
+                $avance_total = $avance_total + $avance['ponderacion'];
+            }
+            print_r($avance_total);
+            $objetivos[$aux]['total_avance'] = $avance_total;
+            $aux++;
+        }
+
+        $cuadro->set_datos($objetivos);
     }
 
     function evt__cuadro_obj_avance__seleccion($datos) {
@@ -2226,8 +2264,15 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_avance__alta($datos) {
-        print_r($this->s__id_obj_esp);
+
         $datos['id_obj_esp'] = $this->s__id_obj_esp['id_objetivo'];
+
+        $this->dep('datos')->tabla('avance')->set($datos);
+        $this->dep('datos')->tabla('avance')->sincronizar();
+        $this->dep('datos')->tabla('avance')->cargar($datos);
+    }
+
+    function evt__form_avance__modificacion($datos) {
 
         $this->dep('datos')->tabla('avance')->set($datos);
         $this->dep('datos')->tabla('avance')->sincronizar();
