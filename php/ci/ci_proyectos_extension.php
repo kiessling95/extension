@@ -1924,7 +1924,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
 
-        if (($estado != 'APRB' || $estado == 'PRG ')) {
+        if (($estado != 'APRB' && $estado != 'PRG ')) {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -1939,7 +1939,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__filtro_solicitud__filtrar($datos) {
         $this->s__datos_filtro = $datos;
-        $this->s__where = $this->dep('filtro')->get_sql_where();
+        $this->s__where = $this->dep('filtro_solicitud')->get_sql_where();
     }
 
     function evt__filtro_solicitud__cancelar() {
