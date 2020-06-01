@@ -18,6 +18,19 @@ class dt_objetivo_especifico extends extension_datos_tabla
         
         return toba::db('extension')->consultar($sql);
     }
+    function get_descripcion($id_pext = null)
+    {
+        $sql = "SELECT "
+                . "id_objetivo as id_obj_esp, "
+                . "descripcion "
+                . "FROM objetivo_especifico "
+                . "WHERE id_pext = $id_pext "
+                . "ORDER BY id_objetivo";
+        
+        return toba::db('extension')->consultar($sql);
+    }
+    
+    
     
     function get_datos($id_objetivo = null)
     {
