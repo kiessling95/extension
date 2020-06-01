@@ -13,7 +13,6 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__mostrar_dest;
     protected $s__mostrar_solicitud;
     protected $s__mostrar_avance;
-    protected $s__mostrar_obj_avance;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
@@ -921,6 +920,14 @@ class ci_proyectos_extension extends extension_ci {
                 $this->set_pantalla('pant_formulario');
                 $this->dep('datos')->tabla('destinatarios')->resetear();
                 break;
+            case 'pant_solicitud':
+                $this->set_pantalla('pant_formulario');
+                $this->dep('datos')->tabla('solicitud')->resetear();
+                break;
+            case 'pant_avance':
+                $this->set_pantalla('pant_formulario');
+                $this->dep('datos')->tabla('avance')->resetear();
+                break;
             default :
                 $this->set_pantalla('pant_edicion');
                 $this->dep('datos')->tabla('pextension')->resetear();
@@ -937,7 +944,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__mostrar_avance = 0;
         $this->s_mostrar_solicitud = 0;
         $this->s_mostrar_avance = 0;
-        $this->s__mostrar_obj_avance = 0;
     }
 
     function evt__integrantesi() {
@@ -1911,6 +1917,10 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__pant_solicitud(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_solicitud";
+        
+        // Limpio Filtro para evitar errores 
+        unset($this->s__datos_filtro);
+        unset($this->s__where);
 
         $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
@@ -2116,6 +2126,10 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__pant_avance(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_avance";
+        
+        // Limpio Filtro para evitar errores 
+        unset($this->s__datos_filtro);
+        unset($this->s__where);
 
         $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
@@ -2144,7 +2158,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__filtro_avance__filtrar($datos) {
         $this->s__datos_filtro = $datos;
-        $this->s__where = $this->dep('filtro')->get_sql_where();
+        $this->s__where = $this->dep('filtro_avance')->get_sql_where();
     }
 
     function evt__filtro_avance__cancelar() {
