@@ -357,6 +357,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
+	'1001000246', --dep_id
+	'1001000186', --objeto_consumidor
+	'1001000291', --objeto_proveedor
+	'cuadro_avance', --identificador
+	NULL, --parametros_a
+	NULL, --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
 	'1001000203', --dep_id
 	'1001000186', --objeto_consumidor
 	'1001000242', --objeto_proveedor
@@ -591,6 +603,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'extension', --proyecto
+	'1001000245', --dep_id
+	'1001000186', --objeto_consumidor
+	'1001000290', --objeto_proveedor
+	'form_avance', --identificador
+	NULL, --parametros_a
+	NULL, --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'extension', --proyecto
 	'1001000163', --dep_id
 	'1001000186', --objeto_consumidor
 	'1001000194', --objeto_proveedor
@@ -764,7 +788,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000074', --pantalla
 	'pant_integrantesi', --identificador
-	'10', --orden
+	'11', --orden
 	'3-1-Integrantes Docentes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -783,7 +807,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000075', --pantalla
 	'pant_integrantese', --identificador
-	'11', --orden
+	'12', --orden
 	'3-2-Integrantes Otros', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -802,7 +826,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000076', --pantalla
 	'pant_planilla', --identificador
-	'9', --orden
+	'10', --orden
 	'3-Planilla de Personal Afectado', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -821,7 +845,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000078', --pantalla
 	'pant_formulario', --identificador
-	'7', --orden
+	'8', --orden
 	'1-Identificación del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -840,7 +864,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000087', --pantalla
 	'pant_organizaciones', --identificador
-	'12', --orden
+	'13', --orden
 	'4- Organizaciones Participantes', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -859,7 +883,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000088', --pantalla
 	'pant_objetivos', --identificador
-	'13', --orden
+	'14', --orden
 	'5- Objetivos y Metas a alcanzar', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -897,7 +921,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1001000095', --pantalla
 	'pant_destinatarios', --identificador
-	'8', --orden
+	'9', --orden
 	'2-Destinatarios del Proyecto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -968,6 +992,25 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	NULL, --template_impresion
 	'1001000004'  --punto_montaje
 );
+INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, identificador, orden, etiqueta, descripcion, tip, imagen_recurso_origen, imagen, objetos, eventos, subclase, subclase_archivo, template, template_impresion, punto_montaje) VALUES (
+	'extension', --objeto_ci_proyecto
+	'1001000186', --objeto_ci
+	'1001000111', --pantalla
+	'pant_avance', --identificador
+	'7', --orden
+	'Carga Avances', --etiqueta
+	NULL, --descripcion
+	NULL, --tip
+	'apex', --imagen_recurso_origen
+	NULL, --imagen
+	NULL, --objetos
+	NULL, --eventos
+	NULL, --subclase
+	NULL, --subclase_archivo
+	NULL, --template
+	NULL, --template_impresion
+	'1001000004'  --punto_montaje
+);
 --- FIN Grupo de desarrollo 1001
 
 --- INICIO Grupo de desarrollo 1002
@@ -976,7 +1019,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000009', --pantalla
 	'pant_presupuesto', --identificador
-	'15', --orden
+	'16', --orden
 	'6-Presupuesto', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -995,7 +1038,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000186', --objeto_ci
 	'1002000011', --pantalla
 	'pant_actividad', --identificador
-	'14', --orden
+	'15', --orden
 	'5-1-Plan de Actividad', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
@@ -1203,6 +1246,20 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'extension', --proyecto
+	'1001000111', --pantalla
+	'1001000186', --objeto_ci
+	'1', --orden
+	'1001000245'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
+	'1001000111', --pantalla
+	'1001000186', --objeto_ci
+	'0', --orden
+	'1001000246'  --dep_id
+);
+INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
+	'extension', --proyecto
 	'1002000009', --pantalla
 	'1001000186', --objeto_ci
 	'0', --orden
@@ -1365,6 +1422,24 @@ INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VAL
 	'1001000110', --pantalla
 	'1001000186', --objeto_ci
 	'1001000230', --evento_id
+	'extension'  --proyecto
+);
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000110', --pantalla
+	'1001000186', --objeto_ci
+	'1001000231', --evento_id
+	'extension'  --proyecto
+);
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000111', --pantalla
+	'1001000186', --objeto_ci
+	'1001000230', --evento_id
+	'extension'  --proyecto
+);
+INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (
+	'1001000111', --pantalla
+	'1001000186', --objeto_ci
+	'1001000231', --evento_id
 	'extension'  --proyecto
 );
 INSERT INTO apex_eventos_pantalla (pantalla, objeto_ci, evento_id, proyecto) VALUES (

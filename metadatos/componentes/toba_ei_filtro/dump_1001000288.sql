@@ -25,7 +25,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'0', --colapsable
 	NULL, --descripcion
 	'extension', --fuente_datos_proyecto
-	'designa', --fuente_datos
+	'extension', --fuente_datos
 	NULL, --solicitud_registrar
 	NULL, --solicitud_obj_obs_tipo
 	NULL, --solicitud_obj_observacion
@@ -150,7 +150,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'designa', --carga_fuente
-	'Baja,Prorroga,Cierre', --carga_lista
+	'Baja,Cierre,Prorroga', --carga_lista
 	NULL, --carga_col_clave
 	NULL, --carga_col_desc
 	'0', --carga_permite_no_seteado
@@ -179,10 +179,10 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --check_desc_no
 	NULL, --selec_cant_minima
 	NULL, --selec_cant_maxima
-	NULL, --selec_utilidades
+	'0', --selec_utilidades
 	NULL, --selec_tamano
 	NULL, --selec_ancho
-	NULL, --selec_serializar
+	'0', --selec_serializar
 	NULL, --selec_cant_columnas
 	NULL  --placeholder
 );

@@ -1247,7 +1247,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fecha_prorroga1', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'10', --orden
+	'31', --orden
 	'Fecha Solicitud de Prorroga', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1327,7 +1327,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fecha_prorroga2', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'11', --orden
+	'32', --orden
 	'Fecha Fin Prorroga', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1407,7 +1407,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'estado_informe_a', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'12', --orden
+	'10', --orden
 	'Estado Informe Avance', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1487,7 +1487,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'estado_informe_f', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'13', --orden
+	'11', --orden
 	'Estado Informe Final', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1567,7 +1567,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'id_bases', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'14', --orden
+	'12', --orden
 	'Titulo Convocatoria', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1730,7 +1730,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'resolucion_pago', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'15', --orden
+	'13', --orden
 	'Resolucion Pago', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1810,7 +1810,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fecha_inf_avance', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'16', --orden
+	'14', --orden
 	'Fecha Presentacion Inf de Avance', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1890,7 +1890,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fecha_evaluacion_avance', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'17', --orden
+	'15', --orden
 	'Fecha Evaluacion Inf de Avance', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -1970,7 +1970,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'dictamen', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'18', --orden
+	'16', --orden
 	'Dictamen Consejo de Extension', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2050,7 +2050,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fecha_inf_final', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'19', --orden
+	'17', --orden
 	'Fecha Presentacion Inf Final', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2130,7 +2130,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fecha_evaluacion_final', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'20', --orden
+	'18', --orden
 	'Fecha Evaluacion Inf Final', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2210,7 +2210,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'informe_avance', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'21', --orden
+	'19', --orden
 	'Informe de Avance', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2290,7 +2290,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'informe_final', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'22', --orden
+	'20', --orden
 	'Informe Final', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2370,7 +2370,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'denominacion', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'23', --orden
+	'21', --orden
 	'Titulo del Proyecto', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2450,7 +2450,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'observacion_avance', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'24', --orden
+	'22', --orden
 	'Observacion Inf. Avance', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2530,7 +2530,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'observacion_final', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'25', --orden
+	'23', --orden
 	'Observacion Inf. Final', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2610,7 +2610,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'num_acta_avance', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'26', --orden
+	'24', --orden
 	'N° Acta Inf. Avance', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2690,7 +2690,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'num_acta_final', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'27', --orden
+	'25', --orden
 	'N° Acta Inf. Final', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2770,7 +2770,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'rendicion', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'28', --orden
+	'26', --orden
 	'Rendicion Monto', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2850,7 +2850,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'estado_rendicion', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'29', --orden
+	'27', --orden
 	'Estado Rendicion', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -2930,7 +2930,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'num_acta', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'30', --orden
+	'28', --orden
 	'N° Acta', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -3010,7 +3010,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'num_acta_prorroga', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'31', --orden
+	'29', --orden
 	'N° Acta Prorroga', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
@@ -3090,7 +3090,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'prorrogar', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'32', --orden
+	'30', --orden
 	'Prorrogar', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
