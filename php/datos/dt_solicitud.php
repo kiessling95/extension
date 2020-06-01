@@ -17,7 +17,7 @@ class dt_solicitud extends extension_datos_tabla {
         if (!is_null($where)) {
             $sql .= "AND $where ";
         }
-        
+
         $sql .= "ORDER BY tipo_solicitud";
         return toba::db('extension')->consultar($sql);
     }
