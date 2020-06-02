@@ -2782,12 +2782,20 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF') {
+            if ($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB') {
                 $this->dep('form_integrantes')->set_solo_lectura();
                 $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
+//            else
+//            {
+//                if($estado == 'APRB')
+//                {
+//                    $this->dep('form_integrantes')->evento('baja')->ocultar();
+//                    $form->ef('id_docente')->set_solo_lectura();
+//                }
+//            }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrantes')->descolapsar();
         } else {
