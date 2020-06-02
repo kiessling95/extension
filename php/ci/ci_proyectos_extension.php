@@ -1226,6 +1226,7 @@ class ci_proyectos_extension extends extension_ci {
 
         // OCULTO PANTALLAS DE EDICION DEL PROYECTO HASTA QUE SE SELECCIONE UNO O SE QUIERA CREAR UNO
         $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
@@ -1303,6 +1304,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = 'pant_alta_proyecto';
 
         $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
         $this->pantalla()->tab("pant_integrantesi")->ocultar();
         $this->pantalla()->tab("pant_integrantese")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
@@ -2308,6 +2310,32 @@ class ci_proyectos_extension extends extension_ci {
         $this->s_mostrar_avance = 0;
     }
 
+    //------------------------------------------------------------------------------
+    //-------------------------PANTALLA HISTORIAL-----------------------------------
+    //------------------------------------------------------------------------------
+    
+    function conf__pant_historial(toba_ei_pantalla $pantalla) {
+        $this->s__pantalla = "pant_historial";
+
+        $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
+        $this->pantalla()->tab("pant_edicion")->ocultar();
+        $this->pantalla()->tab("pant_integrantesi")->ocultar();
+        $this->pantalla()->tab("pant_integrantese")->ocultar();
+        $this->pantalla()->tab("pant_actividad")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        $this->pantalla()->tab("pant_solicitud")->ocultar();
+    }
+    
+    //------------------------CUADRO HISTORIAL--------------------------------------
+    
+    function conf__cuadro_historial(toba_ei_cuadro $cuadro) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        
+        $historial = $this->dep('datos')->tabla('logs_pextension')->get_historial($pe['id_pext']);
+        $cuadro->set_datos($historial);
+    }
+    
     //-------------------------------------------------------------------------------
     //------------------------- PANTALLA FORMULARIO PRINCIPAL  ----------------------
     //-------------------------------------------------------------------------------
@@ -2792,14 +2820,11 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
-//            else
-//            {
-//                if($estado == 'APRB')
-//                {
-//                    $this->dep('form_integrantes')->evento('baja')->ocultar();
-//                    $form->ef('id_docente')->set_solo_lectura();
-//                }
-//            }
+            
+            if($estado == 'APRB') {
+                $this->dep('form_integrantes')->evento('baja')->ocultar();
+                $form->ef('id_docente')->set_solo_lectura();
+            }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrantes')->descolapsar();
         } else {
@@ -3143,12 +3168,17 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF') {
+            if ($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB') {
                 $this->dep('form_integrante_e')->set_solo_lectura();
                 $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
                 $this->dep('form_integrante_e')->evento('cancelar')->ocultar();
             }
+            if($estado == 'APRB') {
+                $this->dep('form_integrante_e')->evento('baja')->ocultar();
+                 $form->ef('id_docente')->set_solo_lectura();
+            }
+            
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrante_e')->descolapsar();
         } else {
