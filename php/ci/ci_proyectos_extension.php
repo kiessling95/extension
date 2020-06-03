@@ -1507,7 +1507,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $estado = $pe[id_estado];
-        if ($estado == 'FORM' && $perfil) {
+        if ($perfil != 'sec_ext_central') {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
@@ -1575,11 +1575,13 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         // ACTUALIZO FECHA DE PROYECTO DE HABER PRORROGA
+        /*
         if ($datos['fecha_prorroga2'] != null) {
             $sql = "UPDATE pextension SET fec_hasta ='" . $datos['fecha_prorroga2'] . "' WHERE id_pext =" . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
-
+         * 
+         */
         unset($datos[denominacion]);
         unset($datos[duracion]);
         unset($datos[monto]);
@@ -1613,11 +1615,13 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
-
+/*
         if ($datos['fecha_prorroga2'] != null) {
             $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
+ * 
+ */
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
