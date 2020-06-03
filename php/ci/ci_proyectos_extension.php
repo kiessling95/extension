@@ -1241,6 +1241,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_organizaciones")->ocultar();
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_destinatarios")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
@@ -1318,6 +1319,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_objetivos")->ocultar();
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_presupuesto")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
     }
 
     //------------------------- FORMULARIO ALTA PROYECTO ----------------------------
@@ -1375,6 +1377,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
     }
 
     // ------------------------------------------------------------------------------
@@ -1497,6 +1500,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
     }
 
     //--------------------------------------------------------------------------------
@@ -1652,6 +1656,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
     }
 
     //-------------------------------------------------------------------------------
@@ -1932,6 +1938,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
@@ -2141,6 +2148,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
@@ -2346,6 +2354,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
@@ -2574,6 +2583,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
@@ -2698,6 +2708,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -2777,6 +2788,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -3142,6 +3154,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
@@ -3470,6 +3483,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -3634,6 +3648,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -3780,6 +3795,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
@@ -3934,6 +3950,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_historial")->ocultar();
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
