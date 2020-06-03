@@ -140,6 +140,58 @@ class dt_pextension extends extension_datos_tabla {
         $sql = toba::perfil_de_datos()->filtrar($sql);
         return toba::db('extension')->consultar($sql);
     }
+    
+    function get_proyectos_anteriores($id_doc) {
+        
+        $sql = "SELECT
+			t_p.id_pext,
+                        t_p.denominacion,
+                        t_ua.descripcion as uni_acad_nombre,
+                        t_p.departamento,
+                        t_p.area,
+                        t_p.fec_desde,
+                        t_p.fec_hasta,
+                        t_e.id_estado,
+                        t_e.descripcion as descripcion_estado,
+                        t_p.uni_acad,
+                        s_c.estado_informe_f,
+                        s_c.estado_rendicion,
+                        
+                        d.apellido || ' '|| d.nombre || ' '|| d.tipo_docum || ' '|| d.nro_docum as director,
+                        d.correo_institucional as dir_email,
+               
+                        b_c.id_bases,
+                        t_c.id_conv
+                    FROM
+                        pextension as t_p INNER JOIN"
+                . "(SELECT t_ua.* FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as t_ua (sigla CHARACTER(5), descripcion CHARACTER(60))) as t_ua ON (t_p.uni_acad = t_ua.sigla)
+                        LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D')
+                        LEFT OUTER JOIN (SELECT d.* FROM  dblink('" . $this->dblink_designa() . "', 
+                                    'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre, dc.tipo_docum, dc.nro_docum,dc.correo_institucional
+                                     FROM designacion as d LEFT OUTER JOIN docente as dc
+                                            ON(dc.id_docente = d.id_docente)') as d 
+                                            ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER,correo_institucional CHARACTER(60) )) as d ON (i.id_designacion=d.id_designacion)
+                                            
+                        LEFT OUTER JOIN integrante_interno_pe as i_co ON (t_p.id_pext = i_co.id_pext AND i_co.funcion_p='CD-Co')                        
+                        LEFT OUTER JOIN (SELECT co.* FROM  dblink('" . $this->dblink_designa() . "', 
+                                    'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre, dc.tipo_docum, dc.nro_docum,dc.correo_institucional
+                                     FROM designacion as d LEFT OUTER JOIN docente as dc
+                                            ON(dc.id_docente = d.id_docente)') as co 
+                                            ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER,correo_institucional CHARACTER(60) )) as co ON (i_co.id_designacion=co.id_designacion)
+                        
+                        LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
+                        LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria)
+                        LEFT OUTER JOIN estado_pe as t_e ON (t_e.id_estado = t_p.id_estado)
+                        LEFT OUTER JOIN seguimiento_central as s_c ON (s_c.id_pext = t_p.id_pext)
+                        
+                    WHERE
+                        extract(year from  b_c.fecha_hasta) < extract(year from  current_date) AND b_c.fecha_desde = t_p.fec_desde
+                        AND dc.id_docente = $id_doc
+                        ";
+
+        return toba::db('extension')->consultar($sql);
+    }
+
 
 }
 
