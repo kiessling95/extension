@@ -455,12 +455,6 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 			<td>
 				&nbsp;</td>
 		</tr>
-		<tr>
-			<td>
-				&nbsp;</td>
-			<td>
-				&nbsp;</td>
-		</tr>
 	</tbody>
 </table>
 <p>&nbsp;</p>', --template
