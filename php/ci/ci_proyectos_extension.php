@@ -2375,9 +2375,15 @@ class ci_proyectos_extension extends extension_ci {
                 $this->controlador()->evento('enviar')->ocultar();
                 $this->controlador()->evento('validar')->ocultar();
             } else {
-                $this->pantalla()->tab("pant_solicitud")->ocultar();
-                $this->pantalla()->tab("pant_avance")->ocultar();
-                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+                if ($estado == 'FORM') {
+                   $this->pantalla()->tab("pant_solicitud")->ocultar();
+                    $this->pantalla()->tab("pant_avance")->ocultar();
+                    $this->pantalla()->tab("pant_seguimiento")->ocultar();
+                }
+                if($estado == 'MODF') {
+                    $this->pantalla()->tab("pant_solicitud")->ocultar();
+                    $this->pantalla()->tab("pant_avance")->ocultar();
+                }
             }
         } else {
             $this->controlador()->evento('enviar')->ocultar();
