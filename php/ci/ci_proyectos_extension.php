@@ -1557,6 +1557,8 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_desde')->set_solo_lectura();
         $form->ef('fec_hasta')->set_solo_lectura();
 
+        
+        
         // OBTENGO DE EXISTIR EL BECARIO
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         if ($seg_ua[0]['nro_docum'] != null) {
@@ -1597,7 +1599,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-
+        
 
         if ($datos[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
@@ -1699,7 +1701,6 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $estado = $pe[id_estado];
 
         if ($perfil != 'sec_ext_ua') {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
@@ -1716,7 +1717,6 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
-
             if ($datos['nro_docum'] != null) {
                 $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
                 $datos[integrante] = $ext[nro_docum];
@@ -1724,7 +1724,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($pe['id_estado'] != 'EUA ') {
                 $form->ef('id_estado')->set_solo_lectura();
             }
-
+            
             $datos[uni_acad] = $pe[uni_acad];
             $datos[duracion] = $pe[duracion];
             $datos[monto] = $pe[monto];
@@ -1734,9 +1734,9 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[denominacion] = $pe[denominacion];
             $datos[ord_priori] = $pe[ord_priori];
-            $datos[codigo] = $pe[codigo];
-            $datos['id_estado'] = $pe['id_estado'];
-
+            $datos[codigo] = $this->dep('datos')->tabla('seguimiento_central')->get()[codigo];
+            $datos[id_estado] = $pe[id_estado];
+            
             $form->set_datos($datos);
         } else {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
@@ -2443,7 +2443,11 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('fec_carga')->set_solo_lectura();
             $form->ef('fec_desde')->set_solo_lectura();
             $form->ef('fec_hasta')->set_solo_lectura();
-
+            
+//            if($estado == 'FORM') {
+//                $form->ef('fec_hasta')->set_estado($this->dep('datos')->tabla('pextension')->get()[fec_desde]);
+//            }
+            
             $pext = $this->dep('datos')->tabla('pextension')->get();
             $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext']);
 

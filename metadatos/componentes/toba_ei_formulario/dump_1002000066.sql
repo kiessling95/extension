@@ -513,7 +513,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
-	'1', --carga_permite_no_seteado
+	'0', --carga_permite_no_seteado
 	'--Seleccione--', --carga_no_seteado
 	'0', --carga_no_seteado_ocultar
 	NULL, --edit_tamano
@@ -813,15 +813,15 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'Unidad Academica', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
-	NULL, --colapsado
-	NULL, --desactivado
+	'0', --colapsado
+	'0', --desactivado
 	NULL, --estilo
 	NULL, --total
 	NULL, --inicializacion
-	NULL, --permitir_html
-	NULL, --deshabilitar_rest_func
+	'0', --permitir_html
+	'0', --deshabilitar_rest_func
 	NULL, --estado_defecto
-	NULL, --solo_lectura
+	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
 	NULL, --carga_metodo
 	NULL, --carga_clase
@@ -865,7 +865,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --check_desc_si
 	NULL, --check_desc_no
 	NULL, --check_ml_toggle
-	NULL, --fijo_sin_estado
+	'0', --fijo_sin_estado
 	NULL, --editor_ancho
 	NULL, --editor_alto
 	NULL, --editor_botonera
@@ -903,21 +903,21 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_duracion', --carga_metodo
+	'meses_ejecucion', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	'1001000156', --carga_dt
+	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'designa', --carga_fuente
 	NULL, --carga_lista
-	'id_bases', --carga_col_clave
-	'duracion_convocatoria', --carga_col_desc
-	'id_bases', --carga_maestros
+	'id', --carga_col_clave
+	'descripcion', --carga_col_desc
+	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
-	'1', --carga_permite_no_seteado
-	'--Seleccione--', --carga_no_seteado
+	'0', --carga_permite_no_seteado
+	NULL, --carga_no_seteado
 	'0', --carga_no_seteado_ocultar
 	NULL, --edit_tamano
 	NULL, --edit_maximo
