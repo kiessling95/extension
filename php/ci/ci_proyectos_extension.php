@@ -3878,9 +3878,15 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('plan_actividades')->get();
             $dest = array();
             $aux = $datos['destinatarios'];
+      
             for ($i = 0; $i < strlen($aux); $i++) {
                 if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
-                    $dest . array_push($dest, $aux[$i]);
+                    if ($aux[$i + 1] != '{' AND $aux[$i + 1] != ',' AND $aux[$i + 1] != '}') {
+                        $dest . array_push($dest, $aux[$i] . $aux[$i + 1]);
+                        $i++;
+                    } else {
+                        $dest . array_push($dest, $aux[$i]);
+                    }
                 }
             }
             $datos['destinatarios'] = $dest;
@@ -3926,6 +3932,7 @@ class ci_proyectos_extension extends extension_ci {
             toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
             $datos[anio] = date('Y') + 1;
         }
+        
         $destinatarios = $datos['destinatarios'];
         $array = '{' . $destinatarios[0];
         unset($destinatarios[0]);
