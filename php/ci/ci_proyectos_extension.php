@@ -981,6 +981,13 @@ class ci_proyectos_extension extends extension_ci {
                 // Destinatarios
                 $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($pextension[id_pext]);
 
+                // Ojetivos Específicos
+                $obj_especificos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pextension[id_pext]);
+                foreach ($obj_especificos as $objetivo)
+                {
+                    $porcentaje = $porcentaje + $objetivo['ponderacion'];
+                }
+                
                 $validacion = "";
                 if (count($director) > 1) {
                     $correcto = true;
@@ -1021,6 +1028,14 @@ class ci_proyectos_extension extends extension_ci {
                     $count++;
                 } else {
                     $validacion = " - Destinatarios \n";
+                    toba::notificacion()->agregar($validacion, "error");
+                }
+                
+                if ($porcentaje == 100) {
+                    $validacion = " + Objetivos Especificos Correctos \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                } else {
+                    $validacion = " - Objetivos Especificos \n";
                     toba::notificacion()->agregar($validacion, "error");
                 }
 
@@ -1123,7 +1138,15 @@ class ci_proyectos_extension extends extension_ci {
 
             // Destinatarios
             $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($pextension[id_pext]);
-
+            
+            //Objetivos Específicos
+            $obj_especificos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pextension[id_pext]);
+            foreach ($obj_especificos as $objetivo)
+            {
+                $porcentaje = $porcentaje + $objetivo['ponderacion'];
+            }
+            
+            
             $validacion = "";
             if (count($director) > 1) {
                 $correcto = true;
@@ -1140,27 +1163,35 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if ($correcto) {
-                    $validacion = " + Director \n";
+                    $validacion = " + Director Correcto \n";
                     toba::notificacion()->agregar($validacion, "info");
                 }
             } else {
-                $validacion = " - Director \n";
+                $validacion = " - Director:  Falta definir director de proyecto \n";
                 toba::notificacion()->agregar($validacion, "error");
             }
 
             if (count($co_director) > 1) {
-                $validacion = " + Co-Director \n";
+                $validacion = " + Co-Director Correcto \n";
                 toba::notificacion()->agregar($validacion, "info");
             } else {
-                $validacion = " - Co-Director \n";
+                $validacion = " - Co-Director: Falta definir co-director de proyecto\n";
                 toba::notificacion()->agregar($validacion, "error");
             }
 
             if (count($destinatarios) > 0) {
-                $validacion = " + Destinatarios \n";
+                $validacion = " + Destinatarios Correcto \n";
                 toba::notificacion()->agregar($validacion, "info");
             } else {
-                $validacion = " - Destinatat_serios \n";
+                $validacion = " - Destinatarios: Falta definir destinatarios del proyecto \n";
+                toba::notificacion()->agregar($validacion, "error");
+            }
+            
+            if ($porcentaje == 100) {
+                $validacion = " + Objetivos Especificos Correctos \n";
+                toba::notificacion()->agregar($validacion, "info");
+            } else {
+                $validacion = " - Objetivos Especificos: Falta definir objetivos o el porcentaje de ponderacion no suma 100\n";
                 toba::notificacion()->agregar($validacion, "error");
             }
 
