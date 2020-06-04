@@ -34,6 +34,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__datos_docente_aux;
     protected $s__datos_otro_aux;
     protected $s__id_obj_esp;
+    protected $valido = false;
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
@@ -960,6 +961,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__enviar() {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pextension = $this->dep('datos')->tabla('pextension')->get();
+            
             $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($pextension['id_bases'])[0];
 
             /* Listado condiciones carga :
@@ -1034,6 +1036,7 @@ class ci_proyectos_extension extends extension_ci {
                 if ($porcentaje == 100) {
                     $validacion = " + Objetivos Especificos Correctos \n";
                     toba::notificacion()->agregar($validacion, "info");
+                    $count++;
                 } else {
                     $validacion = " - Objetivos Especificos \n";
                     toba::notificacion()->agregar($validacion, "error");
@@ -1088,7 +1091,7 @@ class ci_proyectos_extension extends extension_ci {
                 }
 
 
-                if ($count == 3) {
+                if ($count == 4) {
                     // Cambio de estado 
                     $pextension[id_estado] = 'EUA ';
                     $where = array();
@@ -1116,6 +1119,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__validar() {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pextension = $this->dep('datos')->tabla('pextension')->get();
+            $count = 0;
 
             /* Listado condiciones carga :
              * 1) Director ( control si adeuda )
@@ -1165,6 +1169,7 @@ class ci_proyectos_extension extends extension_ci {
                 if ($correcto) {
                     $validacion = " + Director Correcto \n";
                     toba::notificacion()->agregar($validacion, "info");
+                    $count++;
                 }
             } else {
                 $validacion = " - Director:  Falta definir director de proyecto \n";
@@ -1174,6 +1179,7 @@ class ci_proyectos_extension extends extension_ci {
             if (count($co_director) > 1) {
                 $validacion = " + Co-Director Correcto \n";
                 toba::notificacion()->agregar($validacion, "info");
+                $count++;
             } else {
                 $validacion = " - Co-Director: Falta definir co-director de proyecto\n";
                 toba::notificacion()->agregar($validacion, "error");
@@ -1182,6 +1188,7 @@ class ci_proyectos_extension extends extension_ci {
             if (count($destinatarios) > 0) {
                 $validacion = " + Destinatarios Correcto \n";
                 toba::notificacion()->agregar($validacion, "info");
+                $count++;
             } else {
                 $validacion = " - Destinatarios: Falta definir destinatarios del proyecto \n";
                 toba::notificacion()->agregar($validacion, "error");
@@ -1190,6 +1197,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($porcentaje == 100) {
                 $validacion = " + Objetivos Especificos Correctos \n";
                 toba::notificacion()->agregar($validacion, "info");
+                $count++;
             } else {
                 $validacion = " - Objetivos Especificos: Falta definir objetivos o el porcentaje de ponderacion no suma 100\n";
                 toba::notificacion()->agregar($validacion, "error");
@@ -1198,39 +1206,63 @@ class ci_proyectos_extension extends extension_ci {
             if ($pextension['denominacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Titulo del Proyecto");
             }
+            else {
+                $count++;
+            }
 
             if ($pextension['eje_tematico'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Eje Tematico");
+            }
+            else {
+                $count++;
             }
 
             if ($pextension['palabras_clave'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Palabras Claves");
             }
+            else {
+                $count++;
+            }
 
             if ($pextension['descripcion_situacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Fundamentacion del Proyecto");
+            }
+            else {
+                $count++;
             }
 
             if ($pextension['caracterizacion_poblacion'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Identificar Destinatarios");
             }
+            else {
+                $count++;
+            }
 
             if ($pextension['localizacion_geo'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Localizacion Geografica");
+            }
+            else {
+                $count++;
             }
 
             if ($pextension['impacto'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Resultados Esperados del Proyecto");
             }
+            else {
+                $count++;
+            }
 
             if ($pextension['objetivo'] == null) {
                 toba::notificacion()->agregar("Falta completar el campo Objetivo");
+            }
+            else {
+                $count++;
             }
 
             if ($pextension['uni_acad'] != null) {
 
                 $dep = $this->dep('datos')->tabla('departamento')->get_departamentos($pextension['uni_acad']);
-
+                
                 if ($dep != null) {
                     if ($pextension['departamento'] == null) {
                         toba::notificacion()->agregar("Falta completar el campo Departamento");
@@ -1239,8 +1271,22 @@ class ci_proyectos_extension extends extension_ci {
                         if ($areas != null && $pextension['area'] == null) {
                             toba::notificacion()->agregar("Falta completar el campo Area");
                         }
+                        else {
+                            $count++;
+                        }
                     }
                 }
+                else {
+                    $count++;
+                }
+            }
+            if($count == 13)
+            {
+                $this->valido = true;
+            }
+            else
+            {
+                $this->valido = false;
             }
         }
     }
@@ -2410,12 +2456,21 @@ class ci_proyectos_extension extends extension_ci {
                    $this->pantalla()->tab("pant_solicitud")->ocultar();
                     $this->pantalla()->tab("pant_avance")->ocultar();
                     $this->pantalla()->tab("pant_seguimiento")->ocultar();
+                    if(!$this->valido)
+                    {
+                        $this->controlador()->evento('enviar')->ocultar();
+                    }
                 }
                 if($estado == 'MODF') {
                     $this->pantalla()->tab("pant_solicitud")->ocultar();
                     $this->pantalla()->tab("pant_avance")->ocultar();
+                    if(!$this->valido)
+                    {
+                        $this->controlador()->evento('enviar')->ocultar();
+                    }
                 }
             }
+            
         } else {
             $this->controlador()->evento('enviar')->ocultar();
             $this->controlador()->evento('pdf')->ocultar();
