@@ -291,7 +291,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'extension', --objeto_cuadro_proyecto
 	'1001000291', --objeto_cuadro
 	'1001000598', --objeto_cuadro_col
-	'ponderacionO', --clave
+	'ponderacion_o', --clave
 	'4', --orden
 	'Ponderación Objetivo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
