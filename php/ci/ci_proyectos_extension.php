@@ -675,11 +675,15 @@ class ci_proyectos_extension extends extension_ci {
         if (is_null($this->s__datos_org[$id_fila]['id_organizacion'])) {
             $id_fila_aux = $id_fila - 1;
         }
+        
         $datos['id_organizacion'] = $this->s__datos_org[$id_fila_aux]['id_organizacion'];
         $datos['nombre'] = $this->s__datos_org[$id_fila_aux]['nombre'];
         $this->s__organizacion = $datos;
+        
+        $nombre = str_replace(',', '', $this->s__organizacion['nombre']);
+        $nombre = str_replace(' ', '', $this->s__organizacion['nombre']);
 
-        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__organizacion['nombre']) . ".pdf";
+        $this->s__nombre = "aval_" . $nombre . ".pdf";
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion['id_organizacion']);
         if ($tiene == 1) {
             $respuesta->set($id_fila);
@@ -695,9 +699,11 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $this->s__datos_docente[$id_fila - 1]['id_pext'];
         $datos['desde'] = $this->s__datos_docente[$id_fila - 1]['desde'];
         $datos['id_designacion'] = $this->s__datos_docente[$id_fila - 1]['id_designacion'];
+        $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila - 1]['nombre']);
+        $nombre = str_replace(' ', '_', $this->s__datos_docente[$id_fila - 1]['nombre']);
 
         $this->s__cv_interno = $datos;
-        $this->s__nombre = "cv_docente_" . str_replace(', ', '_', $this->s__datos_docente[$id_fila - 1]['nombre']) . ".pdf";
+        $this->s__nombre = "cv_docente_" . $nombre . ".pdf";
         $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($datos);
 
         if ($tiene == 1) {
@@ -1623,7 +1629,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
-
+        
         if ($datos[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
             if ($datos['id_estado'] != null) {
@@ -1631,6 +1637,7 @@ class ci_proyectos_extension extends extension_ci {
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
+
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1640,6 +1647,7 @@ class ci_proyectos_extension extends extension_ci {
             $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
+        unset($datos[id_estado]);
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
@@ -2026,7 +2034,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('cancelar')->ocultar();
             } else {
                 if ($perfil != 'sec_ext_central') {
-                    $form->ef('id_estado')->set_solo_lectura();
+                        $form->ef('id_estado')->set_solo_lectura();
                     $form->ef('recibido')->set_solo_lectura();
                     $form->ef('estado_solicitud')->set_solo_lectura();
                     $form->ef('nro_acta')->set_solo_lectura();
