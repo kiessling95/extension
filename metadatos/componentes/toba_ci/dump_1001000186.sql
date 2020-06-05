@@ -249,7 +249,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000300', --evento_id
 	'1001000186', --objeto
 	'enviar', --identificador
-	'&Validar y Enviar', --etiqueta
+	'&Enviar', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	'¿ Esta seguro de realizar el envió ?', --confirmacion

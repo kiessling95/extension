@@ -13,16 +13,19 @@
 			switch (this.ef('informe_avance').get_estado()) {
 					case 'Presento':
 						this.ef('fecha_inf_avance').mostrar();
+                                                this.ef('fecha_inf_avance').set_obligatorio(true);
                                                 this.ef('estado_informe_a').mostrar();
                                                 
 						break;
 					case 'No Presento':
 						this.ef('fecha_inf_avance').ocultar();
+                                                this.ef('fecha_inf_avance').set_obligatorio(false);
                                                 this.ef('estado_informe_a').ocultar();
                                                 
 						break;
 					default:
 						this.ef('fecha_inf_avance').ocultar();
+                                                this.ef('fecha_inf_avance').set_obligatorio(false);
                                                 this.ef('estado_informe_a').ocultar();
                                                 
 						break;					
@@ -34,16 +37,19 @@
                     switch (this.ef('estado_informe_a').get_estado()) {
                                     case 'A':
                                             this.ef('fecha_evaluacion_avance').mostrar();
+                                            this.ef('fecha_evaluacion_avance').set_obligatorio(true);
                                             this.ef('observacion_avance').mostrar();
-                                                this.ef('num_acta_avance').mostrar();
+                                            this.ef('num_acta_avance').mostrar();
                                             break;
                                     case 'D':
                                             this.ef('fecha_evaluacion_avance').ocultar();
+                                            this.ef('fecha_evaluacion_avance').set_obligatorio(false);
                                             this.ef('observacion_avance').mostrar();
                                             this.ef('num_acta_avance').mostrar();
                                             break;
                                     default:
                                             this.ef('fecha_evaluacion_avance').ocultar();
+                                            this.ef('fecha_evaluacion_avance').set_obligatorio(false);
                                             this.ef('observacion_avance').ocultar();
                                             this.ef('num_acta_avance').ocultar();
                                            break;
@@ -55,14 +61,17 @@
 			switch (this.ef('informe_final').get_estado()) {
 					case 'Presento':
 						this.ef('fecha_inf_final').mostrar();
+                                                this.ef('fecha_inf_final').set_obligatorio(true);
                                                 this.ef('estado_informe_f').mostrar();
 						break;
 					case 'No Presento':
 						this.ef('fecha_inf_final').ocultar();
+                                                this.ef('fecha_inf_final').set_obligatorio(false);
                                                 this.ef('estado_informe_f').ocultar();
 						break;
 					default:
 						this.ef('fecha_inf_final').ocultar();
+                                                this.ef('fecha_inf_final').set_obligatorio(false);
                                                 this.ef('estado_informe_f').ocultar();
 						break;					
 				}
@@ -73,16 +82,19 @@
                     switch (this.ef('estado_informe_f').get_estado()) {
                                     case 'A':
                                             this.ef('fecha_evaluacion_final').mostrar();
+                                            this.ef('fecha_evaluacion_final').set_obligatorio(true);
                                             this.ef('observacion_final').mostrar();
                                             this.ef('num_acta_final').mostrar();
                                             break;
                                     case 'D':
                                             this.ef('fecha_evaluacion_final').ocultar();
+                                            this.ef('fecha_evaluacion_final').set_obligatorio(false);
                                             this.ef('observacion_final').mostrar();
                                             this.ef('num_acta_final').mostrar();
                                             break;
                                     default:
                                             this.ef('fecha_evaluacion_final').ocultar();
+                                            this.ef('fecha_evaluacion_final').set_obligatorio(false);
                                             this.ef('observacion_final').ocultar();
                                             this.ef('num_acta_final').ocultar();
                                            break;
@@ -94,6 +106,7 @@
 			switch (this.ef('rendicion').get_estado()) {
 					case 'Presento':
 						this.ef('fecha_rendicion').mostrar();
+                                                this.ef('fecha_rendicion').set_obligatorio(true);
                                                 this.ef('resolucion_pago').mostrar();
                                                 this.ef('rendicion_monto').mostrar();
                                                 this.ef('estado_rendicion').mostrar();
@@ -101,6 +114,7 @@
 						break;
 					case 'No Presento':
 						this.ef('fecha_rendicion').ocultar();
+                                                this.ef('fecha_rendicion').set_obligatorio(false);
                                                 this.ef('resolucion_pago').ocultar();
                                                 this.ef('rendicion_monto').ocultar();
                                                 this.ef('estado_rendicion').ocultar();
@@ -108,6 +122,7 @@
 						break;
 					default:
 						this.ef('fecha_rendicion').ocultar();
+                                                this.ef('fecha_rendicion').set_obligatorio(false);
                                                 this.ef('resolucion_pago').ocultar();
                                                 this.ef('rendicion_monto').ocultar();
                                                 this.ef('estado_rendicion').ocultar();
