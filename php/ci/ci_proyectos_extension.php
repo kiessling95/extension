@@ -2364,6 +2364,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
+        $this->pantalla()->tab("pant_avance")->ocultar();
     }
 
     //------------------------CUADRO HISTORIAL--------------------------------------
@@ -2372,7 +2373,19 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $historial = $this->dep('datos')->tabla('logs_pextension')->get_historial($pe['id_pext']);
-        $cuadro->set_datos($historial);
+        $estado_anterior;
+        $nuevo_historial;
+        $j = 0;
+        $nuevo_historial[$j] = $historial[0];
+        $j++;
+        for($i = 1; $i < sizeof($historial);$i++) {
+            $estado_anterior = $historial[$i-1]['estado'];
+            if($historial[$i]['estado'] != $estado_anterior) {
+                $nuevo_historial[$j] = $historial[$i];
+                $j++;
+            }
+        }
+        $cuadro->set_datos($nuevo_historial);
     }
 
     //-------------------------------------------------------------------------------
@@ -2389,7 +2402,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_actividad")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_central")->ocultar();
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
-        $this->pantalla()->tab("pant_historial")->ocultar();
 
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
