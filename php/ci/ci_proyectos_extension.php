@@ -29,7 +29,6 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__cv_interno;
     protected $s__cv_externo;
     protected $s__nombre;
-    protected $s__pdf;
     protected $s__pextension;
     protected $s__datos_docente_aux;
     protected $s__datos_otro_aux;
@@ -612,52 +611,52 @@ class ci_proyectos_extension extends extension_ci {
             }
         } else {
             if (isset($this->s__organizacion)) {
-                $aval['id_organizacion'] = $this->s__organizacion;
+                $aval['id_organizacion'] = $this->s__organizacion['id_organizacion'];
+                unset($this->s__organizacion);
+
                 $this->dep('datos')->tabla('organizaciones_participantes')->resetear(); //limpia
                 $this->dep('datos')->tabla('organizaciones_participantes')->cargar($aval); //carga el articulo que se selecciono
                 $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
+
                 if (isset($fp_imagen)) {
                     header("Content-type:applicattion/pdf");
                     header("Content-Disposition:attachment;filename=" . $this->s__nombre);
                     echo(stream_get_contents($fp_imagen));
                     exit;
                 }
-                unset($this->s__organizacion);
-                unset($this->s__pdf);
-            } else {
-                if (isset($this->s__cv_interno)) {
-                    $cv['id_pext'] = $this->s__cv_interno[id_pext];
-                    $cv['desde'] = $this->s__cv_interno[desde];
-                    $cv['id_designacion'] = $this->s__cv_interno[id_designacion];
-                    $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); //limpia
-                    $this->dep('datos')->tabla('integrante_interno_pe')->cargar($cv); //carga el articulo que se selecciono
-                    $fp_imagen = $this->dep('datos')->tabla('integrante_interno_pe')->get_blob('cv');
-                    if (isset($fp_imagen)) {
-                        header("Content-type:applicattion/pdf");
-                        header("Content-Disposition:attachment;filename=" . $this->s__nombre);
-                        echo(stream_get_contents($fp_imagen));
-                        exit;
-                    }
-                    unset($this->s__cv_interno);
-                    unset($this->s__pdf);
-                } else {
-                    if (isset($this->s__cv_externo)) {
-                        $cv['id_pext'] = $this->s__cv_externo[id_pext];
-                        $cv['desde'] = $this->s__cv_externo[desde];
-                        $cv['tipo_docum'] = $this->s__cv_externo[tipo_docum];
-                        $cv['nro_docum'] = $this->s__cv_externo[nro_docum];
-                        $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); //limpia
-                        $this->dep('datos')->tabla('integrante_externo_pe')->cargar($cv); //carga el articulo que se selecciono
-                        $fp_imagen = $this->dep('datos')->tabla('integrante_externo_pe')->get_blob('cv');
-                        if (isset($fp_imagen)) {
-                            header("Content-type:applicattion/pdf");
-                            header("Content-Disposition:attachment;filename=" . $this->s__nombre);
-                            echo(stream_get_contents($fp_imagen));
-                            exit;
-                        }
-                        unset($this->s__cv_externo);
-                        unset($this->s__pdf);
-                    }
+            }
+            if (isset($this->s__cv_interno)) {
+
+                $cv['id_pext'] = $this->s__cv_interno[id_pext];
+                $cv['desde'] = $this->s__cv_interno[desde];
+                $cv['id_designacion'] = $this->s__cv_interno[id_designacion];
+                unset($this->s__cv_interno);
+                $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); //limpia
+                $this->dep('datos')->tabla('integrante_interno_pe')->cargar($cv); //carga el articulo que se selecciono
+                $fp_imagen = $this->dep('datos')->tabla('integrante_interno_pe')->get_blob('cv');
+                if (isset($fp_imagen)) {
+                    header("Content-type:applicattion/pdf");
+                    header("Content-Disposition:attachment;filename=" . $this->s__nombre);
+                    echo(stream_get_contents($fp_imagen));
+                    exit;
+                }
+            }
+            if (isset($this->s__cv_externo)) {
+
+
+                $cv['id_pext'] = $this->s__cv_externo[id_pext];
+                $cv['desde'] = $this->s__cv_externo[desde];
+                $cv['tipo_docum'] = $this->s__cv_externo[tipo_docum];
+                $cv['nro_docum'] = $this->s__cv_externo[nro_docum];
+                unset($this->s__cv_externo);
+                $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); //limpia
+                $this->dep('datos')->tabla('integrante_externo_pe')->cargar($cv); //carga el articulo que se selecciono
+                $fp_imagen = $this->dep('datos')->tabla('integrante_externo_pe')->get_blob('cv');
+                if (isset($fp_imagen)) {
+                    header("Content-type:applicattion/pdf");
+                    header("Content-Disposition:attachment;filename=" . $this->s__nombre);
+                    echo(stream_get_contents($fp_imagen));
+                    exit;
                 }
             }
         }
@@ -666,11 +665,27 @@ class ci_proyectos_extension extends extension_ci {
     //esta funcion es invocada desde javascript
     //cuando se presiona el boton pdf_acta
     function ajax__cargar_aval($id_fila, toba_ajax_respuesta $respuesta) {
-        $this->s__organizacion = $this->s__datos_org[$id_fila]['id_organizacion'];
+        unset($this->s__cv_interno);
+        unset($this->s__organizacion);
+        unset($this->s__cv_externo);
+        $this->dep('datos')->tabla('organizaciones_participantes')->resetear(); //limpia
+        // Cuando se pasa de un formulario que hacer referenciua a un popup se reserva la primera dirección
+        // por lo cual cuando vengo de imprimir de un formulario con popup genera conflicto en este que no 
+        // tiene esta es la solución que puede encontrar 
+        $id_fila_aux = $id_fila;
+        if (is_null($this->s__datos_org[$id_fila]['id_organizacion'])) {
+            $id_fila_aux = $id_fila - 1;
+        }
+        
+        $datos['id_organizacion'] = $this->s__datos_org[$id_fila_aux]['id_organizacion'];
+        $datos['nombre'] = $this->s__datos_org[$id_fila_aux]['nombre'];
+        $this->s__organizacion = $datos;
+        
+        $nombre = str_replace(',', '', $this->s__organizacion['nombre']);
+        $nombre = str_replace(' ', '', $this->s__organizacion['nombre']);
 
-        $this->s__nombre = "aval_" . str_replace(' ', '', $this->s__datos_org[$id_fila]['nombre']) . ".pdf";
-        $this->s__pdf = 'aval';
-        $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion);
+        $this->s__nombre = "aval_" . $nombre . ".pdf";
+        $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion['id_organizacion']);
         if ($tiene == 1) {
             $respuesta->set($id_fila);
         } else {
@@ -679,14 +694,19 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function ajax__descargar_cv_docente($id_fila, toba_ajax_respuesta $respuesta) {
-
+        unset($this->s__cv_interno);
+        unset($this->s__organizacion);
+        unset($this->s__cv_externo);
         $datos['id_pext'] = $this->s__datos_docente[$id_fila - 1]['id_pext'];
         $datos['desde'] = $this->s__datos_docente[$id_fila - 1]['desde'];
         $datos['id_designacion'] = $this->s__datos_docente[$id_fila - 1]['id_designacion'];
+        $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila - 1]['nombre']);
+        $nombre = str_replace(' ', '_', $this->s__datos_docente[$id_fila - 1]['nombre']);
+
         $this->s__cv_interno = $datos;
-        $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos_docente[$id_fila - 1]['nombre']) . ".pdf";
-        $this->s__pdf = 'cv';
-        $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($this->s__cv_interno);
+        $this->s__nombre = "cv_docente_" . $nombre . ".pdf";
+        $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($datos);
+
         if ($tiene == 1) {
             $respuesta->set($id_fila);
         } else {
@@ -695,14 +715,16 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function ajax__descargar_cv_otro($id_fila, toba_ajax_respuesta $respuesta) {
+        unset($this->s__cv_interno);
+        unset($this->s__organizacion);
+        unset($this->s__cv_externo);
         $datos['id_pext'] = $this->s__datos_otro[$id_fila - 1]['id_pext'];
         $datos['desde'] = $this->s__datos_otro[$id_fila - 1]['desde'];
         $datos['tipo_docum'] = $this->s__datos_otro[$id_fila - 1]['tipo_docum'];
         $datos['nro_docum'] = $this->s__datos_otro[$id_fila - 1]['nro_docum'];
         $this->s__cv_externo = $datos;
 
-        $this->s__nombre = "cv_" . str_replace(' ', '', $this->s__datos_otro[$id_fila - 1]['nombre']) . ".pdf";
-        $this->s__pdf = 'cv';
+        $this->s__nombre = "cv_" . str_replace(', ', '_', $this->s__datos_otro[$id_fila - 1]['nombre']) . ".pdf";
         $tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_cv($this->s__cv_externo);
         if ($tiene == 1) {
             $respuesta->set($id_fila);
@@ -1592,7 +1614,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
-
+        
         if ($datos[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
             if ($datos['id_estado'] != null) {
@@ -1600,6 +1622,7 @@ class ci_proyectos_extension extends extension_ci {
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
+
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1609,6 +1632,7 @@ class ci_proyectos_extension extends extension_ci {
             $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
+        unset($datos[id_estado]);
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
@@ -2002,17 +2026,23 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('cancelar')->ocultar();
             } else {
                 if ($perfil != 'sec_ext_central') {
-                    $form->ef('id_estado')->set_solo_lectura();
+                        $form->ef('id_estado')->set_solo_lectura();
                     $form->ef('recibido')->set_solo_lectura();
+                    $form->ef('estado_solicitud')->set_solo_lectura();
+                    $form->ef('nro_acta')->set_solo_lectura();
+                    $form->ef('obs_resolucion')->set_solo_lectura();
+                    $form->ef('fecha_fin_prorroga')->set_solo_lectura();
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } else {
                     $form->ef('tipo_solicitud')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
+                    $this->dep('form_solicitud')->evento('baja')->ocultar();
                 }
             }
 
             $form->ef('fecha_solicitud')->set_solo_lectura();
             $form->ef('fecha_recepcion')->set_solo_lectura();
+            $form->ef('id_estado')->set_solo_lectura();
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_solicitud')->descolapsar();
         } else {
@@ -2027,7 +2057,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos[estado_solicitud] != "Enviada") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 if ($datos[estado_solicitud] != "Recibida") {
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    //  $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 }
             }
 
@@ -2051,7 +2081,7 @@ class ci_proyectos_extension extends extension_ci {
         $carga = true;
 
         foreach ($solicitudes as $solicitud) {
-            if ($solicitud[estado_solicitud] != 'Finalizada' && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
+            if (($solicitud[estado_solicitud] != 'Aceptada' && $solicitud[estado_solicitud] != 'Rechazada' ) && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
                 $carga = false;
             }
         }
@@ -2076,18 +2106,32 @@ class ci_proyectos_extension extends extension_ci {
     function evt__form_solicitud__modificacion($datos) {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        unset($pe[x_dbr_clave]);
 
-        if ($datos[id_estado] != $pe[id_estado]) {
-            unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
-            } else {
-                $pe['id_estado'] = 'APRB';
+        if ($datos[estado_solicitud] == 'Aceptada') {
+            switch ($datos[tipo_solicitud]) {
+                case 'Baja':
+                    $pe[id_estado] = 'BAJA';
+                    break;
+
+                case 'Prorroga':
+                    $pe[id_estado] = 'PRG ';
+                    $pe[fec_hasta] = $datos[fecha_fin_prorroga];
+                    break;
+
+                case 'Cierre':
+                    $pe['id_estado'] = 'FIN ';
+                    break;
+
+                default:
+                    break;
             }
+
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
+
         //Control por si Central se olvida de cambiar estado a Recibida
         if ($datos['recibido'] == 1) {
             if ($datos['estado_solicitud'] == 'Enviada') {
@@ -2096,9 +2140,6 @@ class ci_proyectos_extension extends extension_ci {
             $datos['fecha_recepcion'] = date('Y-m-d');
         }
 
-        unset($datos[id_estado]);
-
-        unset($datos[fecha_fin_prorroga]);
         unset($datos[id_estado]);
 
 
@@ -2142,10 +2183,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
 
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
 
-        if (($estado == 'BAJA' || $estado == 'FIN ')) {
+        if (($estado == 'BAJA' || $estado == 'FIN ' || $perfil != 'formulador')) {
             $this->controlador()->evento('alta')->ocultar();
         }
     }
@@ -2171,6 +2213,7 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro_avance(toba_ei_cuadro $cuadro) {
+        unset($this->s__datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos_aux = array();
 
@@ -2191,6 +2234,7 @@ class ci_proyectos_extension extends extension_ci {
             }
             $datos_aux[$aux]['total_avance'] = $avance_total;
             $datos_aux[$aux]['id_obj_esp'] = $objetivo[id_objetivo];
+            $datos_aux[$aux]['ponderacion'] = $objetivo[ponderacion];
             $aux++;
         }
         $aux = 0;
@@ -2198,11 +2242,11 @@ class ci_proyectos_extension extends extension_ci {
             foreach ($datos_aux as $objetivo) {
                 if ($avance[id_obj_esp] == $objetivo[id_obj_esp]) {
                     $datos[$aux]['total_avance'] = $objetivo[total_avance];
+                    $datos[$aux]['ponderacion_o'] = $objetivo[ponderacion];
                 }
             }
             $aux++;
         }
-
         $this->s__datos = $datos;
 
 
@@ -2234,6 +2278,7 @@ class ci_proyectos_extension extends extension_ci {
             $objetivos[$aux]['total_avance'] = $avance_total;
             $aux++;
         }
+
 
         $cuadro->set_datos($objetivos);
     }
@@ -2278,8 +2323,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_avance__alta($datos) {
 
-        $datos['id_obj_esp'] = $this->s__id_obj_esp['id_objetivo'];
-
         $this->dep('datos')->tabla('avance')->set($datos);
         $this->dep('datos')->tabla('avance')->sincronizar();
         $this->dep('datos')->tabla('avance')->cargar($datos);
@@ -2309,7 +2352,7 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------------------------------------------------------------
     //-------------------------PANTALLA HISTORIAL-----------------------------------
     //------------------------------------------------------------------------------
-    
+
     function conf__pant_historial(toba_ei_pantalla $pantalla) {
         $this->s__pantalla = "pant_historial";
 
@@ -2322,16 +2365,16 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
     }
-    
+
     //------------------------CUADRO HISTORIAL--------------------------------------
-    
+
     function conf__cuadro_historial(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        
+
         $historial = $this->dep('datos')->tabla('logs_pextension')->get_historial($pe['id_pext']);
         $cuadro->set_datos($historial);
     }
-    
+
     //-------------------------------------------------------------------------------
     //------------------------- PANTALLA FORMULARIO PRINCIPAL  ----------------------
     //-------------------------------------------------------------------------------
@@ -2355,12 +2398,15 @@ class ci_proyectos_extension extends extension_ci {
             $this->controlador()->evento('enviar')->ocultar();
             $this->controlador()->evento('validar')->ocultar();
         }
-        if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN' || $estado == 'EUA ') {
-            $this->pantalla()->tab("pant_solicitud")->ocultar();
-        }
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+
+            if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN' || $estado == 'EUA ') {
+                $this->pantalla()->tab("pant_solicitud")->ocultar();
+                $this->pantalla()->tab("pant_avance")->ocultar();
+            }
+
 
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'FORM' && $estado != 'MODF') {
@@ -2625,8 +2671,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_destinatarios(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if($estado == 'PRG ')
-        {
+        if ($estado == 'PRG ') {
             $this->controlador()->evento('alta')->mostrar();
         }
         $datos = $this->dep('datos')->tabla('destinatarios')->get_listado($pe['id_pext']);
@@ -2652,15 +2697,15 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
             }
-            
-            if($estado == 'APRB') {
+
+            if ($estado == 'APRB') {
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
                 $form->ef('descripcion')->set_solo_lectura();
             }
-            
+
             $this->controlador()->evento('alta')->ocultar();
-            
-            
+
+
             $this->dep('formulario_destinatarios')->descolapsar();
         } else {
             $this->dep('formulario_destinatarios')->colapsar();
@@ -2829,8 +2874,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if($estado == 'PRG ')
-        {
+        if ($estado == 'PRG ') {
             $this->controlador()->evento('alta')->mostrar();
         }
         if (isset($this->s__where)) {
@@ -2863,13 +2907,13 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
-            
-            if($estado == 'APRB') {
+
+            if ($estado == 'APRB') {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $form->ef('id_docente')->set_solo_lectura();
                 $form->ef('funcion_p')->set_solo_lectura();
             }
-            
+
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrantes')->descolapsar();
         } else {
@@ -2898,12 +2942,10 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('id_docente')->set_solo_lectura();
 
             $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
-            if($estado == 'PRG ' && ($datos['funcion_p'] == 'CD-Co' || $datos['funcion_p'] == 'D    ') )
-            {
+            if ($estado == 'PRG ' && ($datos['funcion_p'] == 'CD-Co' || $datos['funcion_p'] == 'D    ')) {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $form->ef('id_docente')->set_solo_lectura();
                 $form->ef('funcion_p')->set_solo_lectura();
-                
             }
             $docente = $this->dep('datos')->tabla('docente')->get_id_docente($datos['id_designacion']);
             if (count($docente) > 0) {
@@ -3203,8 +3245,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__datos_otro);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if($estado == 'PRG ')
-        {
+        if ($estado == 'PRG ') {
             $this->controlador()->evento('alta')->mostrar();
         }
         if (isset($this->s__where)) {
@@ -3236,15 +3277,15 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
                 $this->dep('form_integrante_e')->evento('cancelar')->ocultar();
             }
-            if($estado == 'APRB') {
+            if ($estado == 'APRB') {
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
-                 $form->ef('integrante')->set_solo_lectura();
-                 $form->ef('tipo')->set_solo_lectura();
-                 $form->ef('funcion_p')->set_solo_lectura();
+                $form->ef('integrante')->set_solo_lectura();
+                $form->ef('tipo')->set_solo_lectura();
+                $form->ef('funcion_p')->set_solo_lectura();
             }
-            
-            $this->controlador()->evento('alta')->ocultar();           
-            
+
+            $this->controlador()->evento('alta')->ocultar();
+
             $this->dep('form_integrante_e')->descolapsar();
         } else {
             $this->dep('form_integrante_e')->colapsar();
@@ -3534,8 +3575,7 @@ class ci_proyectos_extension extends extension_ci {
         //$cuadro->desactivar_modo_clave_segura();
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if($estado == 'PRG ')
-        {
+        if ($estado == 'PRG ') {
             $this->controlador()->evento('alta')->mostrar();
         }
         $this->s__datos_org = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
@@ -3565,13 +3605,13 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
                 $this->dep('form_organizacion')->evento('cancelar')->ocultar();
             }
-            
-            if($estado == 'APRB') {
+
+            if ($estado == 'APRB') {
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
                 $form->ef('nombre')->set_solo_lectura();
                 $form->ef('id_tipo_organizacion')->set_solo_lectura();
             }
-            
+
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_organizacion')->descolapsar();
         } else {
@@ -3897,9 +3937,15 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('plan_actividades')->get();
             $dest = array();
             $aux = $datos['destinatarios'];
+
             for ($i = 0; $i < strlen($aux); $i++) {
                 if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
-                    $dest . array_push($dest, $aux[$i]);
+                    if ($aux[$i + 1] != '{' AND $aux[$i + 1] != ',' AND $aux[$i + 1] != '}') {
+                        $dest . array_push($dest, $aux[$i] . $aux[$i + 1]);
+                        $i++;
+                    } else {
+                        $dest . array_push($dest, $aux[$i]);
+                    }
                 }
             }
             $datos['destinatarios'] = $dest;
@@ -3948,6 +3994,7 @@ class ci_proyectos_extension extends extension_ci {
             toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
             $datos[anio] = date('Y') + 1;
         }
+
         $destinatarios = $datos['destinatarios'];
         $array = '{' . $destinatarios[0];
         unset($destinatarios[0]);
