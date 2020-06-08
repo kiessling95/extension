@@ -2185,7 +2185,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'duracion', --identificador
 	'ef_combo', --elemento_formulario
 	'duracion', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'12', --orden
 	'Duración en Meses', --etiqueta
@@ -2211,7 +2211,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_lista
 	'id', --carga_col_clave
 	'descripcion', --carga_col_desc
-	NULL, --carga_maestros
+	'id_bases', --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
 	'0', --carga_permite_no_seteado

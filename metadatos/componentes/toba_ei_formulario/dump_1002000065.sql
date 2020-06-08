@@ -237,7 +237,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'detalle', --identificador
 	'ef_editable_textarea', --elemento_formulario
 	'detalle', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
 	'Detalle de la Actividad', --etiqueta
@@ -274,8 +274,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_mascara
 	NULL, --edit_unidad
 	NULL, --edit_rango
-	'6', --edit_filas
-	'40', --edit_columnas
+	'4', --edit_filas
+	'80', --edit_columnas
 	NULL, --edit_wrap
 	'0', --edit_resaltar
 	'0', --edit_ajustable
@@ -395,7 +395,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000065', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'localizacion', --identificador
-	'ef_editable', --elemento_formulario
+	'ef_editable_textarea', --elemento_formulario
 	'localizacion', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -434,11 +434,11 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --edit_mascara
 	NULL, --edit_unidad
 	NULL, --edit_rango
-	NULL, --edit_filas
-	NULL, --edit_columnas
+	'4', --edit_filas
+	'80', --edit_columnas
 	NULL, --edit_wrap
-	NULL, --edit_resaltar
-	NULL, --edit_ajustable
+	'0', --edit_resaltar
+	'0', --edit_ajustable
 	NULL, --edit_confirmar_clave
 	NULL, --edit_expreg
 	NULL, --popup_item
