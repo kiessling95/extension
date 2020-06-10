@@ -28,6 +28,7 @@ class ci_bases extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil != 'sec_ext_central' && $perfil != 'admin') {
             $this->dep('cuadro')->evento('seleccion')->ocultar();
+            $this->controlador()->evento('nuevo')->ocultar();
         }
         $this->dep('datos')->resetear();
         if (!is_null($this->s__where)) {
