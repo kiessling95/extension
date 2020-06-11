@@ -1723,12 +1723,12 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('uni_acad')->set_estado($pe[uni_acad]);
             $form->ef('monto')->set_estado($pe[monto]);
             $form->ef('responsable_carga')->set_estado($pe[responsable_carga]);
+            $form->ef('id_bases')->set_estado($pe[id_bases]);
         }
     }
 
     function evt__formulario_seg_ua__alta($datos) {
 
-        $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
@@ -1794,7 +1794,6 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__formulario_seg_ua__modificacion($datos) {
 
-        $this->valido = false;
         //obtengo los datos antes de modificar para verificar que se modificara el becario
         $datos_seg = $this->dep('datos')->tabla('seguimiento_ua')->get();
 
@@ -1924,7 +1923,6 @@ class ci_proyectos_extension extends extension_ci {
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
     function evt__formulario_seg_ua__baja() {
-        $this->valido = false;
         $this->dep('datos')->tabla('seguimiento_ua')->eliminar_todo();
         $this->dep('datos')->tabla('seguimiento_ua')->resetear();
         $this->set_pantalla('pant_seguimiento');
@@ -2683,7 +2681,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_destinatarios(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if ($estado == 'PRG ') {
+        if ($estado == 'PRG ' || $estado == 'APRB') {
             $this->controlador()->evento('alta')->mostrar();
         }
         $datos = $this->dep('datos')->tabla('destinatarios')->get_listado($pe['id_pext']);
@@ -2886,7 +2884,7 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_ii(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if ($estado == 'PRG ') {
+        if ($estado == 'PRG ' || $estado == 'APRB') {
             $this->controlador()->evento('alta')->mostrar();
         }
         if (isset($this->s__where)) {
@@ -3257,7 +3255,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__datos_otro);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if ($estado == 'PRG ') {
+        if ($estado == 'PRG ' || $estado == 'APRB') {
             $this->controlador()->evento('alta')->mostrar();
         }
         if (isset($this->s__where)) {
@@ -3587,7 +3585,7 @@ class ci_proyectos_extension extends extension_ci {
         //$cuadro->desactivar_modo_clave_segura();
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-        if ($estado == 'PRG ') {
+        if ($estado == 'PRG ' || $estado == 'APRB') {
             $this->controlador()->evento('alta')->mostrar();
         }
         $this->s__datos_org = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($pe['id_pext']);
