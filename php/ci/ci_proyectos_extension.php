@@ -701,7 +701,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos['desde'] = $this->s__datos_docente[$id_fila - 1]['desde'];
         $datos['id_designacion'] = $this->s__datos_docente[$id_fila - 1]['id_designacion'];
         $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila - 1]['nombre']);
-        $nombre = str_replace(' ', '_', $this->s__datos_docente[$id_fila - 1]['nombre']);
+        $nombre = str_replace(' ', '_', $nombre);
 
         $this->s__cv_interno = $datos;
         $this->s__nombre = "cv_docente_" . $nombre . ".pdf";
@@ -722,9 +722,11 @@ class ci_proyectos_extension extends extension_ci {
         $datos['desde'] = $this->s__datos_otro[$id_fila - 1]['desde'];
         $datos['tipo_docum'] = $this->s__datos_otro[$id_fila - 1]['tipo_docum'];
         $datos['nro_docum'] = $this->s__datos_otro[$id_fila - 1]['nro_docum'];
+        $nombre = str_replace(',', '', $this->s__datos_otro[$id_fila - 1]['nombre']);
+        $nombre = str_replace(' ', '_', $nombre);
+        
         $this->s__cv_externo = $datos;
-
-        $this->s__nombre = "cv_" . str_replace(', ', '_', $this->s__datos_otro[$id_fila - 1]['nombre']) . ".pdf";
+        $this->s__nombre = "cv_" . $nombre . ".pdf";
         $tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_cv($this->s__cv_externo);
         if ($tiene == 1) {
             $respuesta->set($id_fila);
@@ -1568,29 +1570,10 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario_seguimiento__alta($datos) {
-
+        //toba::db('extension')->consultar("begin transaction");
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
-
-        if ($datos[id_estado] != $pe[id_estado]) {
-            unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
-            } else {
-                $pe['id_estado'] = 'ECEN';
-            }
-            $this->dep('datos')->tabla('pextension')->set($pe);
-            $this->dep('datos')->tabla('pextension')->sincronizar();
-            $this->dep('datos')->tabla('pextension')->cargar($pe);
-        }
-
-        // ACTUALIZO FECHA DE PROYECTO DE HABER PRORROGA
-        if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta ='" . $datos['fecha_prorroga2'] . "' WHERE id_pext =" . $pe[id_pext];
-            toba::db('extension')->consultar($sql);
-        }
 
         unset($datos[denominacion]);
         unset($datos[duracion]);
@@ -1605,8 +1588,21 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
+        
+        if ($datos[id_estado] != $pe[id_estado]) {
+            unset($pe[x_dbr_clave]);
+            if ($datos['id_estado'] != null) {
+                $pe['id_estado'] = $datos['id_estado'];
+            } else {
+                $pe['id_estado'] = 'ECEN';
+            }
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
 
         toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
+        //toba::db('extension')->consultar("commit transaction");
     }
 
     function evt__formulario_seguimiento__modificacion($datos) {
@@ -1763,7 +1759,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if (!is_null($datos[nro_resol])) {
             $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
-
+            // Esta mal fijarse en modificacion
             foreach ($integrantes as $integrante) {
                 $rescd[rescd] = $datos[nro_resol];
                 $this->dep('datos')->tabla('integrante_externo_pe')->set($pe);
