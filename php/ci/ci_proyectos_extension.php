@@ -1636,7 +1636,6 @@ class ci_proyectos_extension extends extension_ci {
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
     function evt__formulario_seguimiento__baja() {
-        $this->valido = false;
         $this->dep('datos')->tabla('seguimiento_central')->eliminar_todo();
         $this->dep('datos')->tabla('seguimiento_central')->resetear();
         $this->set_pantalla('pant_seguimiento');
@@ -2907,12 +2906,13 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB' && $estado != 'PRG ') {
+            if (($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB' && $estado != 'PRG ') || $perfil != 'formulador') {
                 $this->dep('form_integrantes')->set_solo_lectura();
                 $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
+            
 
             if ($estado == 'APRB') {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
@@ -3277,7 +3277,7 @@ class ci_proyectos_extension extends extension_ci {
             $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB' && $estado != 'PRG ') {
+            if (($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB' && $estado != 'PRG ') || $perfil != 'formulador') {
                 $this->dep('form_integrante_e')->set_solo_lectura();
                 $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
@@ -3602,10 +3602,11 @@ class ci_proyectos_extension extends extension_ci {
     function conf__form_organizacion(toba_ei_formulario $form) {
 
         // si presiono el boton alta entonces muestra el formulario para dar de alta un nuevo registro
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         if ($this->s__mostrar_org == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB' && $estado != 'PRG ') {
+            if (($estado != 'FORM' && $estado != 'MODF' && $estado != 'APRB' && $estado != 'PRG ') || $perfil != 'formulador'){
                 $this->dep('form_organizacion')->set_solo_lectura();
                 $this->dep('form_organizacion')->evento('modificacion')->ocultar();
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
@@ -3765,10 +3766,11 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__form_objetivos_esp(toba_ei_formulario $form) {
 
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         if ($this->s__mostrar_obj == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF') {
+            if (($estado != 'FORM' && $estado != 'MODF') || $perfil != 'formulador') {
                 $this->dep('form_objetivos_esp')->set_solo_lectura();
                 $this->dep('form_objetivos_esp')->evento('modificacion')->ocultar();
                 $this->dep('form_objetivos_esp')->evento('baja')->ocultar();
@@ -3924,10 +3926,11 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__form_actividad(toba_ei_formulario $form) {
 
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         if ($this->s__mostrar_activ == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF') {
+            if (($estado != 'FORM' && $estado != 'MODF') || $perfil != 'formulador') {
                 $this->dep('form_actividad')->set_solo_lectura();
                 $this->dep('form_actividad')->evento('modificacion')->ocultar();
                 $this->dep('form_actividad')->evento('baja')->ocultar();
@@ -4082,10 +4085,11 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__form_presupuesto(toba_ei_formulario $form) {
 
+        $perfil = toba::manejador_sesiones()->get_id_usuario_instancia();
         if ($this->s__mostrar_presup == 1) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF') {
+            if (($estado != 'FORM' && $estado != 'MODF') || $perfil != 'formulador' ) {
                 $this->dep('form_presupuesto')->set_solo_lectura();
                 $this->dep('form_presupuesto')->evento('modificacion')->ocultar();
                 $this->dep('form_presupuesto')->evento('baja')->ocultar();
