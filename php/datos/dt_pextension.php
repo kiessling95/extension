@@ -91,19 +91,20 @@ class dt_pextension extends extension_datos_tabla {
         $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $perfil_datos = toba::perfil_de_datos('designa')->get_restricciones_dimension('designa', 'unidad_acad')[0];
-
+        
+        
         if (!is_null($where)) {
 
-            $where = "WHERE " . str_replace('id_bases', 'b_c.id_bases', $where);
-
+            $where = "WHERE " .  $where;
+            
             if ('formulador' == $perfil) {
-                $where = $where . "AND responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "'";
+                $where = $where . " AND responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "' ";
             } else {
                 if ($perfil == 'sec_ext_ua') {
-                    $where = $where . "AND t_p.id_estado <> 'FORM' AND uni_acad='" . $perfil_datos . "'";
+                    $where = $where . " AND t_p.id_estado <> 'FORM' AND uni_acad='" . $perfil_datos . "' ";
                 } else {
                     if ($perfil == 'sec_ext_central') {
-                        $where = $where . "AND t_p.id_estado= 'FORM' AND t_p.id_estado= 'MODF' AND t_p.id_estado= 'EUA ' AND uni_acad='" . $perfil_datos . "'";
+                        $where = $where . " AND t_p.id_estado = 'FORM' AND t_p.id_estado = 'MODF' AND t_p.id_estado= 'EUA ' AND uni_acad='" . $perfil_datos . "' ";
                     }
                 }
             }
@@ -112,7 +113,7 @@ class dt_pextension extends extension_datos_tabla {
                 $where = "WHERE responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "'";
             } else {
                 if ($perfil == 'sec_ext_ua') {
-                    $where = "WHERE (t_p.id_estado= 'EUA ' OR t_p.id_estado= 'MODF') AND uni_acad='" . $perfil_datos . "'";
+                    $where = "WHERE ( t_p.id_estado <> 'FORM') AND uni_acad='" . $perfil_datos . "'";
                 } else {
                     if ($perfil == 'sec_ext_central') {
                         $where = "WHERE t_p.id_estado <> 'MODF' AND t_p.id_estado <> 'FORM' AND t_p.id_estado <> 'EUA '";
@@ -120,7 +121,7 @@ class dt_pextension extends extension_datos_tabla {
                 }
             }
         }
-        $sql = "SELECT
+        $sql = "SELECT * FROM ( SELECT
                         t_p.id_pext,
                         t_c.descripcion,
                         dc.apellido || ' '|| dc.nombre || ' '|| dc.tipo_docum || ' '|| dc.nro_docum as director,
@@ -129,7 +130,9 @@ class dt_pextension extends extension_datos_tabla {
                         t_p.fec_desde,
                         t_p.fec_hasta,  
                         t_p.ord_priori,
-                        t_p.id_estado
+                        t_p.id_estado,
+                        t_p.responsable_carga,
+                        b_c.id_bases
                     FROM
                         pextension as t_p INNER JOIN
                         (SELECT t_ua.* FROM dblink('" . $this->dblink_designa() . "','SELECT sigla FROM unidad_acad ') as t_ua (sigla CHARACTER(5) )) as t_ua ON (t_p.uni_acad = t_ua.sigla)
@@ -137,7 +140,7 @@ class dt_pextension extends extension_datos_tabla {
                         LEFT OUTER JOIN ( SELECT d.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (i.id_designacion = d.id_designacion)
                         LEFT OUTER JOIN ( SELECT dc.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum, dc.nro_docum FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER)) as dc ON (d.id_docente = dc.id_docente)
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (t_p.id_bases = b_c.id_bases)
-                        LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria) "
+                        LEFT OUTER JOIN tipo_convocatoria as t_c ON (t_c.id_conv = b_c.tipo_convocatoria) ) AUX "
                 . $where;
         $sql = toba::perfil_de_datos()->filtrar($sql);
         return toba::db('extension')->consultar($sql);

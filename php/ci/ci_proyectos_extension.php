@@ -1250,12 +1250,12 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 
-        // Restriccón proyectos mo finalizados 
+        // Restriccón proyectos no finalizados 
         $carga = true;
         if ($perfil == 'formulador') {
             $pextension = $this->dep('datos')->tabla('pextension')->get_listado();
             foreach ($pextension as $proyecto) {
-                if ($proyecto['id_estado'] != 'FIN' || $proyecto['id_estado'] != 'BAJA') {
+                if ($proyecto['id_estado'] != 'FIN' && $proyecto['id_estado'] != 'BAJA') {
                     $carga = false;
                 }
             }
@@ -1744,17 +1744,6 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
-//        if ($datos['integrante'] != null) {
-//            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'], $datos[id_pext])[0];
-//            if (!is_null($ext)) {
-//                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
-//                toba::db('extension')->consultar($sql);
-//            }
-//            $datos['tipo_docum'] = $ext['tipo_docum'];
-//            $datos['nro_docum'] = $ext['nro_docum'];
-//            $datos['desde'] = $ext['desde'];
-//        }
-
         if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $datos[fecha_resol] != $pe[fec_desde]) {
             unset($pe[x_dbr_clave]);
 
@@ -1813,49 +1802,15 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__formulario_seg_ua__modificacion($datos) {
 
-        //obtengo los datos antes de modificar para verificar que se modificara el becario
-        $datos_seg = $this->dep('datos')->tabla('seguimiento_ua')->get();
-
-        if ($datos_seg['nro_docum'] != null) {
-            $ext_anterior = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos_seg['nro_docum'], $datos_seg[id_pext])[0];
-        }
-
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
-//        if ($datos['integrante'] != null) {
-//            $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos['integrante'], $datos[id_pext])[0];
-//
-//            if (!is_null($ext_anterior)) {
-//                if ($datos[integrante] != $datos_seg[nro_docum]) {
-//                    $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
-//                    toba::db('extension')->consultar($sql);
-//                }
-//            }
-////            
-//            $sql = "UPDATE integrante_externo_pe SET funcion_p = 'B    ' WHERE nro_docum=" . $ext[nro_docum] . " AND tipo_docum='" . $ext[tipo_docum] . "' AND desde='" . $ext[desde] . "' AND id_pext =" . $ext[id_pext];
-//            toba::db('extension')->consultar($sql);
-////            
-//            $datos['tipo_docum'] = $ext['tipo_docum'];
-//            $datos['nro_docum'] = $ext['nro_docum'];
-//            $datos['desde'] = $ext['desde'];
-//        } else {
-//            if (!is_null($ext_anterior)) {
-//
-//                $sql = "UPDATE integrante_externo_pe SET funcion_p = 'I    ' WHERE nro_docum=" . $ext_anterior[nro_docum] . " AND tipo_docum='" . $ext_anterior[tipo_docum] . "' AND desde='" . $ext_anterior[desde] . "' AND id_pext =" . $ext_anterior[id_pext];
-//                toba::db('extension')->consultar($sql);
-//            }
-//            $datos['tipo_docum'] = null;
-//            $datos['nro_docum'] = null;
-//            $datos['desde'] = null;
-//        }
         if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $pe[fec_desde] != $datos[fecha_resol]) {
             unset($pe[x_dbr_clave]);
             //Obtengo datos de integrantes externos cargados
             $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
             //Obtengo datos de integrantes internos cargados
             $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
-
 
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
@@ -1938,6 +1893,7 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
+        $this->dep('datos')->tabla('seguimiento_ua')->resetear();
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
