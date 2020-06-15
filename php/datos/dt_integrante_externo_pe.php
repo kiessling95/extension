@@ -85,12 +85,15 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "WHERE t_e.nro_docum = $nro_docum AND t_e.id_pext = $id_pext ";
         return toba::db('extension')->consultar($sql);
     }
-     function get_datos($nro_docum = null, $id_pext = null) {
-        $sql = "SELECT * FROM integrante_externo_pe WHERE nro_docum = $nro_docum AND id_pext = $id_pext" ;
+
+    function get_datos($nro_docum = null, $id_pext = null) {
+        $sql = "SELECT * FROM integrante_externo_pe WHERE nro_docum = $nro_docum AND id_pext = $id_pext";
         return toba::db('extension')->consultar($sql);
     }
 
     function get_plantilla($id_p, $filtro = array()) {
+        
+        // Filtro claustro no activo / ni funcional 
         $where = array();
         if (isset($filtro['tipo'])) {
             $where[] = "tipo = " . quote($filtro[tipo][valor]);
@@ -108,7 +111,7 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "t_i.carga_horaria,"
                 . "t_f.descripcion as funcion_p,"
                 . "t_do.correo_institucional as mail,"
-                . "t_do.telefono_celular as telefono," 
+                . "t_do.telefono_celular as telefono,"
                 . "ad_honorem "
                 . "FROM  integrante_interno_pe t_i "
                 . "LEFT OUTER JOIN ( SELECT d.* FROM dblink('" . $this->dblink_designa() . "', "
@@ -180,6 +183,32 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "LEFT OUTER JOIN funcion_extension as t_fe ON (t_e.tipo = t_fe.id_extension) "
                 . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
                 . " where id_pext=" . $id_p . " AND funcion_p='CD-Co' "
+                . " order by nombre,desde";
+        return toba::db('extension')->consultar($sql);
+    }
+
+    function getCodirectorVigente($id_p = null) {
+        $sql = "select "
+                . "id_pext,"
+                . "trim(apellido)||', '||trim(nombre) as nombre,"
+                . "t_p.tipo_docum,"
+                . "t_p.nro_docum,"
+                . "fec_nacim,"
+                . "tipo_sexo,"
+                . "pais_nacim,"
+                . "f_e.descripcion as funcion_p,"
+                . "carga_horaria,"
+                . "desde,hasta,"
+                . "rescd,"
+                . "t_fe.descripcion as tipo,"
+                . "t_p.telefono,"
+                . "t_p.mail,"
+                . "ad_honorem "
+                . "FROM integrante_externo_pe as t_e "
+                . "LEFT OUTER JOIN funcion_extension as f_e ON (t_e.funcion_p = f_e.id_extension) "
+                . "LEFT OUTER JOIN funcion_extension as t_fe ON (t_e.tipo = t_fe.id_extension) "
+                . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum)"
+                . " where id_pext=" . $id_p ." AND t_e.hasta >= '" . date('Y-m-d') . "' AND funcion_p='CD-Co' "
                 . " order by nombre,desde";
         return toba::db('extension')->consultar($sql);
     }
