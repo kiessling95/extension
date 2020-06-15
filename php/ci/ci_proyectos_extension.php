@@ -2683,10 +2683,6 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
             }
 
-            if ($estado == 'APRB') {
-                $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
-                $form->ef('descripcion')->set_solo_lectura();
-            }
 
             $this->controlador()->evento('alta')->ocultar();
 
@@ -2697,6 +2693,12 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('destinatarios')->esta_cargada()) {
+            
+            if ($estado == 'APRB') {
+                $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
+                $form->ef('descripcion')->set_solo_lectura();
+            }
+            
             $datos = $this->dep('datos')->tabla('destinatarios')->get();
 
             $form->set_datos($datos);
@@ -2892,13 +2894,6 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 $this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
-            
-
-            if ($estado == 'APRB') {
-                $this->dep('form_integrantes')->evento('baja')->ocultar();
-                $form->ef('id_docente')->set_solo_lectura();
-                $form->ef('funcion_p')->set_solo_lectura();
-            }
 
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_integrantes')->descolapsar();
@@ -2908,6 +2903,13 @@ class ci_proyectos_extension extends extension_ci {
 
         //para la edicion de los integrantes ya cargados
         if ($this->dep('datos')->tabla('integrante_interno_pe')->esta_cargada()) {
+            
+            if ($estado == 'APRB') {
+                $this->dep('form_integrantes')->evento('baja')->ocultar();
+                $form->ef('id_docente')->set_solo_lectura();
+                $form->ef('funcion_p')->set_solo_lectura();
+            }
+            
             $datos = $this->dep('datos')->tabla('integrante_interno_pe')->get();
             $fp_imagen = $this->dep('datos')->tabla('integrante_interno_pe')->get_blob('cv');
 
@@ -3263,12 +3265,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
                 $this->dep('form_integrante_e')->evento('cancelar')->ocultar();
             }
-            if ($estado == 'APRB') {
-                $this->dep('form_integrante_e')->evento('baja')->ocultar();
-                $form->ef('integrante')->set_solo_lectura();
-                $form->ef('tipo')->set_solo_lectura();
-                $form->ef('funcion_p')->set_solo_lectura();
-            }
+            
 
             $this->controlador()->evento('alta')->ocultar();
 
@@ -3279,6 +3276,14 @@ class ci_proyectos_extension extends extension_ci {
 
         //para la edicion de los integrantes ya cargados
         if ($this->dep('datos')->tabla('integrante_externo_pe')->esta_cargada()) {
+            
+            if ($estado == 'APRB') {
+                $this->dep('form_integrante_e')->evento('baja')->ocultar();
+                $form->ef('integrante')->set_solo_lectura();
+                $form->ef('tipo')->set_solo_lectura();
+                $form->ef('funcion_p')->set_solo_lectura();
+            }
+            
             $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get();
             $datos['funcion_p'] = str_pad($datos['funcion_p'], 5);
             $datos['tipo'] = str_pad($datos['tipo'], 5);
@@ -3593,11 +3598,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_organizacion')->evento('cancelar')->ocultar();
             }
 
-            if ($estado == 'APRB') {
-                $this->dep('form_organizacion')->evento('baja')->ocultar();
-                $form->ef('nombre')->set_solo_lectura();
-                $form->ef('id_tipo_organizacion')->set_solo_lectura();
-            }
+            
 
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_organizacion')->descolapsar();
@@ -3606,6 +3607,13 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
+            
+            if ($estado == 'APRB') {
+                $this->dep('form_organizacion')->evento('baja')->ocultar();
+                $form->ef('nombre')->set_solo_lectura();
+                $form->ef('id_tipo_organizacion')->set_solo_lectura();
+            }
+            
             $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
             $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
             if (isset($fp_imagen)) {
