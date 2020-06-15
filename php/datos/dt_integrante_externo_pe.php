@@ -85,6 +85,14 @@ class dt_integrante_externo_pe extends extension_datos_tabla {
                 . "WHERE t_e.nro_docum = $nro_docum AND t_e.id_pext = $id_pext ";
         return toba::db('extension')->consultar($sql);
     }
+    
+    function getIntegranteVigente($nro_docum = null, $id_pext = null) {
+        $sql = "select t_e.*,trim(apellido)||', '||trim(nombre) as nombre "
+                . "FROM integrante_externo_pe as t_e "
+                . "LEFT OUTER JOIN persona t_p ON (t_e.tipo_docum=t_p.tipo_docum and t_e.nro_docum=t_p.nro_docum) "
+                . "WHERE t_e.nro_docum = $nro_docum AND t_e.id_pext = $id_pext AND t_e.hasta >= '" . date('Y-m-d')."'";
+        return toba::db('extension')->consultar($sql);
+    }
 
     function get_datos($nro_docum = null, $id_pext = null) {
         $sql = "SELECT * FROM integrante_externo_pe WHERE nro_docum = $nro_docum AND id_pext = $id_pext";
