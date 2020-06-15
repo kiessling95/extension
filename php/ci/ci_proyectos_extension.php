@@ -3482,6 +3482,12 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
+            
+            if ($estado == 'APRB' || $estado == 'PRG ') {
+                $this->dep('form_organizacion')->evento('baja')->ocultar();
+                $form->ef('nombre')->set_solo_lectura();
+                $form->ef('id_tipo_organizacion')->set_solo_lectura();
+            }
             $datos = $this->dep('datos')->tabla('organizaciones_participantes')->get();
             $fp_imagen = $this->dep('datos')->tabla('organizaciones_participantes')->get_blob('aval');
             if (isset($fp_imagen)) {
