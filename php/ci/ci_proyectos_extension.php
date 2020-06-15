@@ -2614,20 +2614,17 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
             }
 
-            if ($estado == 'APRB') {
-                $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
-                $form->ef('descripcion')->set_solo_lectura();
-            }
-
             $this->controlador()->evento('alta')->ocultar();
-
-
             $this->dep('formulario_destinatarios')->descolapsar();
         } else {
             $this->dep('formulario_destinatarios')->colapsar();
         }
 
         if ($this->dep('datos')->tabla('destinatarios')->esta_cargada()) {
+            if ($estado == 'APRB' || $estado == 'PRG') {
+                $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
+                $form->ef('descripcion')->set_solo_lectura();
+            }
             $datos = $this->dep('datos')->tabla('destinatarios')->get();
 
             $form->set_datos($datos);
