@@ -101,10 +101,10 @@ class dt_pextension extends extension_datos_tabla {
                 $where = $where . " AND responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "' ";
             } else {
                 if ($perfil == 'sec_ext_ua') {
-                    $where = $where . " AND t_p.id_estado <> 'FORM' AND uni_acad='" . $perfil_datos . "' ";
+                    $where = $where . " AND id_estado <> 'FORM' AND uni_acad='" . $perfil_datos . "' ";
                 } else {
                     if ($perfil == 'sec_ext_central') {
-                        $where = $where . " AND t_p.id_estado = 'FORM' AND t_p.id_estado = 'MODF' AND t_p.id_estado= 'EUA ' AND uni_acad='" . $perfil_datos . "' ";
+                        $where = $where . " AND id_estado = 'FORM' AND id_estado = 'MODF' AND id_estado= 'EUA ' AND uni_acad='" . $perfil_datos . "' ";
                     }
                 }
             }
@@ -113,10 +113,10 @@ class dt_pextension extends extension_datos_tabla {
                 $where = "WHERE responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "'";
             } else {
                 if ($perfil == 'sec_ext_ua') {
-                    $where = "WHERE ( t_p.id_estado <> 'FORM') AND uni_acad='" . $perfil_datos . "'";
+                    $where = "WHERE ( id_estado <> 'FORM') AND uni_acad='" . $perfil_datos . "'";
                 } else {
                     if ($perfil == 'sec_ext_central') {
-                        $where = "WHERE t_p.id_estado <> 'MODF' AND t_p.id_estado <> 'FORM' AND t_p.id_estado <> 'EUA '";
+                        $where = "WHERE id_estado <> 'MODF' AND id_estado <> 'FORM' AND id_estado <> 'EUA '";
                     }
                 }
             }
