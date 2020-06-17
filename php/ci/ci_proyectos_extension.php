@@ -642,10 +642,16 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_interno);
         unset($this->s__organizacion);
         unset($this->s__cv_externo);
-        $datos['id_pext'] = $this->s__datos_docente[$id_fila - 1]['id_pext'];
-        $datos['desde'] = $this->s__datos_docente[$id_fila - 1]['desde'];
-        $datos['id_designacion'] = $this->s__datos_docente[$id_fila - 1]['id_designacion'];
-        $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila - 1]['nombre']);
+        
+        $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); // limpiar
+        $id_fila_aux = $id_fila-1;
+        if (is_null($this->s__datos_docente[$id_fila]['id_designacion'])) {
+            $id_fila_aux = $id_fila - 1;
+        }
+        $datos['id_pext'] = $this->s__datos_docente[$id_fila_aux]['id_pext'];
+        $datos['desde'] = $this->s__datos_docente[$id_fila_aux]['desde'];
+        $datos['id_designacion'] = $this->s__datos_docente[$id_fila_aux]['id_designacion'];
+        $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila_aux]['nombre']);
         $nombre = str_replace(' ', '_', $nombre);
 
         $this->s__cv_interno = $datos;
@@ -663,11 +669,17 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_interno);
         unset($this->s__organizacion);
         unset($this->s__cv_externo);
-        $datos['id_pext'] = $this->s__datos_otro[$id_fila - 1]['id_pext'];
-        $datos['desde'] = $this->s__datos_otro[$id_fila - 1]['desde'];
-        $datos['tipo_docum'] = $this->s__datos_otro[$id_fila - 1]['tipo_docum'];
-        $datos['nro_docum'] = $this->s__datos_otro[$id_fila - 1]['nro_docum'];
-        $nombre = str_replace(',', '', $this->s__datos_otro[$id_fila - 1]['nombre']);
+        
+        $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); // limpiar
+        $id_fila_aux = $id_fila-1;
+        if (is_null($this->s__datos_otro[$id_fila]['nro_docum'])) {
+            $id_fila_aux = $id_fila - 1;
+        }
+        $datos['id_pext'] = $this->s__datos_otro[$id_fila_aux]['id_pext'];
+        $datos['desde'] = $this->s__datos_otro[$id_fila_aux]['desde'];
+        $datos['tipo_docum'] = $this->s__datos_otro[$id_fila_aux]['tipo_docum'];
+        $datos['nro_docum'] = $this->s__datos_otro[$id_fila_aux]['nro_docum'];
+        $nombre = str_replace(',', '', $this->s__datos_otro[$id_fila_aux]['nombre']);
         $nombre = str_replace(' ', '_', $nombre);
 
         $this->s__cv_externo = $datos;
