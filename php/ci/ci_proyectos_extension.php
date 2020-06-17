@@ -215,6 +215,8 @@ class ci_proyectos_extension extends extension_ci {
                 //---------------------------------------------------------------------------------------------------
                 //salto linea
                 $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+                // Resumen inicio 
                 if ($this->s__imprimir_resumen == 0) {
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del origen del proyecto') . '</b>');
@@ -224,26 +226,30 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp = array();
                     $tabla_dp[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del Proyecto') . '</b>', 'col2' => trim($datos['descripcion_situacion']));
 
+                    //$pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
+                    //$datos_pext = array();
+                    //$datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
+                    //$pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                    //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
+                    $tabla_dp[1] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
+
+                    $tabla_dp[2] = array('col1' => utf8_d_seguro('Localización geográfica'), 'col2' => $datos['localizacion_geo']);
+
+
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
+                    //-------------------------------------------------------------------------------------------------------------
+                    //salto de linea
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+
                     $datos_pext = array();
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
+                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Objetivo General') . '</b>');
                     $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
                     //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
-                    $tabla_dp[0] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
-                    $i = 1;
-                    foreach ($destinatarios as $destinatario) {
-                        $text = '<b> * Domicilio : </b>' . $destinatario['domicilio'] . "\n";
-                        $text = $text . '<b> * Telefono : </b>' . $destinatario['telefono'] . "\n";
-                        $text = $text . '<b> * Correo : </b>' . $destinatario['email'] . "\n";
-                        $text = $text . '<b> * Contacto </b>' . $destinatario['contacto'] . "\n";
 
-                        $tabla_dp[$i] = array('col1' => '' . $destinatario['descripcion'], 'col2' => '' . $text);
-                        $i = $i + 1;
-                    }
-                    $i = $i + 1;
-                    $tabla_dp[$i] = array('col1' => utf8_d_seguro('Localización geográfica'), 'col2' => $datos['localizacion_geo']);
-
+                    $tabla_dp = array();
+                    //Nombre del Proyecto
+                    $tabla_dp[0] = array('col1' => utf8_d_seguro('Objetivo General'), 'col2' => $datos[objetivo]);
 
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
@@ -260,23 +266,33 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp[0] = array('col1' => utf8_d_seguro('Resultados esperados del proyecto'), 'col2' => $datos[impacto]);
 
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
-                    //-------------------------------------------------------------------------------------------------------------
-                    //salto de linea
-                    $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-                    $datos_pext = array();
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Objetivo General') . '</b>');
-                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
 
-                    $tabla_dp = array();
-                    //Nombre del Proyecto
-                    $tabla_dp[0] = array('col1' => utf8_d_seguro('Objetivo General'), 'col2' => $datos[objetivo]);
-
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+
+                    // ---------------------- DESTINATARIOS ------------------------------
+                    $datos_pext = array();
+                    $datos_pext[0] = array('col1' => '<b> Destinatarios </b>');
+                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                    $cols_dp = array('col1' => "<b>Nro</b>", 'col2' => utf8_d_seguro('Nombre'), 'col3' => utf8_d_seguro('email'), 'col4' => utf8_d_seguro('domicilio'), 'col5' => utf8_d_seguro('telefono'), 'col6' => utf8_d_seguro('Contacto'));
+
+                    $tabla_dp = array();
+                    $i = 0;
+                    foreach ($destinatarios as $destinatario) {
+
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $destinatario[descripcion], 'col3' => $destinatario[email], 'col4' => $destinatario[domicilio], 'col5' => $destinatario[telefono], 'col6' => $destinatario[contacto]);
+                        $i = $i + 1;
+                    }
+
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 90), 'col3' => array('width' => 170), 'col4' => array('width' => 100), 'col5' => array('width' => 80), 'col6' => array('width' => 80))));
+
+                    //------------------------------------------------------------------------------------------------------------
+                    //salto de linea
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+
 
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b> Objetivos especificos </b>');
@@ -331,63 +347,22 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
 
+                // Fin Resumen 
+
                 $datos_pext = array();
                 $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Equipo y Organizaciones participantes') . '</b>');
                 $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
 
-                // Claustro Docente
+                // -----------------------------   Claustro Docente
                 $tabla_dp = array();
                 $i = 0;
-
                 foreach ($integrantes as $integrante) {
 
                     if ($integrante[tipo] == 'Docente') {
-                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Docentes / Investigadores') . '</b>');
-                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
-                        $tabla_dp = array();
-
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
-                }
-
-                // Claustro Estudiante 
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($integrantes as $integrante) {
-                    if ($integrante[tipo] == 'Estudiante') {
-                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Estudiantes') . '</b>');
-                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
-
-                        $tabla_dp = array();
-
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
-                }
-
-
-
-                // Claustro Graduados
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($integrantes as $integrante) {
-                    if ($integrante[tipo] == 'Graduado') {
                         if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Graduados') . '</b>');
+                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Docentes') . '</b>');
                             $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
                             $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
-
                             $tabla_dp = array();
                         }
 
@@ -400,7 +375,49 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
                 }
 
-                // Claustro No Docente
+                // ---------------------------     Claustro Estudiante 
+                $tabla_dp = array();
+                $i = 0;
+                foreach ($integrantes as $integrante) {
+                    if ($integrante[tipo] == 'Estudiante') {
+                        if ($i == 0) {
+                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Estudiantes') . '</b>');
+                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $tabla_dp = array();
+                        }
+
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
+
+                        $i = $i + 1;
+                    }
+                }
+                if (count($tabla_dp) >= 1) {
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                }
+
+                //------------------------------------ Claustro Graduados
+                $tabla_dp = array();
+                $i = 0;
+                foreach ($integrantes as $integrante) {
+                    if ($integrante[tipo] == 'Graduado') {
+                        if ($i == 0) {
+                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Graduados') . '</b>');
+                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $tabla_dp = array();
+                        }
+
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
+
+                        $i = $i + 1;
+                    }
+                }
+                if (count($tabla_dp) >= 1) {
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                }
+
+                // --------------------------                    Claustro No Docente
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($integrantes as $integrante) {
@@ -422,7 +439,7 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
                 }
 
-                // Claustro Externo
+                // ---------------------------------      Claustro Externo
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($integrantes as $integrante) {
@@ -3457,7 +3474,7 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
-            
+
             if ($estado == 'APRB' || $estado == 'PRG ') {
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
                 $form->ef('nombre')->set_solo_lectura();
