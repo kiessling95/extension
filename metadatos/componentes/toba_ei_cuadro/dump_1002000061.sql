@@ -51,13 +51,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1002000045', --evento_id
 	'1002000061', --objeto
 	'seleccion', --identificador
-	'', --etiqueta
+	'Actividades', --etiqueta
 	'1', --maneja_datos
 	'1', --sobre_fila
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'doc.gif', --imagen
+	'abrir.gif', --imagen
 	'0', --en_botonera
 	NULL, --ayuda
 	'1', --orden
@@ -90,7 +90,7 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --confirmacion
 	NULL, --estilo
 	'apex', --imagen_recurso_origen
-	'editable.gif', --imagen
+	'doc.gif', --imagen
 	'0', --en_botonera
 	NULL, --ayuda
 	'2', --orden
