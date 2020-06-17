@@ -3314,8 +3314,10 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $pe['id_pext'];
         $datos['tipo_docum'] = $datos['integrante'][0];
         $datos['nro_docum'] = $datos['integrante'][1];
+
         $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
-        if (!is_null($int_ext)) {
+
+        if (is_null($int_ext)) {
             if ($datos['hasta'] > $datos['desde']) {
                 if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
                     if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
