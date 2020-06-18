@@ -242,7 +242,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'2', --orden
 	'Monto restante del Rubro', --etiqueta
 	NULL, --etiqueta_estilo
-	'De existir un monto máximo por rubro se vera reflejado caso contrario aparece 9999', --descripcion
+	'De existir un monto máximo por rubro se vera reflejado', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
