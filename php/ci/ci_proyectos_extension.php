@@ -1292,6 +1292,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $datos[duracion] = $duracion[duracion_convocatoria] * 12;
         $datos[fec_desde] = $bases[fecha_hasta];
+        
+        $fecha_hasta = date("d-m-Y", strtotime($datos[fec_desde] . "+" . $datos[duracion] . " month"));
+
+        $datos[fec_hasta] = date("d/m/Y", strtotime($fecha_hasta));
+        
 
 
         //responsable de carga proyecto
