@@ -3394,10 +3394,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+        
         if (!is_null($this->s__datos_otro_aux)) {
             $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
             $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
             $datos['id_pext'] = $this->s__datos_otro_aux['id_pext'];
+            $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['nro_docum'], $datos['id_pext'])[0];
         }
 
         //Si count == 2 se modifico la persona asociada
@@ -3406,6 +3408,7 @@ class ci_proyectos_extension extends extension_ci {
             $int_ext = array();
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
         }
+
         //control fecha hasta mayor a desde
         if ($datos['hasta'] > $datos['desde']) {
             //control fecha hasta menor o igual a fecha fin proyecto
