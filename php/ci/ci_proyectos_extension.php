@@ -759,7 +759,7 @@ class ci_proyectos_extension extends extension_ci {
             }
             return ($monto[monto_max] - $count);
         } else {
-            return 9999;
+            return 'No existe monto maximo';
         }
     }
 
