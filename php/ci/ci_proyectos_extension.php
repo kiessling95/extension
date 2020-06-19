@@ -1701,12 +1701,13 @@ class ci_proyectos_extension extends extension_ci {
         unset($datosAux[integrante]);
         unset($datosAux[id_estado]);
         
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datosAux);
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
 
         unset($pe[x_dbr_clave]);
         
@@ -1807,7 +1808,10 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario_seg_ua__modificacion($datos) {
-
+        
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        
         $datosAux = $datos;
         // Guardo Cambios
         unset($datosAux[ord_priori]);
@@ -1815,9 +1819,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         //$this->dep('datos')->tabla('seguimiento_ua')->resetear();
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-
+       
         unset($pe[x_dbr_clave]);
 
         // Analiso cambios externos al seg 
