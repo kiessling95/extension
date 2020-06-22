@@ -912,7 +912,7 @@ class ci_proyectos_extension extends extension_ci {
                 break;
             default :
                 $this->set_pantalla('pant_edicion');
-                $this->dep('datos')->tabla('pextension')->resetear();
+                //$this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
 
@@ -1684,6 +1684,8 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario_seg_ua__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
         
         $datosAux = $datos;
         // Guardo Cambios
@@ -1814,6 +1816,7 @@ class ci_proyectos_extension extends extension_ci {
         
         $datosAux = $datos;
         // Guardo Cambios
+        
         unset($datosAux[ord_priori]);
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
