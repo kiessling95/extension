@@ -1984,6 +1984,12 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro_solicitud(toba_ei_cuadro $cuadro) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        
+        if($perfil != 'formulador') {
+            $this->controlador()->evento('alta')->ocultar();
+        }
+        
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
@@ -2018,7 +2024,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_solicitud == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
+            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
@@ -2299,7 +2305,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_avance == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
+            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
                 $this->dep('form_avance')->set_solo_lectura();
                 $this->dep('form_avance')->evento('modificacion')->ocultar();
                 $this->dep('form_avance')->evento('baja')->ocultar();
