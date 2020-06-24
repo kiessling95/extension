@@ -788,7 +788,7 @@ class ci_proyectos_extension extends extension_ci {
             }
             return ($monto[monto_max] - $count);
         } else {
-            return 9999;
+            return 'No existe monto maximo';
         }
     }
 
@@ -1292,6 +1292,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $datos[duracion] = $duracion[duracion_convocatoria] * 12;
         $datos[fec_desde] = $bases[fecha_hasta];
+        
+        $fecha_hasta = date("d-m-Y", strtotime($datos[fec_desde] . "+" . $datos[duracion] . " month"));
+
+        $datos[fec_hasta] = date("d/m/Y", strtotime($fecha_hasta));
+        
 
 
         //responsable de carga proyecto
@@ -1698,11 +1703,13 @@ class ci_proyectos_extension extends extension_ci {
         unset($datosAux[integrante]);
         unset($datosAux[id_estado]);
         
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datosAux);
 
-        
 
         unset($pe[x_dbr_clave]);
         
@@ -1815,8 +1822,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         //$this->dep('datos')->tabla('seguimiento_ua')->resetear();
 
-        
-
+       
         unset($pe[x_dbr_clave]);
 
         // Analiso cambios externos al seg 
@@ -1978,6 +1984,12 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro_solicitud(toba_ei_cuadro $cuadro) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        
+        if($perfil != 'formulador') {
+            $this->controlador()->evento('alta')->ocultar();
+        }
+        
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
@@ -2012,7 +2024,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_solicitud == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
+            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
@@ -2293,7 +2305,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_avance == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
+            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
                 $this->dep('form_avance')->set_solo_lectura();
                 $this->dep('form_avance')->evento('modificacion')->ocultar();
                 $this->dep('form_avance')->evento('baja')->ocultar();
@@ -3398,10 +3410,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+        
         if (!is_null($this->s__datos_otro_aux)) {
             $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
             $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
             $datos['id_pext'] = $this->s__datos_otro_aux['id_pext'];
+            $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['nro_docum'], $datos['id_pext'])[0];
         }
 
         //Si count == 2 se modifico la persona asociada
@@ -3410,6 +3424,7 @@ class ci_proyectos_extension extends extension_ci {
             $int_ext = array();
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
         }
+
         //control fecha hasta mayor a desde
         if ($datos['hasta'] > $datos['desde']) {
             //control fecha hasta menor o igual a fecha fin proyecto
