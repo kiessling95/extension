@@ -2358,6 +2358,8 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_avance__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos[id_pext] = $pe[id_pext];
 
         $this->dep('datos')->tabla('avance')->set($datos);
         $this->dep('datos')->tabla('avance')->sincronizar();
