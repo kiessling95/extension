@@ -75,10 +75,9 @@ class ci_bases extends extension_ci {
     }
 
     function evt__cuadro_rubros__seleccion($datos) {
-
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
         $datos[id_bases] = $bases[id_bases];
-        $rubros = $this->dep('datos')->tabla('rubro_presup_extension')->get_descripcion($datos[id_rubro_extension]);
+//        $rubros = $this->dep('datos')->tabla('rubro_presup_extension')->get_descripcion($datos[id_rubro_extension]);
         $this->s__mostrar = 1;
         $this->s__rubro = $datos[id_rubro_extension];
         $this->dep('datos')->tabla('montos_convocatoria')->cargar($datos);
@@ -291,6 +290,7 @@ class ci_bases extends extension_ci {
     // Formulario montos
 
     function conf__formulario_montos(toba_ei_formulario $form) {
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
         if ($this->s__mostrar == 1) {
             $this->dep('formulario_montos')->descolapsar();
         } else {
@@ -298,7 +298,7 @@ class ci_bases extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('montos_convocatoria')->esta_cargada()) {
-            $form->set_datos($this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($this->s__rubro)[0]);
+            $form->set_datos($this->dep('datos')->tabla('montos_convocatoria')->get_descripciones(($this->s__rubro)[0],$bases[id_bases]));
         }
     }
 
@@ -330,8 +330,8 @@ class ci_bases extends extension_ci {
     }
 
     function evt__formulario_montos__modificacion($datos) {
-
-        $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones($this->s__rubro)[0];
+        $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
+        $monto = $this->dep('datos')->tabla('montos_convocatoria')->get_descripciones(($this->s__rubro)[0],$bases[id_bases]);
         $bases = $this->dep('datos')->tabla('bases_convocatoria')->get();
 
         $datos['id_bases'] = $monto['id_bases'];
