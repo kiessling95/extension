@@ -1066,7 +1066,7 @@ class ci_proyectos_extension extends extension_ci {
                 }
 
 
-                
+
 
                 if ($tiene == 1) {
                     $validacion = " + Co-Director + CV Correcto \n";
@@ -2351,12 +2351,15 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('avance')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('avance')->get();
-
+            $datos[link] = "<a taget='_blank' href='" . $datos[link] . "'> Link </a>";
+            
             $form->set_datos($datos);
         }
     }
 
     function evt__form_avance__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos[id_pext] = $pe[id_pext];
 
         $this->dep('datos')->tabla('avance')->set($datos);
         $this->dep('datos')->tabla('avance')->sincronizar();
