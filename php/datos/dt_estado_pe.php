@@ -30,7 +30,7 @@ class dt_estado_pe extends extension_datos_tabla
                 . "FROM estado_pe "
                 . "WHERE "
                 . "id_estado ='MODF' "
-                . "OR id_estado ='PAPR' "
+                . "OR id_estado ='ECEN' "
                 . "OR id_estado ='EUA'";
         
         }

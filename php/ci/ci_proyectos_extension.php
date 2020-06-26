@@ -1568,6 +1568,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
+        $datosAux= $datos;
 
         unset($datos[denominacion]);
         unset($datos[duracion]);
@@ -1582,11 +1584,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
-
-        if ($datos[id_estado] != $pe[id_estado]) {
+        
+        // Control cambio estado
+        if ($datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
+            if ($datosAux['id_estado'] != null) {
+                $pe['id_estado'] = $datosAux['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
@@ -1603,11 +1606,17 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
+        $datosAux = $datos;
+        
+        unset($datos[id_estado]);
 
+        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
 
-        if ($datos[id_estado] != $pe[id_estado]) {
+        if ($datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
+            if ($datosAux['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
@@ -1618,14 +1627,10 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
 
-        if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
+        if ($datosAux['fecha_prorroga2'] != null) {
+            $sql = "UPDATE pextension SET fec_hasta =' " . $datosAux['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
-        unset($datos[id_estado]);
-
-        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
-        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
@@ -2509,7 +2514,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario')->set_solo_lectura();
                 $this->dep('formulario')->evento('modificacion')->ocultar();
                 $this->dep('formulario')->evento('baja')->ocultar();
-                //$this->dep('formulario')->evento('cancelar')->ocultar();
+                $this->dep('formulario')->evento('cancelar')->ocultar();
             }
             $form->ef('fec_carga')->set_solo_lectura();
             $form->ef('fec_desde')->set_solo_lectura();
