@@ -644,10 +644,14 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); // limpiar
-        $id_fila_aux = $id_fila - 1;
-        if (is_null($this->s__datos_docente[$id_fila]['id_designacion'])) {
+        
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
         }
+
         $datos['id_pext'] = $this->s__datos_docente[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_docente[$id_fila_aux]['desde'];
         $datos['id_designacion'] = $this->s__datos_docente[$id_fila_aux]['id_designacion'];
@@ -671,9 +675,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); // limpiar
-        $id_fila_aux = $id_fila - 1;
-        if (is_null($this->s__datos_otro[$id_fila]['nro_docum'])) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
         }
         $datos['id_pext'] = $this->s__datos_otro[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_otro[$id_fila_aux]['desde'];
@@ -915,6 +921,8 @@ class ci_proyectos_extension extends extension_ci {
                 //$this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
+        unset($this->s__where);
+        unset($this->s__datos_filtro);
 
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
@@ -1404,7 +1412,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('formulario_seguimiento')->set_solo_lectura();
         $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
         $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
-        $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+        //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
     }
 
     function evt__cuadro_seg_central__editar($datos) {
@@ -1455,7 +1463,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('formulario_seg_ua')->set_solo_lectura();
         $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
         $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
-        $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
+        //$this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
     }
 
     function evt__cuadro_seg_ua__editar($datos) {
@@ -1500,7 +1508,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
-            $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+            //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
 
         if ($perfil == 'sec_ext_central') {
@@ -1560,6 +1568,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
+        $datosAux= $datos;
 
         unset($datos[denominacion]);
         unset($datos[duracion]);
@@ -1574,11 +1584,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
-
-        if ($datos[id_estado] != $pe[id_estado]) {
+        
+        // Control cambio estado
+        if ($datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
+            if ($datosAux['id_estado'] != null) {
+                $pe['id_estado'] = $datosAux['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
@@ -1595,11 +1606,17 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
+        
+        $datosAux = $datos;
+        
+        unset($datos[id_estado]);
 
+        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
 
-        if ($datos[id_estado] != $pe[id_estado]) {
+        if ($datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
+            if ($datosAux['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
@@ -1610,14 +1627,10 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
 
-        if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
+        if ($datosAux['fecha_prorroga2'] != null) {
+            $sql = "UPDATE pextension SET fec_hasta =' " . $datosAux['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
             toba::db('extension')->consultar($sql);
         }
-        unset($datos[id_estado]);
-
-        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
-        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
@@ -1664,7 +1677,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
-            $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
+            //$this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
 
         if ($perfil == 'sec_ext_ua') {
@@ -2058,7 +2071,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
-                $this->dep('form_solicitud')->evento('cancelar')->ocultar();
+                //$this->dep('form_solicitud')->evento('cancelar')->ocultar();
             } else {
                 if ($perfil != 'sec_ext_central') {
                     $form->ef('id_estado')->set_solo_lectura();
@@ -2339,7 +2352,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_avance')->set_solo_lectura();
                 $this->dep('form_avance')->evento('modificacion')->ocultar();
                 $this->dep('form_avance')->evento('baja')->ocultar();
-                $this->dep('form_avance')->evento('cancelar')->ocultar();
+                //$this->dep('form_avance')->evento('cancelar')->ocultar();
             }
 
             $this->dep('form_avance')->descolapsar();
@@ -2352,7 +2365,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('avance')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('avance')->get();
             $datos[link] = "<a taget='_blank' href='" . $datos[link] . "'> Link </a>";
-            
+
             $form->set_datos($datos);
         }
     }
@@ -2742,7 +2755,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->set_solo_lectura();
                 $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
-                $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
+                //$this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -2945,7 +2958,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->set_solo_lectura();
                 $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
-                $this->dep('form_integrantes')->evento('cancelar')->ocultar();
+                //$this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -3300,7 +3313,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrante_e')->set_solo_lectura();
                 $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
-                $this->dep('form_integrante_e')->evento('cancelar')->ocultar();
+                //$this->dep('form_integrante_e')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -3603,7 +3616,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_organizacion')->set_solo_lectura();
                 $this->dep('form_organizacion')->evento('modificacion')->ocultar();
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
-                $this->dep('form_organizacion')->evento('cancelar')->ocultar();
+                //$this->dep('form_organizacion')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -3767,7 +3780,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_objetivos_esp')->set_solo_lectura();
                 $this->dep('form_objetivos_esp')->evento('modificacion')->ocultar();
                 $this->dep('form_objetivos_esp')->evento('baja')->ocultar();
-                $this->dep('form_objetivos_esp')->evento('cancelar')->ocultar();
+                //$this->dep('form_objetivos_esp')->evento('cancelar')->ocultar();
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_objetivos_esp')->descolapsar();
@@ -3927,7 +3940,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_actividad')->set_solo_lectura();
                 $this->dep('form_actividad')->evento('modificacion')->ocultar();
                 $this->dep('form_actividad')->evento('baja')->ocultar();
-                $this->dep('form_actividad')->evento('cancelar')->ocultar();
+                //$this->dep('form_actividad')->evento('cancelar')->ocultar();
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_actividad')->descolapsar();
@@ -4086,7 +4099,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_presupuesto')->set_solo_lectura();
                 $this->dep('form_presupuesto')->evento('modificacion')->ocultar();
                 $this->dep('form_presupuesto')->evento('baja')->ocultar();
-                $this->dep('form_presupuesto')->evento('cancelar')->ocultar();
+                //$this->dep('form_presupuesto')->evento('cancelar')->ocultar();
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_presupuesto')->descolapsar();
