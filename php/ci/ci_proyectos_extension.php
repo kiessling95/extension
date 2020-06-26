@@ -644,10 +644,14 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); // limpiar
-        $id_fila_aux = $id_fila - 1;
-        if (is_null($this->s__datos_docente[$id_fila]['id_designacion'])) {
+        
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
         }
+
         $datos['id_pext'] = $this->s__datos_docente[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_docente[$id_fila_aux]['desde'];
         $datos['id_designacion'] = $this->s__datos_docente[$id_fila_aux]['id_designacion'];
@@ -671,9 +675,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); // limpiar
-        $id_fila_aux = $id_fila - 1;
-        if (is_null($this->s__datos_otro[$id_fila]['nro_docum'])) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
         }
         $datos['id_pext'] = $this->s__datos_otro[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_otro[$id_fila_aux]['desde'];
@@ -915,6 +921,8 @@ class ci_proyectos_extension extends extension_ci {
                 //$this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
+        unset($this->s__where);
+        unset($this->s__datos_filtro);
 
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
@@ -2352,7 +2360,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('avance')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('avance')->get();
             $datos[link] = "<a taget='_blank' href='" . $datos[link] . "'> Link </a>";
-            
+
             $form->set_datos($datos);
         }
     }
