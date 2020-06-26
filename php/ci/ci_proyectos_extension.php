@@ -215,6 +215,8 @@ class ci_proyectos_extension extends extension_ci {
                 //---------------------------------------------------------------------------------------------------
                 //salto linea
                 $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+                // Resumen inicio 
                 if ($this->s__imprimir_resumen == 0) {
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del origen del proyecto') . '</b>');
@@ -224,26 +226,30 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp = array();
                     $tabla_dp[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del Proyecto') . '</b>', 'col2' => trim($datos['descripcion_situacion']));
 
+                    //$pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
+                    //$datos_pext = array();
+                    //$datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
+                    //$pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                    //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
+                    $tabla_dp[1] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
+
+                    $tabla_dp[2] = array('col1' => utf8_d_seguro('Localización geográfica'), 'col2' => $datos['localizacion_geo']);
+
+
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
+                    //-------------------------------------------------------------------------------------------------------------
+                    //salto de linea
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+
                     $datos_pext = array();
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
+                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Objetivo General') . '</b>');
                     $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
                     //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
-                    $tabla_dp[0] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
-                    $i = 1;
-                    foreach ($destinatarios as $destinatario) {
-                        $text = '<b> * Domicilio : </b>' . $destinatario['domicilio'] . "\n";
-                        $text = $text . '<b> * Telefono : </b>' . $destinatario['telefono'] . "\n";
-                        $text = $text . '<b> * Correo : </b>' . $destinatario['email'] . "\n";
-                        $text = $text . '<b> * Contacto </b>' . $destinatario['contacto'] . "\n";
 
-                        $tabla_dp[$i] = array('col1' => '' . $destinatario['descripcion'], 'col2' => '' . $text);
-                        $i = $i + 1;
-                    }
-                    $i = $i + 1;
-                    $tabla_dp[$i] = array('col1' => utf8_d_seguro('Localización geográfica'), 'col2' => $datos['localizacion_geo']);
-
+                    $tabla_dp = array();
+                    //Nombre del Proyecto
+                    $tabla_dp[0] = array('col1' => utf8_d_seguro('Objetivo General'), 'col2' => $datos[objetivo]);
 
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
 
@@ -260,23 +266,33 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp[0] = array('col1' => utf8_d_seguro('Resultados esperados del proyecto'), 'col2' => $datos[impacto]);
 
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
-                    //-------------------------------------------------------------------------------------------------------------
-                    //salto de linea
-                    $pdf->ezText("\n", 10, ['justification' => 'full']);
 
-                    $datos_pext = array();
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Objetivo General') . '</b>');
-                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
 
-                    $tabla_dp = array();
-                    //Nombre del Proyecto
-                    $tabla_dp[0] = array('col1' => utf8_d_seguro('Objetivo General'), 'col2' => $datos[objetivo]);
-
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
+
+
+                    // ---------------------- DESTINATARIOS ------------------------------
+                    $datos_pext = array();
+                    $datos_pext[0] = array('col1' => '<b> Destinatarios </b>');
+                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                    $cols_dp = array('col1' => "<b>Nro</b>", 'col2' => utf8_d_seguro('Nombre'), 'col3' => utf8_d_seguro('email'), 'col4' => utf8_d_seguro('domicilio'), 'col5' => utf8_d_seguro('telefono'), 'col6' => utf8_d_seguro('Contacto'));
+
+                    $tabla_dp = array();
+                    $i = 0;
+                    foreach ($destinatarios as $destinatario) {
+
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $destinatario[descripcion], 'col3' => $destinatario[email], 'col4' => $destinatario[domicilio], 'col5' => $destinatario[telefono], 'col6' => $destinatario[contacto]);
+                        $i = $i + 1;
+                    }
+
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 90), 'col3' => array('width' => 170), 'col4' => array('width' => 100), 'col5' => array('width' => 80), 'col6' => array('width' => 80))));
+
+                    //------------------------------------------------------------------------------------------------------------
+                    //salto de linea
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+
 
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b> Objetivos especificos </b>');
@@ -331,63 +347,22 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezText("\n", 10, ['justification' => 'full']);
                 }
 
+                // Fin Resumen 
+
                 $datos_pext = array();
                 $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Equipo y Organizaciones participantes') . '</b>');
                 $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
 
-                // Claustro Docente
+                // -----------------------------   Claustro Docente
                 $tabla_dp = array();
                 $i = 0;
-
                 foreach ($integrantes as $integrante) {
 
                     if ($integrante[tipo] == 'Docente') {
-                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Docentes / Investigadores') . '</b>');
-                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
-                        $tabla_dp = array();
-
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
-                }
-
-                // Claustro Estudiante 
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($integrantes as $integrante) {
-                    if ($integrante[tipo] == 'Estudiante') {
-                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Estudiantes') . '</b>');
-                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
-
-                        $tabla_dp = array();
-
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
-
-                        $i = $i + 1;
-                    }
-                }
-                if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
-                }
-
-
-
-                // Claustro Graduados
-                $tabla_dp = array();
-                $i = 0;
-                foreach ($integrantes as $integrante) {
-                    if ($integrante[tipo] == 'Graduado') {
                         if ($i == 0) {
-                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Graduados') . '</b>');
+                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Docentes') . '</b>');
                             $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
                             $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
-
                             $tabla_dp = array();
                         }
 
@@ -400,7 +375,49 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
                 }
 
-                // Claustro No Docente
+                // ---------------------------     Claustro Estudiante 
+                $tabla_dp = array();
+                $i = 0;
+                foreach ($integrantes as $integrante) {
+                    if ($integrante[tipo] == 'Estudiante') {
+                        if ($i == 0) {
+                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Estudiantes') . '</b>');
+                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $tabla_dp = array();
+                        }
+
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
+
+                        $i = $i + 1;
+                    }
+                }
+                if (count($tabla_dp) >= 1) {
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                }
+
+                //------------------------------------ Claustro Graduados
+                $tabla_dp = array();
+                $i = 0;
+                foreach ($integrantes as $integrante) {
+                    if ($integrante[tipo] == 'Graduado') {
+                        if ($i == 0) {
+                            $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Graduados') . '</b>');
+                            $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $tabla_dp = array();
+                        }
+
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
+
+                        $i = $i + 1;
+                    }
+                }
+                if (count($tabla_dp) >= 1) {
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                }
+
+                // --------------------------                    Claustro No Docente
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($integrantes as $integrante) {
@@ -422,7 +439,7 @@ class ci_proyectos_extension extends extension_ci {
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
                 }
 
-                // Claustro Externo
+                // ---------------------------------      Claustro Externo
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($integrantes as $integrante) {
@@ -625,10 +642,20 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_interno);
         unset($this->s__organizacion);
         unset($this->s__cv_externo);
-        $datos['id_pext'] = $this->s__datos_docente[$id_fila - 1]['id_pext'];
-        $datos['desde'] = $this->s__datos_docente[$id_fila - 1]['desde'];
-        $datos['id_designacion'] = $this->s__datos_docente[$id_fila - 1]['id_designacion'];
-        $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila - 1]['nombre']);
+
+        $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); // limpiar
+        
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
+            $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
+        }
+
+        $datos['id_pext'] = $this->s__datos_docente[$id_fila_aux]['id_pext'];
+        $datos['desde'] = $this->s__datos_docente[$id_fila_aux]['desde'];
+        $datos['id_designacion'] = $this->s__datos_docente[$id_fila_aux]['id_designacion'];
+        $nombre = str_replace(',', '', $this->s__datos_docente[$id_fila_aux]['nombre']);
         $nombre = str_replace(' ', '_', $nombre);
 
         $this->s__cv_interno = $datos;
@@ -646,11 +673,19 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_interno);
         unset($this->s__organizacion);
         unset($this->s__cv_externo);
-        $datos['id_pext'] = $this->s__datos_otro[$id_fila - 1]['id_pext'];
-        $datos['desde'] = $this->s__datos_otro[$id_fila - 1]['desde'];
-        $datos['tipo_docum'] = $this->s__datos_otro[$id_fila - 1]['tipo_docum'];
-        $datos['nro_docum'] = $this->s__datos_otro[$id_fila - 1]['nro_docum'];
-        $nombre = str_replace(',', '', $this->s__datos_otro[$id_fila - 1]['nombre']);
+
+        $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); // limpiar
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
+            $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
+        }
+        $datos['id_pext'] = $this->s__datos_otro[$id_fila_aux]['id_pext'];
+        $datos['desde'] = $this->s__datos_otro[$id_fila_aux]['desde'];
+        $datos['tipo_docum'] = $this->s__datos_otro[$id_fila_aux]['tipo_docum'];
+        $datos['nro_docum'] = $this->s__datos_otro[$id_fila_aux]['nro_docum'];
+        $nombre = str_replace(',', '', $this->s__datos_otro[$id_fila_aux]['nombre']);
         $nombre = str_replace(' ', '_', $nombre);
 
         $this->s__cv_externo = $datos;
@@ -883,9 +918,11 @@ class ci_proyectos_extension extends extension_ci {
                 break;
             default :
                 $this->set_pantalla('pant_edicion');
-                $this->dep('datos')->tabla('pextension')->resetear();
+                //$this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
+        unset($this->s__where);
+        unset($this->s__datos_filtro);
 
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
@@ -963,12 +1000,12 @@ class ci_proyectos_extension extends extension_ci {
             $proyectos = $this->dep('datos')->tabla('pextension')->get_listado();
 
             //obtengo director 
-            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext])[0];
+            $director = $this->dep('datos')->tabla('integrante_interno_pe')->getDirectorVigente($pextension[id_pext])[0];
 
             //obtengo co-director
-            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext])[0];
+            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->getCodirectorVigente($pextension[id_pext])[0];
             if (count($co_director) < 1) {
-                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->get_co_director($pextension[id_pext])[0];
+                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->getCodirectorVigente($pextension[id_pext])[0];
             }
 
             // Destinatarios
@@ -1002,9 +1039,19 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if ($correcto) {
-                    $validacion = " + Director Correcto \n";
-                    toba::notificacion()->agregar($validacion, "info");
-                    $count++;
+                    unset($datos);
+                    $datos['id_pext'] = $director['id_pext'];
+                    $datos['desde'] = $director['desde'];
+                    $datos['id_designacion'] = $director['id_designacion'];
+                    $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($datos);
+                    if ($tiene == 1) {
+                        $validacion = " + Director + CV Correcto \n";
+                        toba::notificacion()->agregar($validacion, "info");
+                        $count++;
+                    } else {
+                        $validacion = " - Director: Falta carga el cv del director de proyecto\n";
+                        toba::notificacion()->agregar($validacion, "error");
+                    }
                 }
             } else {
                 $validacion = " - Director:  Falta definir director de proyecto \n";
@@ -1012,9 +1059,31 @@ class ci_proyectos_extension extends extension_ci {
             }
 
             if (count($co_director) > 1) {
-                $validacion = " + Co-Director Correcto \n";
-                toba::notificacion()->agregar($validacion, "info");
-                $count++;
+                unset($datos);
+                if ($co_director['id_designacion'] != null) {
+                    $datos['id_pext'] = $co_director['id_pext'];
+                    $datos['desde'] = $co_director['desde'];
+                    $datos['id_designacion'] = $co_director['id_designacion'];
+                    $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($datos);
+                } else {
+                    $datos['id_pext'] = $co_director['id_pext'];
+                    $datos['desde'] = $co_director['desde'];
+                    $datos['tipo_docum'] = $co_director['tipo_docum'];
+                    $datos['nro_docum'] = $co_director['nro_docum'];
+                    $tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_cv($datos);
+                }
+
+
+
+
+                if ($tiene == 1) {
+                    $validacion = " + Co-Director + CV Correcto \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                    $count++;
+                } else {
+                    $validacion = " - Co-Director: Falta carga el cv del co-director de proyecto\n";
+                    toba::notificacion()->agregar($validacion, "error");
+                }
             } else {
                 $validacion = " - Co-Director: Falta definir co-director de proyecto\n";
                 toba::notificacion()->agregar($validacion, "error");
@@ -1263,6 +1332,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $datos[duracion] = $duracion[duracion_convocatoria] * 12;
         $datos[fec_desde] = $bases[fecha_hasta];
+
+        $fecha_hasta = date("d-m-Y", strtotime($datos[fec_desde] . "+" . $datos[duracion] . " month"));
+
+        $datos[fec_hasta] = date("d/m/Y", strtotime($fecha_hasta));
+
 
 
         //responsable de carga proyecto
@@ -1618,12 +1692,10 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('seguimiento_ua')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_ua')->get();
-//            if ($datos['nro_docum'] != null) {
-//                $ext = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($datos[nro_docum], $datos[id_pext])[0];
-//                $datos[integrante] = $ext[nro_docum];
-//            }
+
             if ($pe['id_estado'] != 'EUA ') {
                 $form->ef('id_estado')->set_solo_lectura();
+                $form->ef('observacion_ua')->set_solo_lectura();
             }
 
             $datos[uni_acad] = $pe[uni_acad];
@@ -1652,78 +1724,53 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario_seg_ua__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+
+        $datosAux = $datos;
+        // Guardo Cambios
+        unset($datosAux[ord_priori]);
+        unset($datosAux[uni_acad]);
+        unset($datosAux[duracion]);
+        unset($datosAux[financiacion]);
+        unset($datosAux[monto]);
+        unset($datosAux[id_bases]);
+        unset($datosAux[responsable_carga]);
+        unset($datosAux[fec_desde]);
+        unset($datosAux[fec_hasta]);
+        unset($datosAux[denominacion]);
+        unset($datosAux[codigo]);
+        unset($datosAux[integrante]);
+        unset($datosAux[id_estado]);
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
 
-        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $datos[fecha_resol] != $pe[fec_desde]) {
-            unset($pe[x_dbr_clave]);
-
-            $pe[ord_priori] = $datos[ord_priori];
-            if (!is_null($datos[fecha_resol])) {
-                $pe[fec_desde] = $datos[fecha_resol];
-            }
-
-            $pe[fec_hasta] = $this->fecha_fin_proyecto($pe[duracion]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
-            }
-
-            $this->dep('datos')->tabla('pextension')->set($pe);
-            $this->dep('datos')->tabla('pextension')->sincronizar();
-            $this->dep('datos')->tabla('pextension')->cargar($pe);
-        }
-
-        if (!is_null($datos[nro_resol])) {
-            $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
-
-            foreach ($integrantes as $integrante) {
-
-                $sql = "UPDATE integrante_externo_pe SET rescd ='$datos[nro_resol]' WHERE nro_docum=" . $integrante[nro_docum] . " AND tipo_docum='" . $integrante[tipo_docum] . "' AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
-                toba::db('extension')->consultar($sql);
-            }
-
-            $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos[id_pext]);
-
-            foreach ($integrantes as $integrante) {
-
-                $sql = "UPDATE integrante_interno_pe SET rescd ='$datos[nro_resol]' WHERE id_designacion=" . $integrante[id_designacion] . " AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
-                toba::db('extension')->consultar($sql);
-            }
-        }
-        unset($datos[ord_priori]);
-        unset($datos[uni_acad]);
-        unset($datos[duracion]);
-        unset($datos[financiacion]);
-        unset($datos[monto]);
-        unset($datos[id_bases]);
-        unset($datos[responsable_carga]);
-        unset($datos[fec_desde]);
-        unset($datos[fec_hasta]);
-        unset($datos[denominacion]);
-        unset($datos[codigo]);
-        unset($datos[integrante]);
-        unset($datos[id_estado]);
-
-        $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
-        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
+        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datosAux);
 
-        toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
-    }
 
-    function evt__formulario_seg_ua__modificacion($datos) {
+        unset($pe[x_dbr_clave]);
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
+        // Analiso cambios externos al seg 
+        $cambio = false;
+        if ($datos[ord_priori] != $pe[ord_priori]) {
+            $pe[ord_priori] = $datos[ord_priori];
+        }
+        if ($datos['id_estado'] != null && $datos[id_estado] != $pe[id_estado]) {
+            $pe['id_estado'] = $datos['id_estado'];
+            $cambio = true;
+        }
 
-        if ($datos[ord_priori] != $pe[ord_priori] || $datos[id_estado] != $pe[id_estado] || $pe[fec_desde] != $datos[fecha_resol]) {
-            unset($pe[x_dbr_clave]);
+        if ($datos[fecha_resol] != null && $pe[fec_desde] != $datos[fecha_resol]) {
+
             //Obtengo datos de integrantes externos cargados
             $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
             //Obtengo datos de integrantes internos cargados
             $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
 
+            // Fecha desde = fecha resolucion
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
@@ -1744,14 +1791,13 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
-            $pe[ord_priori] = $datos[ord_priori];
-            if (!is_null($datos[fecha_resol])) {
-                $pe[fec_desde] = $datos[fecha_resol];
-            }
+
+
+            $pe[fec_desde] = $datos[fecha_resol];
             $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
             $pe[fec_hasta] = $fecha_hasta;
 
-
+            // actualizo nueva fecha hasta
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
                     //Si es integrante vigente
@@ -1772,12 +1818,120 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
+            $cambio = true;
+        }
+        if ($cambio) {
+            $this->dep('datos')->tabla('pextension')->set($pe);
+            $this->dep('datos')->tabla('pextension')->sincronizar();
+            $this->dep('datos')->tabla('pextension')->cargar($pe);
+        }
 
+        if (!is_null($datos[nro_resol])) {
+            $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
 
-            unset($datos[ord_priori]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
+            foreach ($integrantes as $integrante) {
+
+                $sql = "UPDATE integrante_externo_pe SET rescd ='$datos[nro_resol]' WHERE nro_docum=" . $integrante[nro_docum] . " AND tipo_docum='" . $integrante[tipo_docum] . "' AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
+                toba::db('extension')->consultar($sql);
             }
+
+            $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos[id_pext]);
+
+            foreach ($integrantes as $integrante) {
+
+                $sql = "UPDATE integrante_interno_pe SET rescd ='$datos[nro_resol]' WHERE id_designacion=" . $integrante[id_designacion] . " AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
+                toba::db('extension')->consultar($sql);
+            }
+        }
+
+
+        toba::notificacion()->agregar('Los datos del seguimiento se han guardado exitosamente', 'info');
+    }
+
+    function evt__formulario_seg_ua__modificacion($datos) {
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+
+        $datosAux = $datos;
+        // Guardo Cambios
+
+        unset($datosAux[ord_priori]);
+        $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
+        $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
+        //$this->dep('datos')->tabla('seguimiento_ua')->resetear();
+
+
+        unset($pe[x_dbr_clave]);
+
+        // Analiso cambios externos al seg 
+        $cambio = false;
+        if ($datos[ord_priori] != $pe[ord_priori]) {
+            $pe[ord_priori] = $datos[ord_priori];
+        }
+        if ($datos['id_estado'] != null && $datos[id_estado] != $pe[id_estado]) {
+            $pe['id_estado'] = $datos['id_estado'];
+            $cambio = true;
+        }
+
+        if ($datos[fecha_resol] != null && $pe[fec_desde] != $datos[fecha_resol]) {
+
+            //Obtengo datos de integrantes externos cargados
+            $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+            //Obtengo datos de integrantes internos cargados
+            $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
+
+            // Fecha desde = fecha resolucion
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
+                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $pe['fec_desde'] == $interno['desde']) {
+                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+
+
+            $pe[fec_desde] = $datos[fecha_resol];
+            $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
+            $pe[fec_hasta] = $fecha_hasta;
+
+            // actualizo nueva fecha hasta
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $pe['fec_hasta'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $pe['fec_hasta'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            $cambio = true;
+        }
+        if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1803,9 +1957,7 @@ class ci_proyectos_extension extends extension_ci {
             }
         }
 
-        $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
-        $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
-        $this->dep('datos')->tabla('seguimiento_ua')->resetear();
+        toba::notificacion()->agregar('Los cambios se han guardado exitosamente', 'info');
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
@@ -1870,6 +2022,12 @@ class ci_proyectos_extension extends extension_ci {
     //------------------------- CUADRO ----------------------------------------------
 
     function conf__cuadro_solicitud(toba_ei_cuadro $cuadro) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+
+        if ($perfil != 'formulador') {
+            $this->controlador()->evento('alta')->ocultar();
+        }
+
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
@@ -1904,7 +2062,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_solicitud == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
+            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
@@ -2185,7 +2343,7 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_avance == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ')) {
+            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
                 $this->dep('form_avance')->set_solo_lectura();
                 $this->dep('form_avance')->evento('modificacion')->ocultar();
                 $this->dep('form_avance')->evento('baja')->ocultar();
@@ -2201,12 +2359,15 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('avance')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('avance')->get();
+            $datos[link] = "<a taget='_blank' href='" . $datos[link] . "'> Link </a>";
 
             $form->set_datos($datos);
         }
     }
 
     function evt__form_avance__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos[id_pext] = $pe[id_pext];
 
         $this->dep('datos')->tabla('avance')->set($datos);
         $this->dep('datos')->tabla('avance')->sincronizar();
@@ -2899,8 +3060,6 @@ class ci_proyectos_extension extends extension_ci {
                                 if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
                                     toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
                                 } else {
-                                    printf(date('Y-m-d', strtotime($int_interno['hasta'])));
-                                    exit();
                                     $datos['id_pext'] = $pe['id_pext'];
                                     $datos['tipo'] = 'Docente';
                                     $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
@@ -3212,8 +3371,10 @@ class ci_proyectos_extension extends extension_ci {
         $datos['id_pext'] = $pe['id_pext'];
         $datos['tipo_docum'] = $datos['integrante'][0];
         $datos['nro_docum'] = $datos['integrante'][1];
+
         $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
-        if (!is_null($int_ext)) {
+
+        if (is_null($int_ext)) {
             if ($datos['hasta'] > $datos['desde']) {
                 if (strcasecmp(date('Y-m-d', strtotime($pe['fec_hasta'])), date('Y-m-d', strtotime($datos['hasta']))) >= 0) {
                     if (strcasecmp(date('Y-m-d', strtotime($pe['fec_desde'])), date('Y-m-d', strtotime($datos['desde']))) <= 0) {
@@ -3290,10 +3451,12 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
+
         if (!is_null($this->s__datos_otro_aux)) {
             $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
             $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
             $datos['id_pext'] = $this->s__datos_otro_aux['id_pext'];
+            $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['nro_docum'], $datos['id_pext'])[0];
         }
 
         //Si count == 2 se modifico la persona asociada
@@ -3302,6 +3465,7 @@ class ci_proyectos_extension extends extension_ci {
             $int_ext = array();
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
         }
+
         //control fecha hasta mayor a desde
         if ($datos['hasta'] > $datos['desde']) {
             //control fecha hasta menor o igual a fecha fin proyecto
@@ -3457,7 +3621,7 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($this->dep('datos')->tabla('organizaciones_participantes')->esta_cargada()) {
-            
+
             if ($estado == 'APRB' || $estado == 'PRG ') {
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
                 $form->ef('nombre')->set_solo_lectura();
