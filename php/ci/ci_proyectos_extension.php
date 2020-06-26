@@ -2349,9 +2349,10 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_avance')->evento('baja')->ocultar();
                 $this->dep('form_avance')->evento('cancelar')->ocultar();
             }
-
-            $this->dep('form_avance')->descolapsar();
+            
             $this->controlador()->evento('alta')->ocultar();
+            $this->dep('form_avance')->descolapsar();
+            
         } else {
             $this->dep('form_avance')->colapsar();
         }
