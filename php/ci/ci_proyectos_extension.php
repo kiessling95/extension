@@ -2425,11 +2425,15 @@ class ci_proyectos_extension extends extension_ci {
         $nuevo_historial;
         $j = 0;
         $nuevo_historial[$j] = $historial[0];
+        $date = $nuevo_historial[$j][fecha];
+        $nuevo_historial[$j][fecha] = date("Y-m-d H:i:s", strtotime($date));
         $j++;
         for ($i = 1; $i < sizeof($historial); $i++) {
             $estado_anterior = $historial[$i - 1]['estado'];
             if ($historial[$i]['estado'] != $estado_anterior) {
                 $nuevo_historial[$j] = $historial[$i];
+                $date = $nuevo_historial[$j][fecha];
+                $nuevo_historial[$j][fecha] = date("Y-m-d H:i:s", strtotime($date));
                 $j++;
             }
         }
