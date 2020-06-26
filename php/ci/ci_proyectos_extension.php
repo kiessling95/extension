@@ -644,10 +644,14 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); // limpiar
-        $id_fila_aux = $id_fila - 1;
-        if (is_null($this->s__datos_docente[$id_fila]['id_designacion'])) {
+        
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
         }
+
         $datos['id_pext'] = $this->s__datos_docente[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_docente[$id_fila_aux]['desde'];
         $datos['id_designacion'] = $this->s__datos_docente[$id_fila_aux]['id_designacion'];
@@ -671,9 +675,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_externo_pe')->resetear(); // limpiar
-        $id_fila_aux = $id_fila - 1;
-        if (is_null($this->s__datos_otro[$id_fila]['nro_docum'])) {
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
+        }else{
+           $id_fila_aux = $id_fila; 
         }
         $datos['id_pext'] = $this->s__datos_otro[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_otro[$id_fila_aux]['desde'];
@@ -915,6 +921,8 @@ class ci_proyectos_extension extends extension_ci {
                 //$this->dep('datos')->tabla('pextension')->resetear();
                 break;
         }
+        unset($this->s__where);
+        unset($this->s__datos_filtro);
 
         $this->s__mostrar = 0;
         $this->s__mostrar_e = 0;
@@ -992,12 +1000,12 @@ class ci_proyectos_extension extends extension_ci {
             $proyectos = $this->dep('datos')->tabla('pextension')->get_listado();
 
             //obtengo director 
-            $director = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($pextension[id_pext])[0];
+            $director = $this->dep('datos')->tabla('integrante_interno_pe')->getDirectorVigente($pextension[id_pext])[0];
 
             //obtengo co-director
-            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($pextension[id_pext])[0];
+            $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->getCodirectorVigente($pextension[id_pext])[0];
             if (count($co_director) < 1) {
-                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->get_co_director($pextension[id_pext])[0];
+                $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->getCodirectorVigente($pextension[id_pext])[0];
             }
 
             // Destinatarios
@@ -1031,9 +1039,19 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
                 if ($correcto) {
-                    $validacion = " + Director Correcto \n";
-                    toba::notificacion()->agregar($validacion, "info");
-                    $count++;
+                    unset($datos);
+                    $datos['id_pext'] = $director['id_pext'];
+                    $datos['desde'] = $director['desde'];
+                    $datos['id_designacion'] = $director['id_designacion'];
+                    $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($datos);
+                    if ($tiene == 1) {
+                        $validacion = " + Director + CV Correcto \n";
+                        toba::notificacion()->agregar($validacion, "info");
+                        $count++;
+                    } else {
+                        $validacion = " - Director: Falta carga el cv del director de proyecto\n";
+                        toba::notificacion()->agregar($validacion, "error");
+                    }
                 }
             } else {
                 $validacion = " - Director:  Falta definir director de proyecto \n";
@@ -1041,9 +1059,31 @@ class ci_proyectos_extension extends extension_ci {
             }
 
             if (count($co_director) > 1) {
-                $validacion = " + Co-Director Correcto \n";
-                toba::notificacion()->agregar($validacion, "info");
-                $count++;
+                unset($datos);
+                if ($co_director['id_designacion'] != null) {
+                    $datos['id_pext'] = $co_director['id_pext'];
+                    $datos['desde'] = $co_director['desde'];
+                    $datos['id_designacion'] = $co_director['id_designacion'];
+                    $tiene = $this->dep('datos')->tabla('integrante_interno_pe')->tiene_cv($datos);
+                } else {
+                    $datos['id_pext'] = $co_director['id_pext'];
+                    $datos['desde'] = $co_director['desde'];
+                    $datos['tipo_docum'] = $co_director['tipo_docum'];
+                    $datos['nro_docum'] = $co_director['nro_docum'];
+                    $tiene = $this->dep('datos')->tabla('integrante_externo_pe')->tiene_cv($datos);
+                }
+
+
+
+
+                if ($tiene == 1) {
+                    $validacion = " + Co-Director + CV Correcto \n";
+                    toba::notificacion()->agregar($validacion, "info");
+                    $count++;
+                } else {
+                    $validacion = " - Co-Director: Falta carga el cv del co-director de proyecto\n";
+                    toba::notificacion()->agregar($validacion, "error");
+                }
             } else {
                 $validacion = " - Co-Director: Falta definir co-director de proyecto\n";
                 toba::notificacion()->agregar($validacion, "error");
@@ -1292,11 +1332,11 @@ class ci_proyectos_extension extends extension_ci {
 
         $datos[duracion] = $duracion[duracion_convocatoria] * 12;
         $datos[fec_desde] = $bases[fecha_hasta];
-        
+
         $fecha_hasta = date("d-m-Y", strtotime($datos[fec_desde] . "+" . $datos[duracion] . " month"));
 
         $datos[fec_hasta] = date("d/m/Y", strtotime($fecha_hasta));
-        
+
 
 
         //responsable de carga proyecto
@@ -1686,7 +1726,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__formulario_seg_ua__alta($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         $datosAux = $datos;
         // Guardo Cambios
         unset($datosAux[ord_priori]);
@@ -1702,17 +1742,17 @@ class ci_proyectos_extension extends extension_ci {
         unset($datosAux[codigo]);
         unset($datosAux[integrante]);
         unset($datosAux[id_estado]);
-        
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datosAux);
 
 
         unset($pe[x_dbr_clave]);
-        
+
         // Analiso cambios externos al seg 
         $cambio = false;
         if ($datos[ord_priori] != $pe[ord_priori]) {
@@ -1722,14 +1762,14 @@ class ci_proyectos_extension extends extension_ci {
             $pe['id_estado'] = $datos['id_estado'];
             $cambio = true;
         }
-        
+
         if ($datos[fecha_resol] != null && $pe[fec_desde] != $datos[fecha_resol]) {
-            
+
             //Obtengo datos de integrantes externos cargados
             $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
             //Obtengo datos de integrantes internos cargados
             $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
-            
+
             // Fecha desde = fecha resolucion
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
@@ -1756,7 +1796,7 @@ class ci_proyectos_extension extends extension_ci {
             $pe[fec_desde] = $datos[fecha_resol];
             $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
             $pe[fec_hasta] = $fecha_hasta;
-            
+
             // actualizo nueva fecha hasta
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
@@ -1779,9 +1819,8 @@ class ci_proyectos_extension extends extension_ci {
                 }
             }
             $cambio = true;
- 
         }
-        if($cambio){
+        if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1810,19 +1849,19 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario_seg_ua__modificacion($datos) {
-        
+
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        
+
         $datosAux = $datos;
         // Guardo Cambios
-        
+
         unset($datosAux[ord_priori]);
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         //$this->dep('datos')->tabla('seguimiento_ua')->resetear();
 
-       
+
         unset($pe[x_dbr_clave]);
 
         // Analiso cambios externos al seg 
@@ -1836,12 +1875,12 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         if ($datos[fecha_resol] != null && $pe[fec_desde] != $datos[fecha_resol]) {
-            
+
             //Obtengo datos de integrantes externos cargados
             $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
             //Obtengo datos de integrantes internos cargados
             $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
-            
+
             // Fecha desde = fecha resolucion
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
@@ -1868,7 +1907,7 @@ class ci_proyectos_extension extends extension_ci {
             $pe[fec_desde] = $datos[fecha_resol];
             $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
             $pe[fec_hasta] = $fecha_hasta;
-            
+
             // actualizo nueva fecha hasta
             if (!is_null($datos_integrantes_e)) {
                 foreach ($datos_integrantes_e as $externo) {
@@ -1891,9 +1930,8 @@ class ci_proyectos_extension extends extension_ci {
                 }
             }
             $cambio = true;
- 
         }
-        if($cambio){
+        if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1918,7 +1956,7 @@ class ci_proyectos_extension extends extension_ci {
                 toba::db('extension')->consultar($sql);
             }
         }
-        
+
         toba::notificacion()->agregar('Los cambios se han guardado exitosamente', 'info');
     }
 
@@ -1985,11 +2023,11 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_solicitud(toba_ei_cuadro $cuadro) {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-        
-        if($perfil != 'formulador') {
+
+        if ($perfil != 'formulador') {
             $this->controlador()->evento('alta')->ocultar();
         }
-        
+
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
@@ -2321,12 +2359,15 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('avance')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('avance')->get();
+            $datos[link] = "<a taget='_blank' href='" . $datos[link] . "'> Link </a>";
 
             $form->set_datos($datos);
         }
     }
 
     function evt__form_avance__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos[id_pext] = $pe[id_pext];
 
         $this->dep('datos')->tabla('avance')->set($datos);
         $this->dep('datos')->tabla('avance')->sincronizar();
@@ -3410,7 +3451,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
-        
+
         if (!is_null($this->s__datos_otro_aux)) {
             $datos['tipo_docum'] = $this->s__datos_otro_aux['tipo_docum'];
             $datos['nro_docum'] = $this->s__datos_otro_aux['nro_docum'];
