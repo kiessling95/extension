@@ -1748,9 +1748,6 @@ class ci_proyectos_extension extends extension_ci {
         unset($datosAux[integrante]);
         unset($datosAux[id_estado]);
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datosAux);
@@ -2080,7 +2077,7 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('nro_acta')->set_solo_lectura();
                     $form->ef('obs_resolucion')->set_solo_lectura();
                     $form->ef('fecha_fin_prorroga')->set_solo_lectura();
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    //$this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } else {
                     $form->ef('tipo_solicitud')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
@@ -2105,7 +2102,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos[estado_solicitud] != "Enviada") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 if ($datos[estado_solicitud] != "Recibida") {
-                    //  $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                      $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 }
             }
 
