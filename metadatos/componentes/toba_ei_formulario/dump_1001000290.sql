@@ -51,13 +51,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000398', --evento_id
 	'1001000290', --objeto
 	'alta', --identificador
-	'&Agregar', --etiqueta
+	'&Guardar', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	'ei-boton-alta', --estilo
 	'apex', --imagen_recurso_origen
-	NULL, --imagen
+	'guardar.gif', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'1', --orden
@@ -117,13 +117,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000400', --evento_id
 	'1001000290', --objeto
 	'modificacion', --identificador
-	'&Modificar', --etiqueta
+	'&Guardar cambios', --etiqueta
 	'1', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	'ei-boton-mod', --estilo
 	'apex', --imagen_recurso_origen
-	NULL, --imagen
+	'refrescar.png', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'3', --orden
@@ -150,13 +150,13 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	'1001000401', --evento_id
 	'1001000290', --objeto
 	'cancelar', --identificador
-	'Ca&ncelar', --etiqueta
+	'&Cancelar', --etiqueta
 	'0', --maneja_datos
 	NULL, --sobre_fila
 	NULL, --confirmacion
 	'ei-boton-canc', --estilo
 	'apex', --imagen_recurso_origen
-	NULL, --imagen
+	'volver.png', --imagen
 	'1', --en_botonera
 	NULL, --ayuda
 	'4', --orden
