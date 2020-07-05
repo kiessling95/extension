@@ -1765,10 +1765,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
 
-        if ($datosAux['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta =' " . $datosAux['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
-            toba::db('extension')->consultar($sql);
-        }
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
