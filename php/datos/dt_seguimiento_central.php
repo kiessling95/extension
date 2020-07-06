@@ -35,7 +35,8 @@ class dt_seguimiento_central extends extension_datos_tabla {
                    s_c.informe_becario,
                    s_c.fecha_informe_becario,
                    s_c.nro_acta_informe_becario,
-                   s_c.estado_becario
+                   s_c.estado_becario,
+                   s_c.fecha_ordenanza
                    
                 FROM seguimiento_central as s_c INNER JOIN pextension as p_e ON (s_c.id_pext = p_e.id_pext)
                 
