@@ -644,12 +644,12 @@ class ci_proyectos_extension extends extension_ci {
         unset($this->s__cv_externo);
 
         $this->dep('datos')->tabla('integrante_interno_pe')->resetear(); // limpiar
-        
+
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
-        }else{
-           $id_fila_aux = $id_fila; 
+        } else {
+            $id_fila_aux = $id_fila;
         }
 
         $datos['id_pext'] = $this->s__datos_docente[$id_fila_aux]['id_pext'];
@@ -678,8 +678,8 @@ class ci_proyectos_extension extends extension_ci {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == 'formulador') {
             $id_fila_aux = $id_fila - 1;
-        }else{
-           $id_fila_aux = $id_fila; 
+        } else {
+            $id_fila_aux = $id_fila;
         }
         $datos['id_pext'] = $this->s__datos_otro[$id_fila_aux]['id_pext'];
         $datos['desde'] = $this->s__datos_otro[$id_fila_aux]['desde'];
@@ -1412,7 +1412,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('formulario_seguimiento')->set_solo_lectura();
         $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
         $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
-        $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+        //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
     }
 
     function evt__cuadro_seg_central__editar($datos) {
@@ -1463,7 +1463,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('formulario_seg_ua')->set_solo_lectura();
         $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
         $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
-        $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
+        //$this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
     }
 
     function evt__cuadro_seg_ua__editar($datos) {
@@ -1508,7 +1508,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
-            $this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+            //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
         }
 
         if ($perfil == 'sec_ext_central') {
@@ -1528,10 +1528,11 @@ class ci_proyectos_extension extends extension_ci {
 
 
         // OBTENGO DE EXISTIR EL BECARIO
+        /*
         $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         if ($seg_ua[0]['nro_docum'] != null) {
             $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'], $pe['id_pext']);
-        }
+        }*/
 
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get();
@@ -1543,11 +1544,12 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_desde] = $pe[fec_desde];
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[id_estado] = $pe[id_estado];
-
+            
+            /*
             if (!is_null($int)) {
                 $datos[nombre_becario] = $int[0][nombre];
                 $datos[dni_becario] = $int[0][tipo_docum] . $int[0][nro_docum];
-            }
+            }*/
 
             $form->set_datos($datos);
         } else {
@@ -1567,7 +1569,10 @@ class ci_proyectos_extension extends extension_ci {
         //toba::db('extension')->consultar("begin transaction");
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        unset($pe[x_dbr_clave]);
         $datos['id_pext'] = $pe['id_pext'];
+
+        $datosAux = $datos;
 
         unset($datos[denominacion]);
         unset($datos[duracion]);
@@ -1582,14 +1587,78 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
+        
+        $cambio = false;
 
-        if ($datos[id_estado] != $pe[id_estado]) {
+        if ($datosAux[fecha_ordenanza] != null && $pe[fec_desde] != $datosAux[fecha_ordenanza] && $datosAux[id_estado] == 'APRB') {
+
+            //Obtengo datos de integrantes externos cargados
+            $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+            //Obtengo datos de integrantes internos cargados
+            $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
+
+            // Fecha desde = fecha resolucion
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
+                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datosAux['fecha_ordenanza'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $pe['fec_desde'] == $interno['desde']) {
+                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datosAux['fecha_ordenanza'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+
+
+            $pe[fec_desde] = $datosAux[fecha_ordenanza];
+            $fecha_hasta = date("Y-m-d", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
+            $pe[fec_hasta] = $fecha_hasta;
+
+            // actualizo nueva fecha hasta
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $pe['fec_hasta'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $pe['fec_hasta'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            $cambio = true;
+        }
+
+        // Control cambio estado
+        if ($datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
+            if ($datosAux['id_estado'] != null) {
+                $pe['id_estado'] = $datosAux['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
+            $cambio = true;
+        }
+        if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
@@ -1602,30 +1671,100 @@ class ci_proyectos_extension extends extension_ci {
     function evt__formulario_seguimiento__modificacion($datos) {
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
+        unset($pe[x_dbr_clave]);
         $datos['id_pext'] = $pe['id_pext'];
 
+        $datosAux = $datos;
 
-        if ($datos[id_estado] != $pe[id_estado]) {
+        unset($datos[denominacion]);
+        unset($datos[duracion]);
+        unset($datos[monto]);
+        unset($datos[id_bases]);
+        unset($datos[fec_desde]);
+        unset($datos[fec_hasta]);
+        unset($datos[nombre_becario]);
+        unset($datos[dni_becario]);
+        unset($datos[id_estado]);
+        
+        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
+        
+        $cambio = false;
+
+        if ($datosAux[fecha_ordenanza] != null && $pe[fec_desde] != $datosAux[fecha_ordenanza] && $datosAux[id_estado] == 'APRB') {
+
+            //Obtengo datos de integrantes externos cargados
+            $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
+            //Obtengo datos de integrantes internos cargados
+            $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
+
+            // Fecha desde = fecha Ordenanza
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
+                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datosAux['fecha_ordenanza'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $pe['fec_desde'] == $interno['desde']) {
+                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datosAux['fecha_ordenanza'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+
+
+            $pe[fec_desde] = $datosAux[fecha_ordenanza];
+            $fecha_hasta = date("Y-m-d", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
+            $pe[fec_hasta] = $fecha_hasta;
+
+            // actualizo nueva fecha hasta
+            if (!is_null($datos_integrantes_e)) {
+                foreach ($datos_integrantes_e as $externo) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $pe['fec_hasta'] . "' where id_pext = " . $externo[id_pext] .
+                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            if (!is_null($datos_integrantes_i)) {
+                foreach ($datos_integrantes_i as $interno) {
+                    //Si es integrante vigente
+                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
+                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $pe['fec_hasta'] . "' where id_pext = " . $interno[id_pext] .
+                                " AND id_designacion = " . $interno['id_designacion'];
+                        toba::db('extension')->consultar($sql);
+                    }
+                }
+            }
+            $cambio = true;
+        }
+
+        if ($datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
-            if ($datos['id_estado'] != null) {
+            if ($datosAux['id_estado'] != null) {
                 $pe['id_estado'] = $datos['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
-
+            $cambio = true;
+        }
+        if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
 
-        if ($datos['fecha_prorroga2'] != null) {
-            $sql = "UPDATE pextension SET fec_hasta =' " . $datos['fecha_prorroga2'] . "' where id_pext = " . $pe[id_pext];
-            toba::db('extension')->consultar($sql);
-        }
-        unset($datos[id_estado]);
-
-        $this->dep('datos')->tabla('seguimiento_central')->set($datos);
-        $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
@@ -1672,7 +1811,7 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
-            $this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
+            //$this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
 
         if ($perfil == 'sec_ext_ua') {
@@ -1743,9 +1882,6 @@ class ci_proyectos_extension extends extension_ci {
         unset($datosAux[integrante]);
         unset($datosAux[id_estado]);
 
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
-
         $this->dep('datos')->tabla('seguimiento_ua')->set($datosAux);
         $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_ua')->cargar($datosAux);
@@ -1763,69 +1899,13 @@ class ci_proyectos_extension extends extension_ci {
             $cambio = true;
         }
 
-        if ($datos[fecha_resol] != null && $pe[fec_desde] != $datos[fecha_resol]) {
-
-            //Obtengo datos de integrantes externos cargados
-            $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
-            //Obtengo datos de integrantes internos cargados
-            $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
-
-            // Fecha desde = fecha resolucion
-            if (!is_null($datos_integrantes_e)) {
-                foreach ($datos_integrantes_e as $externo) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
-                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $externo[id_pext] .
-                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-            if (!is_null($datos_integrantes_i)) {
-                foreach ($datos_integrantes_i as $interno) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $pe['fec_desde'] == $interno['desde']) {
-                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $interno[id_pext] .
-                                " AND id_designacion = " . $interno['id_designacion'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-
-
-            $pe[fec_desde] = $datos[fecha_resol];
-            $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
-            $pe[fec_hasta] = $fecha_hasta;
-
-            // actualizo nueva fecha hasta
-            if (!is_null($datos_integrantes_e)) {
-                foreach ($datos_integrantes_e as $externo) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
-                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $pe['fec_hasta'] . "' where id_pext = " . $externo[id_pext] .
-                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-            if (!is_null($datos_integrantes_i)) {
-                foreach ($datos_integrantes_i as $interno) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
-                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $pe['fec_hasta'] . "' where id_pext = " . $interno[id_pext] .
-                                " AND id_designacion = " . $interno['id_designacion'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-            $cambio = true;
-        }
         if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
-
+        
+        // Esto corresponde ??
         if (!is_null($datos[nro_resol])) {
             $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
 
@@ -1873,72 +1953,13 @@ class ci_proyectos_extension extends extension_ci {
             $pe['id_estado'] = $datos['id_estado'];
             $cambio = true;
         }
-
-        if ($datos[fecha_resol] != null && $pe[fec_desde] != $datos[fecha_resol]) {
-
-            //Obtengo datos de integrantes externos cargados
-            $datos_integrantes_e = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($pe['id_pext']);
-            //Obtengo datos de integrantes internos cargados
-            $datos_integrantes_i = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($pe['id_pext']);
-
-            // Fecha desde = fecha resolucion
-            if (!is_null($datos_integrantes_e)) {
-                foreach ($datos_integrantes_e as $externo) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0 && $pe['fec_desde'] == $externo['desde']) {
-                        $sql = "UPDATE integrante_externo_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $externo[id_pext] .
-                                " AND tipo_docum ='" . $externo['tipo_docum'] . " ' AND nro_docum = " . $externo['nro_docum'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-            if (!is_null($datos_integrantes_i)) {
-                foreach ($datos_integrantes_i as $interno) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0 && $pe['fec_desde'] == $interno['desde']) {
-                        $sql = "UPDATE integrante_interno_pe SET desde ='" . $datos['fecha_resol'] . "' where id_pext = " . $interno[id_pext] .
-                                " AND id_designacion = " . $interno['id_designacion'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-
-
-            $pe[fec_desde] = $datos[fecha_resol];
-            $fecha_hasta = date("d-m-Y", strtotime($pe[fec_desde] . "+" . $pe[duracion] . " month"));
-            $pe[fec_hasta] = $fecha_hasta;
-
-            // actualizo nueva fecha hasta
-            if (!is_null($datos_integrantes_e)) {
-                foreach ($datos_integrantes_e as $externo) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($externo['hasta']))) <= 0) {
-                        $sql = "UPDATE integrante_externo_pe SET hasta ='" . $pe['fec_hasta'] . "' where id_pext = " . $externo[id_pext] .
-                                " AND tipo_docum ='" . $externo['tipo_docum'] . "' AND nro_docum = " . $externo['nro_docum'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-            if (!is_null($datos_integrantes_i)) {
-                foreach ($datos_integrantes_i as $interno) {
-                    //Si es integrante vigente
-                    if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) <= 0) {
-                        $sql = "UPDATE integrante_interno_pe SET hasta =' " . $pe['fec_hasta'] . "' where id_pext = " . $interno[id_pext] .
-                                " AND id_designacion = " . $interno['id_designacion'];
-                        toba::db('extension')->consultar($sql);
-                    }
-                }
-            }
-            $cambio = true;
-        }
         if ($cambio) {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
 
-
-
+        // Posible cambio control de cambio para mayor eficiencia 
         if (!is_null($datos[nro_resol])) {
             $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
 
@@ -2066,7 +2087,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
-                $this->dep('form_solicitud')->evento('cancelar')->ocultar();
+                //$this->dep('form_solicitud')->evento('cancelar')->ocultar();
             } else {
                 if ($perfil != 'sec_ext_central') {
                     $form->ef('id_estado')->set_solo_lectura();
@@ -2075,7 +2096,7 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('nro_acta')->set_solo_lectura();
                     $form->ef('obs_resolucion')->set_solo_lectura();
                     $form->ef('fecha_fin_prorroga')->set_solo_lectura();
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    //$this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } else {
                     $form->ef('tipo_solicitud')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
@@ -2100,7 +2121,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos[estado_solicitud] != "Enviada") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 if ($datos[estado_solicitud] != "Recibida") {
-                    //  $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 }
             }
 
@@ -2347,12 +2368,11 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_avance')->set_solo_lectura();
                 $this->dep('form_avance')->evento('modificacion')->ocultar();
                 $this->dep('form_avance')->evento('baja')->ocultar();
-                $this->dep('form_avance')->evento('cancelar')->ocultar();
+                //$this->dep('form_avance')->evento('cancelar')->ocultar();
             }
-            
+
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_avance')->descolapsar();
-            
         } else {
             $this->dep('form_avance')->colapsar();
         }
@@ -2756,7 +2776,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('formulario_destinatarios')->set_solo_lectura();
                 $this->dep('formulario_destinatarios')->evento('modificacion')->ocultar();
                 $this->dep('formulario_destinatarios')->evento('baja')->ocultar();
-                $this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
+                //$this->dep('formulario_destinatarios')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -2959,7 +2979,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrantes')->set_solo_lectura();
                 $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
-                $this->dep('form_integrantes')->evento('cancelar')->ocultar();
+                //$this->dep('form_integrantes')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -3314,7 +3334,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_integrante_e')->set_solo_lectura();
                 $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
                 $this->dep('form_integrante_e')->evento('baja')->ocultar();
-                $this->dep('form_integrante_e')->evento('cancelar')->ocultar();
+                //$this->dep('form_integrante_e')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -3617,7 +3637,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_organizacion')->set_solo_lectura();
                 $this->dep('form_organizacion')->evento('modificacion')->ocultar();
                 $this->dep('form_organizacion')->evento('baja')->ocultar();
-                $this->dep('form_organizacion')->evento('cancelar')->ocultar();
+                //$this->dep('form_organizacion')->evento('cancelar')->ocultar();
             }
 
             $this->controlador()->evento('alta')->ocultar();
@@ -3781,7 +3801,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_objetivos_esp')->set_solo_lectura();
                 $this->dep('form_objetivos_esp')->evento('modificacion')->ocultar();
                 $this->dep('form_objetivos_esp')->evento('baja')->ocultar();
-                $this->dep('form_objetivos_esp')->evento('cancelar')->ocultar();
+                //$this->dep('form_objetivos_esp')->evento('cancelar')->ocultar();
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_objetivos_esp')->descolapsar();
@@ -3941,7 +3961,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_actividad')->set_solo_lectura();
                 $this->dep('form_actividad')->evento('modificacion')->ocultar();
                 $this->dep('form_actividad')->evento('baja')->ocultar();
-                $this->dep('form_actividad')->evento('cancelar')->ocultar();
+                //$this->dep('form_actividad')->evento('cancelar')->ocultar();
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_actividad')->descolapsar();
@@ -4100,7 +4120,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_presupuesto')->set_solo_lectura();
                 $this->dep('form_presupuesto')->evento('modificacion')->ocultar();
                 $this->dep('form_presupuesto')->evento('baja')->ocultar();
-                $this->dep('form_presupuesto')->evento('cancelar')->ocultar();
+                //$this->dep('form_presupuesto')->evento('cancelar')->ocultar();
             }
             $this->controlador()->evento('alta')->ocultar();
             $this->dep('form_presupuesto')->descolapsar();
