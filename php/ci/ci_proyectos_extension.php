@@ -1504,11 +1504,15 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $estado = $pe[id_estado];
-        if ($estado == 'FORM' && $perfil) {
+        if ($estado == 'FORM' && $perfil != 'sec_ext_central') {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
             //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+        }
+        
+        if($estado != 'ECEN'){
+            $form->ef('id_estado')->set_solo_lectura();
         }
 
         if ($perfil == 'sec_ext_central') {
