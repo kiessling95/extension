@@ -1504,11 +1504,15 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $estado = $pe[id_estado];
-        if ($estado == 'FORM' && $perfil) {
+        if ($estado == 'FORM' && $perfil != 'sec_ext_central') {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
             //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+        }
+        
+        if($estado != 'ECEN'){
+            $form->ef('id_estado')->set_solo_lectura();
         }
 
         if ($perfil == 'sec_ext_central') {
@@ -1558,10 +1562,11 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('monto')->set_estado($pe[monto]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
-            if (!is_null($int)) {
+            $form->ef('id_estado')->set_estado($pe[id_estado]);
+            /*if (!is_null($int)) {
                 $form->ef('nombre_becario')->set_estado($int[0][nombre]);
                 $form->ef('dni_becario')->set_estado($int[0][tipo_docum] . $int[0][nro_docum]);
-            }
+            }*/
         }
     }
 
