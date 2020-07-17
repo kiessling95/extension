@@ -800,8 +800,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function convocatorias() {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
-            $pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
-            $id_estado = $pext['id_estado'];
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            $id_estado = $pext['id_estado'];   
         } else {
             $id_estado = 'FORM';
         }
@@ -1504,11 +1504,15 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
 
         $estado = $pe[id_estado];
-        if ($estado == 'FORM' && $perfil) {
+        if ($estado == 'FORM' && $perfil != 'sec_ext_central') {
             $this->dep('formulario_seguimiento')->set_solo_lectura();
             $this->dep('formulario_seguimiento')->evento('modificacion')->ocultar();
             $this->dep('formulario_seguimiento')->evento('baja')->ocultar();
             //$this->dep('formulario_seguimiento')->evento('cancelar')->ocultar();
+        }
+        
+        if($estado != 'ECEN'){
+            $form->ef('id_estado')->set_solo_lectura();
         }
 
         if ($perfil == 'sec_ext_central') {
@@ -1558,10 +1562,11 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('monto')->set_estado($pe[monto]);
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
-            if (!is_null($int)) {
+            $form->ef('id_estado')->set_estado($pe[id_estado]);
+            /*if (!is_null($int)) {
                 $form->ef('nombre_becario')->set_estado($int[0][nombre]);
                 $form->ef('dni_becario')->set_estado($int[0][tipo_docum] . $int[0][nro_docum]);
-            }
+            }*/
         }
     }
 
@@ -2485,12 +2490,12 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-
+            
+            
             if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN' || $estado == 'EUA ') {
                 $this->pantalla()->tab("pant_solicitud")->ocultar();
                 $this->pantalla()->tab("pant_avance")->ocultar();
             }
-
 
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'FORM' && $estado != 'MODF') {
@@ -2544,6 +2549,7 @@ class ci_proyectos_extension extends extension_ci {
 //            if($estado == 'FORM') {
 //                $form->ef('fec_hasta')->set_estado($this->dep('datos')->tabla('pextension')->get()[fec_desde]);
 //            }
+            
 
             $pext = $this->dep('datos')->tabla('pextension')->get();
             $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext']);
@@ -2572,6 +2578,13 @@ class ci_proyectos_extension extends extension_ci {
                         $ejes . array_push($ejes, $aux[$i]);
                     }
                 }
+            }
+            if($estado != 'FORM' ){
+                $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases]);
+                
+                $form->ef('id_bases')->set_estado($bases[id_bases]);
+                $form->ef('tipo_convocatoria')->set_estado($datos[tipo_convocatoria]);
+                $form->ef('duracion')->set_estado($datos[duracion]);
             }
 
             $datos['eje_tematico'] = $ejes;

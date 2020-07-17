@@ -48,15 +48,12 @@ class dt_estado_pe extends extension_datos_tabla
         return toba::db('extension')->consultar($sql);
     }
     
-    function evaluacion_centrar() {
+    function evaluacion_central() {
         $sql = " SELECT id_estado, descripcion FROM estado_pe "
                 . " WHERE "
                 . " id_estado = 'ECEN'"
                 . " OR id_estado = 'APRB'"
-                . " OR id_estado = 'DES' "
-                . " OR id_estado = 'BAJA'"
-                . " OR id_estado = 'FIN'"
-                . " OR id_estado = 'PRG'";
+                . " OR id_estado = 'DES' ";
         return toba::db('extension')->consultar($sql);
     }
     
