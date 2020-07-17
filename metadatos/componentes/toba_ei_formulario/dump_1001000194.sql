@@ -221,7 +221,7 @@ INSERT INTO apex_objeto_ut_formulario (objeto_ut_formulario_proyecto, objeto_ut_
 	NULL, --analisis_cambios
 	'0', --no_imprimir_efs_sin_estado
 	'0', --resaltar_efs_con_estado
-	NULL, --template
+	'', --template
 	NULL  --template_impresion
 );
 
@@ -715,7 +715,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1001000194', --objeto_ei_formulario
 	'extension', --objeto_ei_formulario_proyecto
 	'rescd', --identificador
-	'ef_fijo', --elemento_formulario
+	'ef_editable', --elemento_formulario
 	'rescd', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio

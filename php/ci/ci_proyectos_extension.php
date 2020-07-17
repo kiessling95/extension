@@ -800,8 +800,8 @@ class ci_proyectos_extension extends extension_ci {
 
     function convocatorias() {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
-            $pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
-            $id_estado = $pext['id_estado'];
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            $id_estado = $pext['id_estado'];   
         } else {
             $id_estado = 'FORM';
         }
@@ -2490,12 +2490,12 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
-
+            
+            
             if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN' || $estado == 'EUA ') {
                 $this->pantalla()->tab("pant_solicitud")->ocultar();
                 $this->pantalla()->tab("pant_avance")->ocultar();
             }
-
 
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'FORM' && $estado != 'MODF') {
@@ -2549,6 +2549,7 @@ class ci_proyectos_extension extends extension_ci {
 //            if($estado == 'FORM') {
 //                $form->ef('fec_hasta')->set_estado($this->dep('datos')->tabla('pextension')->get()[fec_desde]);
 //            }
+            
 
             $pext = $this->dep('datos')->tabla('pextension')->get();
             $seg_central = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext']);
@@ -2577,6 +2578,13 @@ class ci_proyectos_extension extends extension_ci {
                         $ejes . array_push($ejes, $aux[$i]);
                     }
                 }
+            }
+            if($estado != 'FORM' ){
+                $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases]);
+                
+                $form->ef('id_bases')->set_estado($bases[id_bases]);
+                $form->ef('tipo_convocatoria')->set_estado($datos[tipo_convocatoria]);
+                $form->ef('duracion')->set_estado($datos[duracion]);
             }
 
             $datos['eje_tematico'] = $ejes;
