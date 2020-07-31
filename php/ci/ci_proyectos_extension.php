@@ -1755,10 +1755,10 @@ class ci_proyectos_extension extends extension_ci {
             $cambio = true;
         }
 
-        if ($datosAux[id_estado] != $pe[id_estado]) {
+        if ( $pe[id_estado] == 'ECEN' && $datosAux[id_estado] != $pe[id_estado]) {
             unset($pe[x_dbr_clave]);
             if ($datosAux['id_estado'] != null) {
-                $pe['id_estado'] = $datos['id_estado'];
+                $pe['id_estado'] = $datosAux['id_estado'];
             } else {
                 $pe['id_estado'] = 'ECEN';
             }
