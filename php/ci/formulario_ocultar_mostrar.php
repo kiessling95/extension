@@ -239,6 +239,25 @@
                             this.ef('dni_becario').ocultar();
                         }
                     }
+                    
+                    {$id_js}.evt__id_estado__procesar = function(es_inicial) 
+                    {
+                        switch (this.ef('id_estado').get_estado()) {
+                        
+					case 'ECEN':
+                                                this.ef('id_estado').mostrar();
+						break;
+                                        case 'APRB':
+                                                this.ef('id_estado').mostrar();
+						break;
+                                        case 'DES ':
+                                                this.ef('id_estado').mostrar();
+						break;
+					default:
+                                                this.ef('id_estado').ocultar();
+						break;					
+				}
+                    }
                 ";
         }
     }
