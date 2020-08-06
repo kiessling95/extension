@@ -62,7 +62,6 @@ class ci_personas extends extension_ci {
             $form->ef('nombre')->set_obligatorio('true');
             $form->ef('nro_docum')->set_obligatorio('true');
             $form->ef('tipo_docum')->set_obligatorio('true');
-            $form->ef('tipo_sexo')->set_obligatorio('true');
             $form->ef('fec_nacim')->set_obligatorio('true');
         } else {
             $this->dep('formulario')->colapsar();
