@@ -1,5 +1,4 @@
 <?php
-
 class dt_pextension extends extension_datos_tabla {
 
     function get_titulo($id_pext = null) {
@@ -200,6 +199,11 @@ class dt_pextension extends extension_datos_tabla {
     }
 
 
-}
+	function get_descripciones()
+	{
+		$sql = "SELECT id_pext, denominacion FROM pextension ORDER BY denominacion";
+		return toba::db('extension')->consultar($sql);
+	}
 
+}
 ?>
