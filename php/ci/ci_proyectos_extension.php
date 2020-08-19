@@ -827,7 +827,7 @@ class ci_proyectos_extension extends extension_ci {
         $alerta = $this->dep('datos')->tabla('alerta')->get_alerta($clave)[0];
 
         if (count($alerta) != 0) {
-   
+
             $sql = "UPDATE alerta SET estado_alerta ='Finalizada' WHERE id_pext=" . $alerta[id_pext] . " AND id_alerta=" . $alerta[id_alerta] . " AND fecha='" . $alerta[fecha] . "'";
             toba::db('extension')->consultar($sql);
         }
@@ -1336,6 +1336,17 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
+    function evt__cuadro__revision($datos) {
+        //$datos[rol] = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        print_r($datos);
+
+
+        //$opciones = array('width' => 1000, 'scrollbars' => 1, 'height' => 600, 'resizable' => 1, 'celda_memoria' => 'nueva', 'menu' => 0);
+        //$url = toba::vinculador()->get_url('proyecto', 'nro_operacion', array('chek' => json_encode($this->s__chek)), $opciones);
+        //$codigo_js = " abrir_popup('proyecto', '$url') ";
+        //toba::acciones_js()->encolar($codigo_js);
+    }
+
     //-------------------------------------------------------------------------------
     //------------------------- PANTALLA ALTA PROYECTO  -----------------------------
     //-------------------------------------------------------------------------------
@@ -1645,10 +1656,10 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
         $this->dep('datos')->tabla('seguimiento_central')->cargar($datos);
-        
-         // Quitar alerta 
+
+        // Quitar alerta 
         if ($datos[id_estado] != 'ECEN') {
-            
+
             // Finalizo de haber alguna alerta
             $rol = 'sec_ext_central';
             $this->alerta_finalizada($rol);
@@ -1754,10 +1765,10 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->dep('datos')->tabla('seguimiento_central')->set($datos);
         $this->dep('datos')->tabla('seguimiento_central')->sincronizar();
-        
+
         // Quitar alerta 
         if ($datos[id_estado] != 'ECEN') {
-            
+
             // Finalizo de haber alguna alerta
             $rol = 'sec_ext_central';
             $this->alerta_finalizada($rol);
@@ -1967,7 +1978,7 @@ class ci_proyectos_extension extends extension_ci {
 
             // obtengo alertas perdientes del formulador 
             $clave = array();
-            
+
             $clave[id_pext] = $pe[id_pext];
             $clave[rol] = 'formulador';
             $alertas_f = $this->dep('datos')->tabla('alerta')->get_alerta($clave)[0];
@@ -2056,7 +2067,7 @@ class ci_proyectos_extension extends extension_ci {
 
             // obtengo alertas perdientes del formulador 
             $clave = array();
-            
+
             $clave[id_pext] = $pe[id_pext];
             $clave[rol] = 'formulador';
             $alertas_f = $this->dep('datos')->tabla('alerta')->get_alerta($clave)[0];
@@ -2317,6 +2328,23 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('solicitud')->cargar($datos);
 
             toba::notificacion()->agregar('La solicitud se registro correctamente', 'info');
+
+            // Quitar alerta 
+            // obtengo alertas perdientes del formulador 
+            $clave[id_pext] = $pe[id_pext];
+            $clave[rol] = 'sec_ext_central';
+            $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta($clave)[0];
+
+            // control de alertas no mas de una por rol
+            if (count($alertas_c) == 0) {
+                $alerta = null;
+                $alerta['rol'] = "sec_ext_central";
+                $alerta['id_pext'] = $pe['id_pext'];
+                $alerta['tipo'] = "Evualuacion Central";
+                $alerta['descripcion'] = "El formulador del proyecto genero una solicitud ( Baja,Prorroga,Cierre)";
+
+                $this->alerta_creada($alerta);
+            }
         } else {
             toba::notificacion()->agregar('Ya existe una solicitud del tipo seleccionado', 'info');
         }

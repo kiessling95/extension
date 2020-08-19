@@ -165,16 +165,16 @@ INSERT INTO apex_objeto_eventos (proyecto, evento_id, objeto, identificador, eti
 	NULL, --defecto
 	NULL, --display_datos_cargados
 	NULL, --grupo
-	'V', --accion
+	NULL, --accion
 	NULL, --accion_imphtml_debug
-	'1001000058', --accion_vinculo_carpeta
-	'1001000071', --accion_vinculo_item
+	NULL, --accion_vinculo_carpeta
+	NULL, --accion_vinculo_item
 	NULL, --accion_vinculo_objeto
 	'1', --accion_vinculo_popup
 	NULL, --accion_vinculo_popup_param
-	'alerta', --accion_vinculo_target
+	NULL, --accion_vinculo_target
 	'popup', --accion_vinculo_celda
-	NULL, --accion_vinculo_servicio
+	'ejecutar', --accion_vinculo_servicio
 	'0', --es_seleccion_multiple
 	'0'  --es_autovinculo
 );
@@ -527,7 +527,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	NULL, --desabilitado
 	'0', --total
 	NULL, --total_cc
-	'1', --usar_vinculo
+	'0', --usar_vinculo
 	NULL, --vinculo_carpeta
 	NULL, --vinculo_item
 	NULL, --vinculo_popup
@@ -537,6 +537,6 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	NULL, --vinculo_servicio
 	'1', --permitir_html
 	NULL, --grupo
-	'1001000408'  --evento_asociado
+	NULL  --evento_asociado
 );
 --- FIN Grupo de desarrollo 1001
