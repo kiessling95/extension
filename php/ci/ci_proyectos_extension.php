@@ -1349,6 +1349,27 @@ class ci_proyectos_extension extends extension_ci {
         //$codigo_js = " abrir_popup('proyecto', '$url') ";
         //toba::acciones_js()->encolar($codigo_js);
     }
+    
+    //------------------------- CUADRO ALERTA ----------------------------------------------
+
+    function conf__cuadro_alerta(toba_ei_cuadro $cuadro) {
+        
+        
+        
+        $perfil = toba::usuario()->get_perfil_datos();
+        $clave = array();
+
+        if ($perfil != null) {
+            $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
+            $clave['uni_acad'] = $ua[0]['sigla'];
+        }
+        
+        $clave[id_pext] = $this->dep('datos')->tabla('pextension')->get()[id_pext];
+        $clave[rol] = toba::manejador_sesiones()->get_perfiles_funcionales()[0];;
+
+
+        $cuadro->set_datos($alerta = $this->dep('datos')->tabla('alerta')->get_alerta_rol($clave));
+    }
 
     //-------------------------------------------------------------------------------
     //------------------------- PANTALLA ALTA PROYECTO  -----------------------------
@@ -1436,6 +1457,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
+        
+        
     }
 
     // ------------------------------------------------------------------------------
@@ -2341,6 +2364,7 @@ class ci_proyectos_extension extends extension_ci {
             $clave[rol] = 'sec_ext_central';
             $clave['id_solicitud'] = $solicitud['tipo_solicitud'];
             $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
+            
 
             // control de alertas no mas de una por rol
             if (count($alertas_c) == 0) {
@@ -2348,9 +2372,9 @@ class ci_proyectos_extension extends extension_ci {
                 $alerta['rol'] = "sec_ext_central";
                 $alerta['id_pext'] = $pe['id_pext'];
                 $alerta['tipo'] = "Evualuacion Central";
-                $alerta['id_solicitud'] = $solicitud['tipo_solicitud'];
+                $alerta['tipo_solicitud'] = $solicitud['tipo_solicitud'];
                 $alerta['descripcion'] = "El formulador del proyecto genero una solicitud ( Baja,Prorroga,Cierre)";
-
+   
                 $this->alerta_creada($alerta);
             }
         } else {
@@ -2631,6 +2655,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_seguimiento_ua")->ocultar();
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
+        $this->pantalla()->tab("pant_seguimiento")->ocultar();
     }
 
     //------------------------CUADRO HISTORIAL--------------------------------------
@@ -2691,7 +2716,7 @@ class ci_proyectos_extension extends extension_ci {
             }
 
             // si presiono el boton enviar no puede editar nada mas 
-            if ($estado != 'FORM' && $estado != 'MODF') {
+            if (($perfil == 'formulador') && ($estado != 'FORM' && $estado != 'MODF')) {
                 $this->controlador()->evento('enviar')->ocultar();
                 $this->controlador()->evento('validar')->ocultar();
             } else {
