@@ -7,6 +7,21 @@
 		$id_js = toba::escaper()->escapeJs($this->objeto_js);
                 
                 echo "
+                    
+                {$id_js}.evt__nuevo_integrante__procesar = function(es_inicial) 
+                {
+                    switch (this.ef('estado_solicitud').get_estado()) {
+                        case 'Alta':
+                            this.ef('tipo_solicitud').ocultar();
+                            break;
+                        case 'Baja':
+                            this.ef('tipo_solicitud').ocultar();
+                            break;
+                        default:
+                            this.ef('nuevo_integrante').ocultar();
+                            break;
+                    }
+                }
 		
 		{$id_js}.evt__recibido__procesar = function(es_inicial) 
                 {
