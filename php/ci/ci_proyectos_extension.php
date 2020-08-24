@@ -1339,38 +1339,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('pextension')->cargar($datos);
     }
 
-    function evt__cuadro__revision($datos) {
-        //$datos[rol] = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-        print_r($datos);
-
-
-        //$opciones = array('width' => 1000, 'scrollbars' => 1, 'height' => 600, 'resizable' => 1, 'celda_memoria' => 'nueva', 'menu' => 0);
-        //$url = toba::vinculador()->get_url('proyecto', 'nro_operacion', array('chek' => json_encode($this->s__chek)), $opciones);
-        //$codigo_js = " abrir_popup('proyecto', '$url') ";
-        //toba::acciones_js()->encolar($codigo_js);
-    }
-    
-    //------------------------- CUADRO ALERTA ----------------------------------------------
-
-    function conf__cuadro_alerta(toba_ei_cuadro $cuadro) {
-        
-        
-        
-        $perfil = toba::usuario()->get_perfil_datos();
-        $clave = array();
-
-        if ($perfil != null) {
-            $ua = $this->dep('datos')->tabla('unidad_acad')->get_ua(); //trae la ua de acuerdo al perfil de datos  
-            $clave['uni_acad'] = $ua[0]['sigla'];
-        }
-        
-        $clave[id_pext] = $this->dep('datos')->tabla('pextension')->get()[id_pext];
-        $clave[rol] = toba::manejador_sesiones()->get_perfiles_funcionales()[0];;
-
-
-        $cuadro->set_datos($alerta = $this->dep('datos')->tabla('alerta')->get_alerta_rol($clave));
-    }
-
     //-------------------------------------------------------------------------------
     //------------------------- PANTALLA ALTA PROYECTO  -----------------------------
     //-------------------------------------------------------------------------------
@@ -1457,8 +1425,6 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_solicitud")->ocultar();
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
-        
-        
     }
 
     // ------------------------------------------------------------------------------
@@ -2193,8 +2159,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_solicitud";
 
         // Limpio Filtro para evitar errores 
-        unset($this->s__datos_filtro);
-        unset($this->s__where);
+        //unset($this->s__datos_filtro);
+        //unset($this->s__where);
 
         $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
@@ -2225,6 +2191,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__filtro_solicitud__filtrar($datos) {
         $this->s__datos_filtro = $datos;
         $this->s__where = $this->dep('filtro_solicitud')->get_sql_where();
+        print_r($this->dep('filtro_solicitud')->get_sql_where());
     }
 
     function evt__filtro_solicitud__cancelar() {
@@ -2242,6 +2209,7 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
+
         if (isset($this->s__where)) {
             $this->s__datos = $this->dep('datos')->tabla('solicitud')->get_listado($id_pext, $this->s__where);
         } else {
@@ -2291,6 +2259,8 @@ class ci_proyectos_extension extends extension_ci {
                     //$this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } else {
                     $form->ef('tipo_solicitud')->set_solo_lectura();
+                    $form->ef('cambio_integrante')->set_solo_lectura();
+                    $form->ef('cambio_proyecto')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
                     $this->dep('form_solicitud')->evento('baja')->ocultar();
                 }
@@ -2310,15 +2280,17 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('solicitud')->get();
             $datos[id_estado] = $estado;
-            if ($datos[estado_solicitud] != "Enviada") {
+            if ($datos[estado_solicitud] != "Formulacion") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
-                if ($datos[estado_solicitud] != "Recibida") {
+                $this->dep('form_solicitud')->evento('enviar')->ocultar();
+                if ($perfil != 'sec_ext_central') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 }
             }
 
-
             $form->set_datos($datos);
+        } else {
+            $this->dep('form_solicitud')->evento('enviar')->ocultar();
         }
     }
 
@@ -2329,7 +2301,7 @@ class ci_proyectos_extension extends extension_ci {
 
 
         $datos['fecha_solicitud'] = date('Y-m-d');
-        $datos['estado_solicitud'] = 'Enviada';
+        $datos['estado_solicitud'] = 'Formulacion';
 
 
         $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos);
@@ -2347,6 +2319,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[observacion_prorroga]);
         unset($datos[fecha_fin_prorroga]);
         unset($datos[id_estado]);
+        unset($datos[barra]);
 
         if ($carga) {
             $this->dep('datos')->tabla('solicitud')->set($datos);
@@ -2357,26 +2330,6 @@ class ci_proyectos_extension extends extension_ci {
 
 
             toba::notificacion()->agregar('La solicitud se registro correctamente', 'info');
-
-            // Quitar alerta 
-            // obtengo alertas perdientes del formulador 
-            $clave[id_pext] = $pe[id_pext];
-            $clave[rol] = 'sec_ext_central';
-            $clave['id_solicitud'] = $solicitud['tipo_solicitud'];
-            $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
-            
-
-            // control de alertas no mas de una por rol
-            if (count($alertas_c) == 0) {
-                $alerta = null;
-                $alerta['rol'] = "sec_ext_central";
-                $alerta['id_pext'] = $pe['id_pext'];
-                $alerta['tipo'] = "Evualuacion Central";
-                $alerta['tipo_solicitud'] = $solicitud['tipo_solicitud'];
-                $alerta['descripcion'] = "El formulador del proyecto genero una solicitud ( Baja,Prorroga,Cierre)";
-   
-                $this->alerta_creada($alerta);
-            }
         } else {
             toba::notificacion()->agregar('Ya existe una solicitud del tipo seleccionado', 'info');
         }
@@ -2387,18 +2340,18 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         unset($pe[x_dbr_clave]);
 
-        if ($datos[estado_solicitud] == 'Aceptada') {
-            switch ($datos[tipo_solicitud]) {
-                case 'Baja':
+        if ($datos[estado_solicitud] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
+            switch ($datos[cambio_proyecto]) {
+                case 'BAJA':
                     $pe[id_estado] = 'BAJA';
                     break;
 
-                case 'Prorroga':
+                case 'PRORROGA':
                     $pe[id_estado] = 'PRG ';
                     $pe[fec_hasta] = $datos[fecha_fin_prorroga];
                     break;
 
-                case 'Cierre':
+                case 'FINALIZACIÓN':
                     $pe['id_estado'] = 'FIN ';
                     break;
 
@@ -2427,11 +2380,51 @@ class ci_proyectos_extension extends extension_ci {
         }
 
         unset($datos[id_estado]);
+        unset($datos[barra]);
 
 
         $this->dep('datos')->tabla('solicitud')->set($datos);
         $this->dep('datos')->tabla('solicitud')->sincronizar();
         $this->dep('datos')->tabla('solicitud')->cargar($datos);
+    }
+
+    // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
+    function evt__form_solicitud__enviar($datos) {
+
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        unset($datos[id_estado]);
+        unset($datos[nro_acta_resolucion]);
+        unset($datos[num_acta_prorroga]);
+        unset($datos[observacion_prorroga]);
+        unset($datos[fecha_fin_prorroga]);
+        unset($datos[id_estado]);
+        unset($datos[barra]);
+
+        $datos['estado_solicitud'] = 'Enviada';
+
+        $this->dep('datos')->tabla('solicitud')->set($datos);
+        $this->dep('datos')->tabla('solicitud')->sincronizar();
+        $this->dep('datos')->tabla('solicitud')->cargar($datos);
+
+        // Quitar alerta 
+        // obtengo alertas perdientes del formulador 
+        $clave[id_pext] = $pe[id_pext];
+        $clave[rol] = 'sec_ext_central';
+        $clave['id_solicitud'] = $datos['tipo_solicitud'];
+        $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
+
+
+        // control de alertas no mas de una por rol
+        if (count($alertas_c) == 0) {
+            $alerta = null;
+            $alerta['rol'] = "sec_ext_central";
+            $alerta['id_pext'] = $pe['id_pext'];
+            $alerta['tipo'] = "Evualuacion Central";
+            $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
+            $alerta['descripcion'] = "El formulador del proyecto genero una solicitud ( Baja,Prorroga,Cierre)";
+
+            $this->alerta_creada($alerta);
+        }
     }
 
     // ACTUALMENTE HABILITADO -> HABILIDARLO PARA ADMIN
@@ -2456,8 +2449,8 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__pantalla = "pant_avance";
 
         // Limpio Filtro para evitar errores 
-        unset($this->s__datos_filtro);
-        unset($this->s__where);
+        //unset($this->s__datos_filtro);
+        //unset($this->s__where);
 
         $this->pantalla()->tab("pant_alta_proyecto")->ocultar();
         $this->pantalla()->tab("pant_edicion")->ocultar();
@@ -3173,6 +3166,20 @@ class ci_proyectos_extension extends extension_ci {
         }
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
+        }else{
+            // Obtener solicitudes
+                $pe = $this->dep('datos')->tabla('pextension')->get();
+                $datos_sol['id_pext'] = $pe['id_pext'];
+                $datos_sol['estado_solicitud'] = 'Aceptada';
+                $datos_sol['cambio_integrante'] = 'ALTA';
+                $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+
+
+                $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+
+                if(count($solicitudes)==0) {
+                    $this->controlador()->evento('alta')->ocultar();
+                }
         }
         $this->s__imprimir = 0;
     }
@@ -3224,6 +3231,20 @@ class ci_proyectos_extension extends extension_ci {
 
             if ($estado == 'APRB' || $estado == 'PRG ') {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
+                
+                // Obtener solicitudes
+                $pe = $this->dep('datos')->tabla('pextension')->get();
+                $datos_sol['id_pext'] = $pe['id_pext'];
+                $datos_sol['estado_solicitud'] = 'Aceptada';
+                $datos_sol['cambio_integrante'] = 'MODIFICACIÓN';
+                $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+
+
+                $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+
+                if(count($solicitudes)==0) {
+                    $this->dep('form_integrantes')->evento('modificacion')->ocultar();
+                }
                 $form->ef('id_docente')->set_solo_lectura();
                 $form->ef('funcion_p')->set_solo_lectura();
             }
@@ -3340,20 +3361,21 @@ class ci_proyectos_extension extends extension_ci {
                                     $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
 
                                     // Crear Alerta UA
-                                    $alerta = array();
-                                    $alerta['rol'] = "sec_ext_central";
-                                    $alerta['id_pext'] = $pe['id_pext'];
-                                    $alerta['tipo'] = "Alta nuevo integrante";
-                                    $alerta['nuevo_integrante'] = "Alta";
-                                    $alerta['descripcion'] = "El proyecto solicita la aprobación del alta de un nuevo integrante al proyecto";
-                                    
-                                    $this->alerta_creada($alerta);
-                                    
+                                    /*
+                                      $alerta = array();
+                                      $alerta['rol'] = "sec_ext_central";
+                                      $alerta['id_pext'] = $pe['id_pext'];
+                                      $alerta['tipo'] = "Alta nuevo integrante";
+                                      $alerta['nuevo_integrante'] = "Alta";
+                                      $alerta['descripcion'] = "El proyecto solicita la aprobación del alta de un nuevo integrante al proyecto";
+
+                                      $this->alerta_creada($alerta); */
+
                                     unset($this->s__datos_docente_aux);
                                     $this->s__mostrar = 0;
                                 }
                             } else {
-                                
+
                                 // copia de los datos cargados antes de error  
                                 $datos['id_pext'] = $pe['id_pext'];
                                 $datos['tipo'] = 'Docente';
