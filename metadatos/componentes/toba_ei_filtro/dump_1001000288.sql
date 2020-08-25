@@ -135,7 +135,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'opciones', --tipo
 	'tipo_solicitud', --nombre
 	'tipo_solicitud', --expresion
-	'Solicitud', --etiqueta
+	'Tipo Solicitud', --etiqueta
 	NULL, --descripcion
 	'0', --obligatorio
 	'0', --inicial
@@ -150,7 +150,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'designa', --carga_fuente
-	'Baja,Cierre,Prorroga', --carga_lista
+	'PROYECTO, INTEGRANTE, OTRO', --carga_lista
 	NULL, --carga_col_clave
 	NULL, --carga_col_desc
 	'0', --carga_permite_no_seteado

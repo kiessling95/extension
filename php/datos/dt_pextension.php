@@ -57,21 +57,21 @@ class dt_pextension extends extension_datos_tabla {
                     FROM
                         pextension as t_p INNER JOIN"
                 . "(SELECT t_ua.* FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as t_ua (sigla CHARACTER(5), descripcion CHARACTER(60))) as t_ua ON (t_p.uni_acad = t_ua.sigla)
-                        LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D' AND i.hasta >= '" . date('Y-m-d')."')
+                        LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D' AND i.hasta >= '" . date('Y-m-d') . "')
                         LEFT OUTER JOIN (SELECT d.* FROM  dblink('" . $this->dblink_designa() . "', 
                                     'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre, dc.tipo_docum, dc.nro_docum,dc.correo_institucional,dc.telefono_celular 
                                      FROM designacion as d LEFT OUTER JOIN docente as dc
                                             ON(dc.id_docente = d.id_docente)') as d 
                                             ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER,correo_institucional CHARACTER(60),telefono_celular CHARACTER(30) )) as d ON (i.id_designacion=d.id_designacion)
                                             
-                        LEFT OUTER JOIN integrante_interno_pe as i_co ON (t_p.id_pext = i_co.id_pext AND i_co.funcion_p='CD-Co' AND i_co.hasta >= '" . date('Y-m-d')."')                        
+                        LEFT OUTER JOIN integrante_interno_pe as i_co ON (t_p.id_pext = i_co.id_pext AND i_co.funcion_p='CD-Co' AND i_co.hasta >= '" . date('Y-m-d') . "')                        
                         LEFT OUTER JOIN (SELECT co.* FROM  dblink('" . $this->dblink_designa() . "', 
                                     'SELECT d.id_designacion, dc.id_docente , dc.apellido, dc.nombre, dc.tipo_docum, dc.nro_docum,dc.correo_institucional,dc.telefono_celular 
                                      FROM designacion as d LEFT OUTER JOIN docente as dc
                                             ON(dc.id_docente = d.id_docente)') as co 
                                             ( id_designacion INTEGER ,id_docente INTEGER ,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER,correo_institucional CHARACTER(60),telefono_celular CHARACTER(30) )) as co ON (i_co.id_designacion=co.id_designacion)
                         
-                        LEFT OUTER JOIN integrante_externo_pe as t_eco ON (t_p.id_pext = t_eco.id_pext AND t_eco.funcion_p='CD-Co' AND t_eco.hasta >= '" . date('Y-m-d')."') 
+                        LEFT OUTER JOIN integrante_externo_pe as t_eco ON (t_p.id_pext = t_eco.id_pext AND t_eco.funcion_p='CD-Co' AND t_eco.hasta >= '" . date('Y-m-d') . "') 
                         LEFT OUTER JOIN persona as p ON (p.tipo_docum = t_eco.tipo_docum AND p.nro_docum = t_eco.nro_docum ) 
                         
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (b_c.id_bases = t_p.id_bases)
@@ -91,36 +91,29 @@ class dt_pextension extends extension_datos_tabla {
         $usr = toba::manejador_sesiones()->get_id_usuario_instancia();
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $perfil_datos = toba::perfil_de_datos('designa')->get_restricciones_dimension('designa', 'unidad_acad')[0];
-        
-        
-        if (!is_null($where)) {
 
-            $where = "WHERE " .  $where;
-            
-            if ('formulador' == $perfil) {
-                $where = $where . " AND responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "' ";
-            } else {
-                if ($perfil == 'sec_ext_ua') {
-                    $where = $where . " AND id_estado <> 'FORM' AND uni_acad='" . $perfil_datos . "' ";
-                } else {
-                    if ($perfil == 'sec_ext_central') {
-                        $where = $where . " AND id_estado = 'FORM' AND id_estado = 'MODF' AND id_estado= 'EUA ' AND uni_acad='" . $perfil_datos . "' ";
-                    }
-                }
-            }
+        /* SI where == null  
+          $where = "WHERE " .  $where;
+         * SINO 
+         * $where = "WHERE 
+         * fin si
+         * 
+         * $where 
+         *           */
+        if (!is_null($where)) {
+            $where = "WHERE " . $where;
         } else {
-            if ('formulador' == $perfil) {
-                $where = "WHERE responsable_carga= '" . $usr . "' AND uni_acad='" . $perfil_datos . "'";
-            } else {
-                if ($perfil == 'sec_ext_ua') {
-                    $where = "WHERE ( id_estado <> 'FORM') AND uni_acad='" . $perfil_datos . "'";
-                } else {
-                    if ($perfil == 'sec_ext_central') {
-                        $where = "WHERE id_estado <> 'MODF' AND id_estado <> 'FORM' AND id_estado <> 'EUA '";
-                    }
-                }
-            }
+            $where = "WHERE 1=1";
         }
+
+        if ('formulador' == $perfil) {
+            $where .= " AND responsable_carga= '" . $usr . "'";
+        } elseif ($perfil == 'sec_ext_ua') {
+            $where .= " AND uni_acad='" . $perfil_datos . "'";
+        }
+
+
+
         $sql = "SELECT * FROM ( SELECT
                         t_p.id_pext,
                         t_c.descripcion,
@@ -137,7 +130,7 @@ class dt_pextension extends extension_datos_tabla {
                     FROM
                         pextension as t_p INNER JOIN
                         (SELECT t_ua.* FROM dblink('" . $this->dblink_designa() . "','SELECT sigla FROM unidad_acad ') as t_ua (sigla CHARACTER(5) )) as t_ua ON (t_p.uni_acad = t_ua.sigla)
-                        LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D' AND i.hasta >= '" . date('Y-m-d')."')
+                        LEFT OUTER JOIN integrante_interno_pe as i ON (t_p.id_pext = i.id_pext AND i.funcion_p='D' AND i.hasta >= '" . date('Y-m-d') . "')
                         LEFT OUTER JOIN ( SELECT d.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT d.id_designacion,d.id_docente FROM designacion as d ') as d ( id_designacion INTEGER,id_docente INTEGER)) as d ON (i.id_designacion = d.id_designacion)
                         LEFT OUTER JOIN ( SELECT dc.* FROM dblink('" . $this->dblink_designa() . "', 'SELECT dc.id_docente,dc.nombre, dc.apellido, dc.tipo_docum, dc.nro_docum FROM docente as dc ') as dc ( id_docente INTEGER,apellido CHARACTER VARYING, nombre CHARACTER VARYING, tipo_docum CHARACTER(4), nro_docum INTEGER)) as dc ON (d.id_docente = dc.id_docente)
                         LEFT OUTER JOIN bases_convocatoria as b_c ON (t_p.id_bases = b_c.id_bases)
@@ -147,9 +140,9 @@ class dt_pextension extends extension_datos_tabla {
         $sql = toba::perfil_de_datos()->filtrar($sql);
         return toba::db('extension')->consultar($sql);
     }
-    
+
     function get_proyectos_anteriores($id_doc) {
-        
+
         $sql = "SELECT
 			t_p.id_pext,
                         t_p.denominacion,
@@ -199,6 +192,10 @@ class dt_pextension extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
 
+    function get_descripciones() {
+        $sql = "SELECT id_pext, denominacion FROM pextension ORDER BY denominacion";
+        return toba::db('extension')->consultar($sql);
+    }
 
 }
 
