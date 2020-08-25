@@ -2311,14 +2311,14 @@ class ci_proyectos_extension extends extension_ci {
             if (($solicitud[estado_solicitud] != 'Aceptada' && $solicitud[estado_solicitud] != 'Rechazada' ) && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
                 if (is_null($datos[cambio_integrante])) {
                     $carga = false;
-                }else{
-                    if($datos[cambio_integrante] == $solicitud[cambio_integrante]){
-                        
+                } else {
+                    if ($datos[cambio_integrante] == $solicitud[cambio_integrante]) {
+
                         $carga = false;
                     }
                 }
-            }else{
-                if(($solicitud[estado_solicitud] == 'Aceptada' || $solicitud[estado_solicitud] == 'Rechazada' ) && date('Y-m-d') == $solicitud[fecha_solicitud]){
+            } else {
+                if (($solicitud[estado_solicitud] == 'Aceptada' || $solicitud[estado_solicitud] == 'Rechazada' ) && date('Y-m-d') == $solicitud[fecha_solicitud]) {
                     $carga = false;
                     toba::notificacion()->agregar('Se supero el limite diario de una solicitud del mismo tipo', 'info');
                 }
@@ -3208,8 +3208,15 @@ class ci_proyectos_extension extends extension_ci {
 
 
             $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+            $alta = true;
+            foreach ($solicitudes as $solicitud) {
+                // control fecha actual mayor o igual fecha solicitud + mes 
+                if (strcasecmp(date('Y-m-d'), date("d-m-Y", strtotime($solicitud['fecha_solicitud'] . "+" . 1 . " month"))) >= 0) {
+                    $alta = false;
+                }
+            }
 
-            if (count($solicitudes) == 0) {
+            if (!$alta) {
                 $this->controlador()->evento('alta')->ocultar();
             }
         }
