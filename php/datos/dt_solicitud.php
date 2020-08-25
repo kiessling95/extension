@@ -22,7 +22,7 @@ class dt_solicitud extends extension_datos_tabla {
                 . "AND id_pext= $claves[id_pext] "
                 . "AND cambio_integrante ='". $claves[cambio_integrante]."' "
                 . "AND tipo_solicitud = '".$claves[tipo_solicitud]."' ";
-        
+       
         return toba::db('extension')->consultar($sql);
     }
 
