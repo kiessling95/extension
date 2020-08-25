@@ -2303,13 +2303,12 @@ class ci_proyectos_extension extends extension_ci {
         $datos['fecha_solicitud'] = date('Y-m-d');
         $datos['estado_solicitud'] = 'Formulacion';
 
-
         $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos);
 
         $carga = true;
 
         foreach ($solicitudes as $solicitud) {
-            if (($solicitud[estado_solicitud] != 'Aceptada' && $solicitud[estado_solicitud] != 'Rechazada' ) && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
+            if (($solicitud[estado_solicitud] != 'Aceptada' && $solicitud[estado_solicitud] != 'Rechazada' ) && ($solicitud[tipo_solicitud] == $datos[tipo_solicitud] && $solicitud[cambio_integrante] == $datos[cambio_integrante])) {
                 $carga = false;
             }
         }
@@ -2322,6 +2321,12 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[barra]);
 
         if ($carga) {
+            if (!is_null($datos['cambio_proyecto'])) {
+                $datos['tipo_cambio'] = $datos['cambio_proyecto'];
+            } else {
+                $datos['tipo_cambio'] = $datos['cambio_integrante'];
+            }
+
             $this->dep('datos')->tabla('solicitud')->set($datos);
             $this->dep('datos')->tabla('solicitud')->sincronizar();
             $this->dep('datos')->tabla('solicitud')->cargar($datos);
@@ -2362,6 +2367,10 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
+        } else {
+            if ($datos[tipo_solicitud] == 'INTEGRANTE') {
+                
+            }
         }
 
         //Control por si Central se olvida de cambiar estado a Recibida
@@ -2382,6 +2391,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
 
+        if (!is_null($datos['cambio_proyecto'])) {
+            $datos['tipo_cambio'] = $datos['cambio_proyecto'];
+        } else {
+            $datos['tipo_cambio'] = $datos['cambio_integrante'];
+        }
 
         $this->dep('datos')->tabla('solicitud')->set($datos);
         $this->dep('datos')->tabla('solicitud')->sincronizar();
@@ -2421,6 +2435,11 @@ class ci_proyectos_extension extends extension_ci {
             $alerta['id_pext'] = $pe['id_pext'];
             $alerta['tipo'] = "Evualuacion Central";
             $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
+            if (!is_null($datos['cambio_proyecto'])) {
+                $alerta['tipo_cambio'] = $datos['cambio_proyecto'];
+            } else {
+                $alerta['tipo_cambio'] = $datos['cambio_integrante'];
+            }
             $alerta['descripcion'] = "El formulador del proyecto genero una solicitud ( Baja,Prorroga,Cierre)";
 
             $this->alerta_creada($alerta);
@@ -3166,20 +3185,20 @@ class ci_proyectos_extension extends extension_ci {
         }
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
-        }else{
+        } else {
             // Obtener solicitudes alta aprobadas
-                $pe = $this->dep('datos')->tabla('pextension')->get();
-                $datos_sol['id_pext'] = $pe['id_pext'];
-                $datos_sol['estado_solicitud'] = 'Aceptada';
-                $datos_sol['cambio_integrante'] = 'ALTA';
-                $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $datos_sol['id_pext'] = $pe['id_pext'];
+            $datos_sol['estado_solicitud'] = 'Aceptada';
+            $datos_sol['cambio_integrante'] = 'ALTA';
+            $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
 
 
-                $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+            $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
 
-                if(count($solicitudes)==0) {
-                    $this->controlador()->evento('alta')->ocultar();
-                }
+            if (count($solicitudes) == 0) {
+                $this->controlador()->evento('alta')->ocultar();
+            }
         }
         $this->s__imprimir = 0;
     }
@@ -3231,7 +3250,7 @@ class ci_proyectos_extension extends extension_ci {
 
             if ($estado == 'APRB' || $estado == 'PRG ') {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
-                
+
                 // Obtener solicitudes
                 $pe = $this->dep('datos')->tabla('pextension')->get();
                 $datos_sol['id_pext'] = $pe['id_pext'];
@@ -3242,7 +3261,7 @@ class ci_proyectos_extension extends extension_ci {
 
                 $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
 
-                if(count($solicitudes)==0) {
+                if (count($solicitudes) == 0) {
                     $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 }
                 $form->ef('id_docente')->set_solo_lectura();
