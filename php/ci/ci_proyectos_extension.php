@@ -3167,7 +3167,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         }else{
-            // Obtener solicitudes
+            // Obtener solicitudes alta aprobadas
                 $pe = $this->dep('datos')->tabla('pextension')->get();
                 $datos_sol['id_pext'] = $pe['id_pext'];
                 $datos_sol['estado_solicitud'] = 'Aceptada';
