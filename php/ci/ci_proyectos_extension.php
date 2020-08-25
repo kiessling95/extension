@@ -2191,7 +2191,6 @@ class ci_proyectos_extension extends extension_ci {
     function evt__filtro_solicitud__filtrar($datos) {
         $this->s__datos_filtro = $datos;
         $this->s__where = $this->dep('filtro_solicitud')->get_sql_where();
-        print_r($this->dep('filtro_solicitud')->get_sql_where());
     }
 
     function evt__filtro_solicitud__cancelar() {
@@ -3217,9 +3216,8 @@ class ci_proyectos_extension extends extension_ci {
             foreach ($solicitudes as $solicitud) {
                 $fecha_aux=date("d-m-Y", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"));
                 $hoy=date('d-m-Y');
-                print_r(date("d-m-Y", strtotime($fecha_aux)));
-                print_r(date("d-m-Y", strtotime($hoy)));
-                print_r(strcasecmp(date('Y-m-d',strtotime($hoy)), date("Y-m-d", strtotime($fecha_aux))));
+          
+
                 // control fecha actual mayor o igual fecha solicitud + mes 
                 foreach ($solicitudes as $solicitud) {
                 // control fecha actual mayor o igual fecha solicitud + mes 
