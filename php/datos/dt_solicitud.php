@@ -24,7 +24,7 @@ class dt_solicitud extends extension_datos_tabla {
     }
 
     function get_listado($id_pext = null , $where = null) {
-        $sql = "SELECT tipo_solicitud,fecha_solicitud ,estado_solicitud "
+        $sql = "SELECT tipo_solicitud,fecha_solicitud ,estado_solicitud, tipo_cambio "
                 . "FROM solicitud "
                 . "WHERE id_pext = $id_pext ";
         if (!is_null($where)) {
