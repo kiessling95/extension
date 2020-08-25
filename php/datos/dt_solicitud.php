@@ -13,6 +13,16 @@ class dt_solicitud extends extension_datos_tabla {
         return toba::db('extension')->consultar($sql);
     }
     
+    function get_solicitud_proyecto($claves = null) {
+        $sql = "SELECT  * "
+                . "FROM solicitud "
+                . "WHERE id_pext= $claves[id_pext] "
+                . " AND fecha_solicitud ='". $claves[fecha_solicitud]."'"
+                . " AND tipo_solicitud = '".$claves[tipo_solicitud]."' "
+                . " ORDER BY tipo_solicitud";
+        return toba::db('extension')->consultar($sql);
+    }
+    
     function get_solicitud_vigente($claves = null) {
         
         // Falta control de fechas
@@ -23,6 +33,7 @@ class dt_solicitud extends extension_datos_tabla {
                 . "AND cambio_integrante ='". $claves[cambio_integrante]."' "
                 . "AND tipo_solicitud = '".$claves[tipo_solicitud]."' ";
        
+
         return toba::db('extension')->consultar($sql);
     }
 
