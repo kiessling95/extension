@@ -2220,7 +2220,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__cuadro_solicitud__seleccion($datos) {
-        
+
         print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
@@ -2303,15 +2303,28 @@ class ci_proyectos_extension extends extension_ci {
         $datos['fecha_solicitud'] = date('Y-m-d');
         $datos['estado_solicitud'] = 'Formulacion';
 
-        $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos);
+        $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_proyecto($datos);
 
         $carga = true;
 
         foreach ($solicitudes as $solicitud) {
-            if (($solicitud[estado_solicitud] != 'Aceptada' && $solicitud[estado_solicitud] != 'Rechazada' ) && ($solicitud[tipo_solicitud] == $datos[tipo_solicitud] && $solicitud[cambio_integrante] == $datos[cambio_integrante])) {
-                $carga = false;
+            if (($solicitud[estado_solicitud] != 'Aceptada' && $solicitud[estado_solicitud] != 'Rechazada' ) && $solicitud[tipo_solicitud] == $datos[tipo_solicitud]) {
+                if (is_null($datos[cambio_integrante])) {
+                    $carga = false;
+                }else{
+                    if($datos[cambio_integrante] == $solicitud[cambio_integrante]){
+                        
+                        $carga = false;
+                    }
+                }
+            }else{
+                if(($solicitud[estado_solicitud] == 'Aceptada' || $solicitud[estado_solicitud] == 'Rechazada' ) && date('Y-m-d') == $solicitud[fecha_solicitud]){
+                    $carga = false;
+                    toba::notificacion()->agregar('Se supero el limite diario de una solicitud del mismo tipo', 'info');
+                }
             }
         }
+
         unset($datos[id_estado]);
         unset($datos[nro_acta_resolucion]);
         unset($datos[num_acta_prorroga]);
