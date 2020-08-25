@@ -5,8 +5,11 @@ class dt_solicitud extends extension_datos_tabla {
     function get_solicitud($claves = null) {
         $sql = "SELECT  * "
                 . "FROM solicitud "
-                . "WHERE id_pext= $claves[id_pext] AND fecha_solicitud =' ". $claves[fecha_solicitud]." ' AND tipo_solicitud = '".$claves[tipo_solicitud]."' "
-                . "ORDER BY tipo_solicitud";
+                . "WHERE id_pext= $claves[id_pext] "
+                . " AND fecha_solicitud ='". $claves[fecha_solicitud]."'"
+                . " AND tipo_solicitud = '".$claves[tipo_solicitud]."' "
+                . " AND tipo_cambio = '".$claves[tipo_cambio]."'" 
+                . " ORDER BY tipo_solicitud";
         return toba::db('extension')->consultar($sql);
     }
     

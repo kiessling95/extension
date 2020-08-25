@@ -2220,8 +2220,8 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__cuadro_solicitud__seleccion($datos) {
-
-
+        
+        print_r($datos);
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         $datos['id_estado'] = $pe['id_estado'];
