@@ -2220,8 +2220,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__cuadro_solicitud__seleccion($datos) {
-
-        print_r($datos);
+        
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         $datos['id_estado'] = $pe['id_estado'];
@@ -2247,7 +2246,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
-                //$this->dep('form_solicitud')->evento('cancelar')->ocultar();
+                $this->dep('form_solicitud')->evento('enviar')->ocultar();
             } else {
                 if ($perfil != 'sec_ext_central') {
                     $form->ef('id_estado')->set_solo_lectura();
@@ -2263,6 +2262,7 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('cambio_proyecto')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
                     $this->dep('form_solicitud')->evento('baja')->ocultar();
+                    $this->dep('form_solicitud')->evento('enviar')->ocultar();
                 }
             }
 
@@ -2284,6 +2284,11 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
                 if ($perfil != 'sec_ext_central') {
+                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                }
+            }
+            else {
+                if ($perfil == 'sec_ext_central') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 }
             }
@@ -3275,12 +3280,11 @@ class ci_proyectos_extension extends extension_ci {
                 $pe = $this->dep('datos')->tabla('pextension')->get();
                 $datos_sol['id_pext'] = $pe['id_pext'];
                 $datos_sol['estado_solicitud'] = 'Aceptada';
-                $datos_sol['cambio_integrante'] = 'MODIFICACIÓN';
+                $datos_sol['cambio_integrante'] = 'MODIFICACION';
                 $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
 
-
                 $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
-
+                
                 if (count($solicitudes) == 0) {
                     $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 }
