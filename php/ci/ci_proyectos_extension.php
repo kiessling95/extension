@@ -2442,10 +2442,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->set($pe);
             $this->dep('datos')->tabla('pextension')->sincronizar();
             $this->dep('datos')->tabla('pextension')->cargar($pe);
-        } else {
-            if ($datos[tipo_solicitud] == 'INTEGRANTE') {
-                
-            }
         }
 
         if (!is_null($datos['cambio_proyecto'])) {
@@ -2514,6 +2510,7 @@ class ci_proyectos_extension extends extension_ci {
         $clave[id_pext] = $pe[id_pext];
         $clave[rol] = 'sec_ext_central';
         $clave['id_solicitud'] = $datos['tipo_solicitud'];
+        $clave['tipo_cambio'] = $datos[tipo_cambio];
         $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
 
 
