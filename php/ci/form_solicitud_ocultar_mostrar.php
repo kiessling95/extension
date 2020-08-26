@@ -42,6 +42,7 @@
                     }
                 }
                 
+                
                     
                 {$id_js}.evt__estado_solicitud__procesar = function(es_inicial) 
                 {
@@ -77,6 +78,14 @@
 
                                             this.ef('fecha_fin_prorroga').ocultar();
                                             this.ef('id_estado').ocultar();
+                                            break;
+                                    case 'Formulacion':
+                                            this.ef('recibido').ocultar();
+                                            this.ef('nro_acta').ocultar();
+                                            this.ef('fecha_fin_prorroga').ocultar();
+                                            this.ef('obs_resolucion').ocultar();
+                                            this.ef('id_estado').ocultar();
+                                            this.ef('fecha_dictamen').ocultar();
                                             break;
                                     default:
                                             this.ef('nro_acta').ocultar();
