@@ -184,8 +184,8 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'extension', --objeto_proyecto
 	'1001000292', --objeto
-	'1001000847', --col_id
-	'nuevo_integrante', --columna
+	'1001000880', --col_id
+	'tipo_cambio', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
