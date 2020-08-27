@@ -36,12 +36,12 @@ class dt_seguimiento_central extends extension_datos_tabla {
                    s_c.fecha_informe_becario,
                    s_c.nro_acta_informe_becario,
                    s_c.estado_becario,
-                   s_c.fecha_ordenanza
+                   s_c.fecha_ordenanza,
+                   s_c.dictamen_aprob
                    
                 FROM seguimiento_central as s_c INNER JOIN pextension as p_e ON (s_c.id_pext = p_e.id_pext)
                 
                 WHERE s_c.id_pext = ".$id;
-//        print_r(toba::db('extension')->consultar($sql));        exit();
         return toba::db('extension')->consultar($sql);
     }
    
