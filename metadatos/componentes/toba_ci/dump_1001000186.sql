@@ -997,7 +997,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'1001000110', --pantalla
 	'pant_solicitud', --identificador
 	'6', --orden
-	'Solicitudes', --etiqueta
+	'Solicitudes/Notificaciones', --etiqueta
 	NULL, --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen

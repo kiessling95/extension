@@ -2394,6 +2394,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fecha_fin_prorroga]);
         unset($datos[id_estado]);
         unset($datos[barra]);
+        unset($datos[barra2]);
 
         if ($carga) {
             if (!is_null($datos['cambio_proyecto'])) {
@@ -2479,6 +2480,7 @@ class ci_proyectos_extension extends extension_ci {
 
         unset($datos[id_estado]);
         unset($datos[barra]);
+        unset($datos[barra2]);
 
 
 
@@ -2498,6 +2500,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fecha_fin_prorroga]);
         unset($datos[id_estado]);
         unset($datos[barra]);
+        unset($datos[barra2]);
 
         $datos['estado_solicitud'] = 'Enviada';
 
@@ -3274,6 +3277,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         } else {
+            /*
             // Obtener solicitudes alta aprobadas
             $pe = $this->dep('datos')->tabla('pextension')->get();
             $datos_sol['id_pext'] = $pe['id_pext'];
@@ -3300,7 +3304,7 @@ class ci_proyectos_extension extends extension_ci {
 
             if (!$alta || count($solicitudes) == 0) {
                 $this->controlador()->evento('alta')->ocultar();
-            }
+            }*/
         }
         $this->s__imprimir = 0;
     }
@@ -3352,14 +3356,14 @@ class ci_proyectos_extension extends extension_ci {
 
             if ($estado == 'APRB' || $estado == 'PRG ') {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
-
+                /*
                 // Obtener solicitudes
                 $pe = $this->dep('datos')->tabla('pextension')->get();
                 $datos_sol['id_pext'] = $pe['id_pext'];
                 $datos_sol['estado_solicitud'] = 'Aceptada';
                 $datos_sol['cambio_integrante'] = utf8_d_seguro('MODIFICACIÓN');
                 $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
-
+                
                 $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
                 $modif = true;
                 foreach ($solicitudes as $solicitud) {
@@ -3368,10 +3372,11 @@ class ci_proyectos_extension extends extension_ci {
                         $modif = false;
                     }
                 }
-
+                
                 if (!$modif || count($solicitudes) == 0) {
                     $this->dep('form_integrantes')->evento('modificacion')->ocultar();
                 }
+                 */
 
                 $form->ef('id_docente')->set_solo_lectura();
                 $form->ef('funcion_p')->set_solo_lectura();
@@ -3686,6 +3691,8 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         } else {
+            
+            /*
             // Obtener solicitudes alta aprobadas
             $pe = $this->dep('datos')->tabla('pextension')->get();
             $datos_sol['id_pext'] = $pe['id_pext'];
@@ -3705,7 +3712,7 @@ class ci_proyectos_extension extends extension_ci {
 
             if (!$alta || count($solicitudes) == 0) {
                 $this->controlador()->evento('alta')->ocultar();
-            }
+            }*/
         }
         $this->s__imprimir = 0;
     }
@@ -3763,7 +3770,8 @@ class ci_proyectos_extension extends extension_ci {
                 $form->ef('integrante')->set_solo_lectura();
                 $form->ef('tipo')->set_solo_lectura();
                 $form->ef('funcion_p')->set_solo_lectura();
-
+                
+                /*
                 // Obtener solicitudes
                 $pe = $this->dep('datos')->tabla('pextension')->get();
                 $datos_sol['id_pext'] = $pe['id_pext'];
@@ -3782,7 +3790,7 @@ class ci_proyectos_extension extends extension_ci {
 
                 if (!$modif || count($solicitudes) == 0) {
                     $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
-                }
+                }*/
             }
 
             $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get();
