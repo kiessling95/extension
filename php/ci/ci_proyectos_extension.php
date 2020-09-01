@@ -34,6 +34,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__datos_otro_aux;
     protected $s__id_obj_esp;
     protected $valido = false;
+    protected $s__filtro_alerta;
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
@@ -1305,6 +1306,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__filtro__filtrar($datos) {
+        $this->s__filtro_alerta = $datos;
         $this->s__datos_filtro = $datos;
         $this->s__where = $this->dep('filtro')->get_sql_where();
     }
@@ -1312,6 +1314,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__filtro__cancelar() {
         unset($this->s__datos_filtro);
         unset($this->s__where);
+        unset($this->s__filtro_alerta);
     }
 
     //------------------------- CUADRO ----------------------------------------------
@@ -1338,6 +1341,10 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("newMessage2.gif", true);
             } else {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("correcto2.jpg", true);
+                print_r($alerta);
+                if (isset($this->s__filtro_alerta) && $this->s__filtro_alerta[alerta][valor] == 1) {
+                    unset($this->s__datos[$aux]);
+                }
             }
             $aux = $aux + 1;
         }
