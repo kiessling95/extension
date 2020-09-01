@@ -33,9 +33,11 @@
                         this.ef('fecha_solicitud').mostrar();
                         this.ef('fecha_recepcion').mostrar();
                         this.ef('estado_solicitud').mostrar();
+                        this.ef('descrip_ua').mostrar();
                     }
                     else
                     {
+                        this.ef('descrip_ua').ocultar();
                         this.ef('fecha_solicitud').ocultar();
                         this.ef('fecha_recepcion').ocultar();
                         this.ef('estado_solicitud').ocultar();
@@ -68,6 +70,7 @@
                                                     break;
 
                                                     default:
+                                                        this.ef('id_estado').ocultar();
                                                     break;
                                             }
                                             break;
@@ -79,8 +82,14 @@
                                             this.ef('fecha_fin_prorroga').ocultar();
                                             this.ef('id_estado').ocultar();
                                             break;
-                                    case 'Formulacion':
-                                            this.ef('recibido').ocultar();
+                                    case 'Enviada':
+                                            this.ef('nro_acta').ocultar();
+                                            this.ef('fecha_fin_prorroga').ocultar();
+                                            this.ef('obs_resolucion').ocultar();
+                                            this.ef('id_estado').ocultar();
+                                            this.ef('fecha_dictamen').ocultar();
+                                            break;
+                                    case 'Recibida':
                                             this.ef('nro_acta').ocultar();
                                             this.ef('fecha_fin_prorroga').ocultar();
                                             this.ef('obs_resolucion').ocultar();
@@ -88,6 +97,8 @@
                                             this.ef('fecha_dictamen').ocultar();
                                             break;
                                     default:
+                                            this.ef('recibido').ocultar();
+                                            this.ef('descrip_ua').ocultar();
                                             this.ef('nro_acta').ocultar();
                                             this.ef('fecha_fin_prorroga').ocultar();
                                             this.ef('obs_resolucion').ocultar();
