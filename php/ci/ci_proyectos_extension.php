@@ -102,7 +102,7 @@ class ci_proyectos_extension extends extension_ci {
 
                 //obtengo co-director
                 $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->getCodirectorVigente($datos[id_pext]);
-                if(is_null($co_director[0])){
+                if (is_null($co_director[0])) {
                     $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->getCodirectorVigente($datos[id_pext]);
                 }
                 $co_director = $co_director[0];
@@ -4229,8 +4229,10 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_objetivo(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']);
-        $datos[0][descripcion] = substr($datos[0][descripcion], 0, 40);
-        $datos[0][meta] = substr($datos[0][meta], 0, 30);
+        if (count($datos) != 0) {
+            $datos[0][descripcion] = substr($datos[0][descripcion], 0, 40);
+            $datos[0][meta] = substr($datos[0][meta], 0, 30);
+        }
         $cuadro->set_datos($datos);
     }
 
@@ -4383,7 +4385,12 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_plan(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->s__where;
-        $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp['id_objetivo']));
+        $datos = $this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp['id_objetivo']);
+        if (count($datos) != 0) {
+            $datos[0][localizacion] = substr($datos[0][localizacion], 0, 30);
+            $datos[0][detalle] = substr($datos[0][detalle], 0, 30);
+        }
+        $cuadro->set_datos($datos);
     }
 
     function evt__cuadro_plan__seleccion($datos) {
