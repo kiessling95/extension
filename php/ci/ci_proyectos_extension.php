@@ -3935,6 +3935,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_integrante_e__modificacion($datos) {
+        print_r($datos);
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
@@ -3965,7 +3966,7 @@ class ci_proyectos_extension extends extension_ci {
                         toba::notificacion()->agregar(utf8_d_seguro('El integrante seleccionado ya es un integrante vigente dentro del proyecto'), 'info');
                     } else {
                         $boolean = true;
-
+                        // Control por cambio de funcion dato guardado con dato a guardar 
                         if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p']) {
 
                             //control codirector no repetido 
@@ -3991,16 +3992,21 @@ class ci_proyectos_extension extends extension_ci {
 
                             //-----------cv interno-----------------------
                             //si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
+
                             if (is_array($datos['cv'])) {
-                                if ($datos['cv']['size'] > $this->tamano_byte) {
-                                    toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
-                                    $fp = null;
+                                if ($datos['cv']['size'] > 0) { // control de null
+                                    if ($datos['cv']['size'] > $this->tamano_byte) {
+                                        toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
+                                        $fp = null;
+                                    } else {
+                                        $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                    }
                                 } else {
-                                    $fp = fopen($datos['cv']['tmp_name'], 'rb');
-                                    $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', $fp);
+                                    $fp = null;
                                 }
-                            } else {
-                                $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', null);
+
+                                $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', $fp);
+                                // fclose($fp); esto borra el archivo!!!!
                             }
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                             $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
