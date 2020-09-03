@@ -116,6 +116,7 @@ class ci_proyectos_extension extends extension_ci {
                 $organizaciones = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($datos[id_pext]);
 
 
+
                 $presupuestos = $this->dep('datos')->tabla('presupuesto_extension')->get_listado($datos[id_pext]);
 
                 //configuramos el nombre que tendrá el archivo pdf
@@ -474,14 +475,17 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($organizaciones as $organizacion) {
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
-                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
-                    $tabla_dp = array();
+                    if ($i == 0) {
+                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
+                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
+                        $tabla_dp = array();
+                    }
                     $tabla_dp[$i] = array('col1' => $i, 'col2' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col3' => $organizacion[telefono], 'col4' => $organizacion[email], 'col5' => $organizacion[referencia_vinculacion_inst]);
 
                     $i = $i + 1;
                 }
+
                 if (count($tabla_dp) >= 1) {
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 140), 'col3' => array('width' => 80), 'col4' => array('width' => 200), 'col5' => array('width' => 100))));
                 }
@@ -1344,7 +1348,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("newMessage2.gif", true);
             } else {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("correcto2.jpg", true);
-                print_r($alerta);
+
                 if (isset($this->s__filtro_alerta) && $this->s__filtro_alerta[alerta][valor] == 1) {
                     unset($this->s__datos[$aux]);
                 }
@@ -3921,7 +3925,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_integrante_e__modificacion($datos) {
-        print_r($datos);
+
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
