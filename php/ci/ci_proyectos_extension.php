@@ -4540,14 +4540,18 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
 
+        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        } elseif ($estado == 'FORM') {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
         if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
         }
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
