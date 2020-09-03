@@ -101,7 +101,10 @@ class ci_proyectos_extension extends extension_ci {
                 $director = $director[0];
 
                 //obtengo co-director
-                $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($datos[id_pext]);
+                $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->getCodirectorVigente($datos[id_pext]);
+                if(is_null($co_director[0])){
+                    $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->getCodirectorVigente($datos[id_pext]);
+                }
                 $co_director = $co_director[0];
 
                 //Objetivos Especificos 
