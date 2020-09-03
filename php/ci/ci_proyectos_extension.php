@@ -34,6 +34,7 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__datos_otro_aux;
     protected $s__id_obj_esp;
     protected $valido = false;
+    protected $s__filtro_alerta;
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
@@ -1007,7 +1008,7 @@ class ci_proyectos_extension extends extension_ci {
                 $claves[rol] = 'formulador';
                 $claves[tipo_cambio] = utf8_decode('EVALUACIÓN MODIFICACIÓN');
                 $claves[tipo_solicitud] = utf8_decode('PROYECTO');
-                
+
                 $this->alerta_finalizada($claves);
 
                 $pextension = $this->dep('datos')->tabla('pextension')->get_datos($where);
@@ -1305,6 +1306,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__filtro__filtrar($datos) {
+        $this->s__filtro_alerta = $datos;
         $this->s__datos_filtro = $datos;
         $this->s__where = $this->dep('filtro')->get_sql_where();
     }
@@ -1312,6 +1314,7 @@ class ci_proyectos_extension extends extension_ci {
     function evt__filtro__cancelar() {
         unset($this->s__datos_filtro);
         unset($this->s__where);
+        unset($this->s__filtro_alerta);
     }
 
     //------------------------- CUADRO ----------------------------------------------
@@ -1338,6 +1341,10 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("newMessage2.gif", true);
             } else {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("correcto2.jpg", true);
+                print_r($alerta);
+                if (isset($this->s__filtro_alerta) && $this->s__filtro_alerta[alerta][valor] == 1) {
+                    unset($this->s__datos[$aux]);
+                }
             }
             $aux = $aux + 1;
         }
@@ -2300,27 +2307,36 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->s_mostrar_solicitud == 1) {
             // si presiono el boton enviar no puede editar nada mas 
-            if (($estado != 'APRB' && $estado != 'PRG ') || $perfil == 'sec_ext_ua') {
+            if ($estado != 'APRB' && $estado != 'PRG ') {
                 $this->dep('form_solicitud')->set_solo_lectura();
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
             } else {
+                $form->ef('id_estado')->set_solo_lectura();
                 if ($perfil != 'sec_ext_central') {
-                    $form->ef('id_estado')->set_solo_lectura();
-                    $form->ef('recibido')->set_solo_lectura();
-                    $form->ef('estado_solicitud')->set_solo_lectura();
+                    // Secretaria Central
+
                     $form->ef('nro_acta')->set_solo_lectura();
+                    $form->ef('fecha_dictamen')->set_solo_lectura();
                     $form->ef('obs_resolucion')->set_solo_lectura();
                     $form->ef('fecha_fin_prorroga')->set_solo_lectura();
-                    //$this->dep('form_solicitud')->evento('modificacion')->ocultar();
-                } else {
+                }
+                if ($perfil != 'sec_ext_ua') {
+                    // Secretaria UA
+                    $form->ef('recibido')->set_solo_lectura();
+                    $form->ef('fecha_solicitud')->set_solo_lectura();
+                    $form->ef('fecha_recepcion')->set_solo_lectura();
+                    $form->ef('estado_solicitud')->set_solo_lectura();
+                    $form->ef('descrip_ua')->set_solo_lectura();
+                    $form->ef('estado_solicitud')->set_solo_lectura();
+                }
+                if ($perfil != 'formulador') {
+                    // Formulador
                     $form->ef('tipo_solicitud')->set_solo_lectura();
                     $form->ef('cambio_integrante')->set_solo_lectura();
                     $form->ef('cambio_proyecto')->set_solo_lectura();
                     $form->ef('motivo')->set_solo_lectura();
-                    $this->dep('form_solicitud')->evento('baja')->ocultar();
-                    $this->dep('form_solicitud')->evento('enviar')->ocultar();
                 }
             }
 
@@ -2338,22 +2354,25 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('solicitud')->get();
             $datos[id_estado] = $estado;
+
             if ($datos[estado_solicitud] != "Formulacion") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
-                if ($perfil != 'sec_ext_central') {
+
+                if ($perfil == 'sec_ext_central' && ($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
-                }
-            } else {
-                if ($perfil == 'sec_ext_central') {
+                } elseif ($perfil == 'formulador') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                } elseif ($perfil == 'sec_ext_ua') {
+                    if ($datos[estado_solicitud] == "Aceptada" || $datos[estado_solicitud] == "Rechazada") {
+                        $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                        $form->ef('estado_solicitud')->set_solo_lectura();
+                    }
                 }
             }
-
-            $form->set_datos($datos);
-        } else {
-            $this->dep('form_solicitud')->evento('enviar')->ocultar();
         }
+
+        $form->set_datos($datos);
     }
 
     function evt__form_solicitud__alta($datos) {
@@ -2394,6 +2413,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fecha_fin_prorroga]);
         unset($datos[id_estado]);
         unset($datos[barra]);
+        unset($datos[barra1]);
         unset($datos[barra2]);
 
         if ($carga) {
@@ -2460,7 +2480,7 @@ class ci_proyectos_extension extends extension_ci {
             if ($datos[id_estado] != 'ECEN') {
 
                 // Finalizo de haber alguna alerta
-                $rol = 'sec_ext_central';
+                $rol = 'sec_ext_ua';
 
                 /*
                  * rol
@@ -2470,7 +2490,7 @@ class ci_proyectos_extension extends extension_ci {
                  */
 
                 // cancelo alerta por evaluacion central 
-                $claves[rol] = 'sec_ext_central';
+                $claves[rol] = 'sec_ext_ua';
                 $claves[tipo_cambio] = $datos[tipo_cambio];
                 $claves[tipo_solicitud] = $datos[tipo_solicitud];
                 $this->alerta_finalizada($claves);
@@ -2480,6 +2500,7 @@ class ci_proyectos_extension extends extension_ci {
 
         unset($datos[id_estado]);
         unset($datos[barra]);
+        unset($datos[barra1]);
         unset($datos[barra2]);
 
 
@@ -2500,6 +2521,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[fecha_fin_prorroga]);
         unset($datos[id_estado]);
         unset($datos[barra]);
+        unset($datos[barra1]);
         unset($datos[barra2]);
 
         $datos['estado_solicitud'] = 'Enviada';
@@ -2511,7 +2533,7 @@ class ci_proyectos_extension extends extension_ci {
         // Quitar alerta 
         // obtengo alertas perdientes del formulador 
         $clave[id_pext] = $pe[id_pext];
-        $clave[rol] = 'sec_ext_central';
+        $clave[rol] = 'sec_ext_ua';
         $clave['id_solicitud'] = $datos['tipo_solicitud'];
         $clave['tipo_cambio'] = $datos[tipo_cambio];
         $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
@@ -2520,17 +2542,17 @@ class ci_proyectos_extension extends extension_ci {
         // control de alertas no mas de una por rol
         if (count($alertas_c) == 0) {
             $alerta = null;
-            $alerta['rol'] = "sec_ext_central";
+            $alerta['rol'] = "sec_ext_ua";
             $alerta['id_pext'] = $pe['id_pext'];
-            $alerta['tipo'] = "Evualuacion solicitud";
+            $alerta['tipo'] = "Evualuacion ua solicitud";
             $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
-            
+
             if (!is_null($datos['cambio_proyecto'])) {
                 $alerta['tipo_cambio'] = $datos['cambio_proyecto'];
             } else {
                 $alerta['tipo_cambio'] = $datos['cambio_integrante'];
             }
-            $alerta['descripcion'] = "El formulador del proyecto genero una solicitud ( Baja,Prorroga,Cierre)";
+            $alerta['descripcion'] = "El formulador solicito un cambio de tipo " . $alerta['tipo_solicitud'] . " " . $alerta['tipo_cambio'];
 
             $this->alerta_creada($alerta);
         }
@@ -3278,33 +3300,33 @@ class ci_proyectos_extension extends extension_ci {
             $this->controlador()->evento('alta')->ocultar();
         } else {
             /*
-            // Obtener solicitudes alta aprobadas
-            $pe = $this->dep('datos')->tabla('pextension')->get();
-            $datos_sol['id_pext'] = $pe['id_pext'];
-            $datos_sol['estado_solicitud'] = 'Aceptada';
-            $datos_sol['cambio_integrante'] = 'ALTA';
-            $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+              // Obtener solicitudes alta aprobadas
+              $pe = $this->dep('datos')->tabla('pextension')->get();
+              $datos_sol['id_pext'] = $pe['id_pext'];
+              $datos_sol['estado_solicitud'] = 'Aceptada';
+              $datos_sol['cambio_integrante'] = 'ALTA';
+              $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
 
 
-            $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
-            $alta = true;
-            foreach ($solicitudes as $solicitud) {
-                $fecha_aux = date("d-m-Y", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"));
-                $hoy = date('d-m-Y');
+              $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+              $alta = true;
+              foreach ($solicitudes as $solicitud) {
+              $fecha_aux = date("d-m-Y", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"));
+              $hoy = date('d-m-Y');
 
 
-                // control fecha actual mayor o igual fecha solicitud + mes 
-                foreach ($solicitudes as $solicitud) {
-                    // control fecha actual mayor o igual fecha solicitud + mes 
-                    if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
-                        $alta = false;
-                    }
-                }
-            }
+              // control fecha actual mayor o igual fecha solicitud + mes
+              foreach ($solicitudes as $solicitud) {
+              // control fecha actual mayor o igual fecha solicitud + mes
+              if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
+              $alta = false;
+              }
+              }
+              }
 
-            if (!$alta || count($solicitudes) == 0) {
-                $this->controlador()->evento('alta')->ocultar();
-            }*/
+              if (!$alta || count($solicitudes) == 0) {
+              $this->controlador()->evento('alta')->ocultar();
+              } */
         }
         $this->s__imprimir = 0;
     }
@@ -3357,25 +3379,25 @@ class ci_proyectos_extension extends extension_ci {
             if ($estado == 'APRB' || $estado == 'PRG ') {
                 $this->dep('form_integrantes')->evento('baja')->ocultar();
                 /*
-                // Obtener solicitudes
-                $pe = $this->dep('datos')->tabla('pextension')->get();
-                $datos_sol['id_pext'] = $pe['id_pext'];
-                $datos_sol['estado_solicitud'] = 'Aceptada';
-                $datos_sol['cambio_integrante'] = utf8_d_seguro('MODIFICACIÓN');
-                $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
-                
-                $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
-                $modif = true;
-                foreach ($solicitudes as $solicitud) {
-                    // control fecha actual mayor o igual fecha solicitud + mes 
-                    if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
-                        $modif = false;
-                    }
-                }
-                
-                if (!$modif || count($solicitudes) == 0) {
-                    $this->dep('form_integrantes')->evento('modificacion')->ocultar();
-                }
+                  // Obtener solicitudes
+                  $pe = $this->dep('datos')->tabla('pextension')->get();
+                  $datos_sol['id_pext'] = $pe['id_pext'];
+                  $datos_sol['estado_solicitud'] = 'Aceptada';
+                  $datos_sol['cambio_integrante'] = utf8_d_seguro('MODIFICACIÓN');
+                  $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+
+                  $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+                  $modif = true;
+                  foreach ($solicitudes as $solicitud) {
+                  // control fecha actual mayor o igual fecha solicitud + mes
+                  if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
+                  $modif = false;
+                  }
+                  }
+
+                  if (!$modif || count($solicitudes) == 0) {
+                  $this->dep('form_integrantes')->evento('modificacion')->ocultar();
+                  }
                  */
 
                 $form->ef('id_docente')->set_solo_lectura();
@@ -3691,28 +3713,28 @@ class ci_proyectos_extension extends extension_ci {
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
         } else {
-            
+
             /*
-            // Obtener solicitudes alta aprobadas
-            $pe = $this->dep('datos')->tabla('pextension')->get();
-            $datos_sol['id_pext'] = $pe['id_pext'];
-            $datos_sol['estado_solicitud'] = 'Aceptada';
-            $datos_sol['cambio_integrante'] = 'ALTA';
-            $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+              // Obtener solicitudes alta aprobadas
+              $pe = $this->dep('datos')->tabla('pextension')->get();
+              $datos_sol['id_pext'] = $pe['id_pext'];
+              $datos_sol['estado_solicitud'] = 'Aceptada';
+              $datos_sol['cambio_integrante'] = 'ALTA';
+              $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
 
 
-            $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
-            $alta = true;
-            foreach ($solicitudes as $solicitud) {
-                // control fecha actual mayor o igual fecha solicitud + mes 
-                if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
-                    $alta = false;
-                }
-            }
+              $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+              $alta = true;
+              foreach ($solicitudes as $solicitud) {
+              // control fecha actual mayor o igual fecha solicitud + mes
+              if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
+              $alta = false;
+              }
+              }
 
-            if (!$alta || count($solicitudes) == 0) {
-                $this->controlador()->evento('alta')->ocultar();
-            }*/
+              if (!$alta || count($solicitudes) == 0) {
+              $this->controlador()->evento('alta')->ocultar();
+              } */
         }
         $this->s__imprimir = 0;
     }
@@ -3770,27 +3792,27 @@ class ci_proyectos_extension extends extension_ci {
                 $form->ef('integrante')->set_solo_lectura();
                 $form->ef('tipo')->set_solo_lectura();
                 $form->ef('funcion_p')->set_solo_lectura();
-                
+
                 /*
-                // Obtener solicitudes
-                $pe = $this->dep('datos')->tabla('pextension')->get();
-                $datos_sol['id_pext'] = $pe['id_pext'];
-                $datos_sol['estado_solicitud'] = 'Aceptada';
-                $datos_sol['cambio_integrante'] = utf8_d_seguro('MODIFICACIÓN');
-                $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
+                  // Obtener solicitudes
+                  $pe = $this->dep('datos')->tabla('pextension')->get();
+                  $datos_sol['id_pext'] = $pe['id_pext'];
+                  $datos_sol['estado_solicitud'] = 'Aceptada';
+                  $datos_sol['cambio_integrante'] = utf8_d_seguro('MODIFICACIÓN');
+                  $datos_sol['tipo_solicitud'] = 'INTEGRANTE';
 
-                $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
-                $modif = true;
-                foreach ($solicitudes as $solicitud) {
-                    // control fecha actual mayor o igual fecha solicitud + mes 
-                    if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
-                        $modif = false;
-                    }
-                }
+                  $solicitudes = $this->dep('datos')->tabla('solicitud')->get_solicitud_vigente($datos_sol);
+                  $modif = true;
+                  foreach ($solicitudes as $solicitud) {
+                  // control fecha actual mayor o igual fecha solicitud + mes
+                  if (strcasecmp(date('Y-m-d'), date("Y-m-d", strtotime($solicitud['fecha_dictamen'] . "+" . 1 . " month"))) >= 0) {
+                  $modif = false;
+                  }
+                  }
 
-                if (!$modif || count($solicitudes) == 0) {
-                    $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
-                }*/
+                  if (!$modif || count($solicitudes) == 0) {
+                  $this->dep('form_integrante_e')->evento('modificacion')->ocultar();
+                  } */
             }
 
             $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get();

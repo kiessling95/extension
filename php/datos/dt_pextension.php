@@ -100,7 +100,11 @@ class dt_pextension extends extension_datos_tabla {
          * 
          * $where 
          *           */
-        if (!is_null($where)) {
+        if (!is_null($where)) {      
+
+            $where=str_replace("alerta = '1'","1=1" , $where);
+            $where=str_replace("alerta = '0'","1=1" , $where);
+           
             $where = "WHERE " . $where;
         } else {
             $where = "WHERE 1=1";
