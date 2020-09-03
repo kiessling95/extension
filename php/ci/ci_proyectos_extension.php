@@ -3530,31 +3530,8 @@ class ci_proyectos_extension extends extension_ci {
                                     $this->s__mostrar = 0;
                                 }
                             } else {
-
-                                // copia de los datos cargados antes de error  
-                                $datos['id_pext'] = $pe['id_pext'];
-                                $datos['tipo'] = 'Docente';
-                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-
-                                //-----------cv interno-----------------------
-                                //si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
-                                $datos[cv];
-                                if (is_array($datos['cv'])) {
-                                    if ($datos['cv']['size'] > $this->tamano_byte) {
-                                        toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
-                                        $fp = null;
-                                    } else {
-                                        $fp = fopen($datos['cv']['tmp_name'], 'rb');
-                                        $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
-                                    }
-                                } else {
-                                    $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', null);
-                                }
-
-                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                                $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-                                unset($this->s__datos_docente_aux);
-                                $this->s__mostrar = 0;
+                                $this->s__datos_docente_aux = $datos;
+                                toba::notificacion()->agregar(utf8_decode('El docente seleccionado es un integrante vigente del proyecto.'), 'info');
                             }
                         } else {
                             $this->s__datos_docente_aux = $datos;
@@ -3588,7 +3565,6 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_integrantes__modificacion($datos) {
-
         $this->valido = false;
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
@@ -3639,7 +3615,9 @@ class ci_proyectos_extension extends extension_ci {
 
 
                     if ($boolean) {
+
                         if ($director_ua) {
+
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'Docente';
                             if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
@@ -3661,18 +3639,23 @@ class ci_proyectos_extension extends extension_ci {
                             unset($this->s__datos_docente_aux);
                             $this->s__mostrar = 0;
                         } else {
+                            $this->s__datos_docente_aux = $datos;
                             toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
                         }
                     } else {
+                        $this->s__datos_docente_aux = $datos;
                         toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
                     }
                 } else {
+                    $this->s__datos_docente_aux = $datos;
                     toba::notificacion()->agregar('La fecha de inicio de vigencia dentro del proyecto es inferior a la fecha de inicio de proyecto', 'info');
                 }
             } else {
+                $this->s__datos_docente_aux = $datos;
                 toba::notificacion()->agregar('La fecha de fin de vigencia dentro del proyecto excede la fecha de fin de proyecto', 'info');
             }
         } else {
+            $this->s__datos_docente_aux = $datos;
             toba::notificacion()->agregar('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")', 'info');
         }
     }
