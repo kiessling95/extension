@@ -2370,9 +2370,15 @@ class ci_proyectos_extension extends extension_ci {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } elseif ($perfil == 'formulador') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    $form->ef('tipo_solicitud')->set_solo_lectura();
+                    $form->ef('cambio_integrante')->set_solo_lectura();
+                    $form->ef('cambio_proyecto')->set_solo_lectura();
+                    $form->ef('motivo')->set_solo_lectura();
                 } elseif ($perfil == 'sec_ext_ua') {
                     if ($datos[estado_solicitud] == "Aceptada" || $datos[estado_solicitud] == "Rechazada") {
                         $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                        $form->ef('recibido')->set_solo_lectura();
+                        $form->ef('descrip_ua')->set_solo_lectura();
                         $form->ef('estado_solicitud')->set_solo_lectura();
                     }
                 }
