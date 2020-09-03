@@ -3495,7 +3495,7 @@ class ci_proyectos_extension extends extension_ci {
                     if ($boolean) {
                         if ($director_ua) {
                             $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->getIntegranteVigente($datos[id_docente], $pe['id_pext'])[0];
-                            if (!is_null($int_interno)) {
+                            if (is_null($int_interno)) {
                                 // date('Y-m-d') fecha actual 
                                 if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
                                     toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
@@ -3627,24 +3627,30 @@ class ci_proyectos_extension extends extension_ci {
 
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'Docente';
-                            if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
-                                if ($datos['cv']['size'] > 0) {
-                                    if ($datos['cv']['size'] > $this->tamano_byte) {
-                                        toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
-                                        $fp = null;
+                            $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->getIntegranteVigente($datos[id_docente], $pe['id_pext'])[0];
+                            if (is_null($int_interno)) {
+                                if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
+                                    if ($datos['cv']['size'] > 0) {
+                                        if ($datos['cv']['size'] > $this->tamano_byte) {
+                                            toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
+                                            $fp = null;
+                                        } else {
+                                            $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                        }
                                     } else {
-                                        $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                        $fp = null;
                                     }
-                                } else {
-                                    $fp = null;
+                                    $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
                                 }
-                                $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
-                            }
 
-                            $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-                            $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                            unset($this->s__datos_docente_aux);
-                            $this->s__mostrar = 0;
+                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                unset($this->s__datos_docente_aux);
+                                $this->s__mostrar = 0;
+                            } else {
+                                $this->s__datos_docente_aux = $datos;
+                                toba::notificacion()->agregar(utf8_decode('El docente seleccionado es un integrante vigente del proyecto.'), 'info');
+                            }
                         } else {
                             $this->s__datos_docente_aux = $datos;
                             toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
