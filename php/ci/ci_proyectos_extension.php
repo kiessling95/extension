@@ -4225,7 +4225,10 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_objetivo(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
+        $datos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']);
+        $datos[0][descripcion] = substr($datos[0][descripcion], 0, 40);
+        $datos[0][meta] = substr($datos[0][meta], 0, 30);
+        $cuadro->set_datos($datos);
     }
 
     function evt__cuadro_objetivo__seleccion($datos) {
@@ -4266,30 +4269,35 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_objetivos_esp__alta($datos) {
-        $this->valido = false;
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
 
-        $count = 0;
-        $cant_obj = 0;
-        foreach ($obj_esp as $value) {
-            $count = $count + $value[ponderacion];
-            $cant_obj++;
-        }
-        $count = $count + $datos[ponderacion];
+        if ($datos[ponderacion] > 0) {
+            $this->valido = false;
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
 
-        $datos[id_pext] = $pe['id_pext'];
-        if ($cant_obj < 5) {
-            if ($count <= 100) {
-                $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
-                $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
-                $this->dep('datos')->tabla('objetivo_especifico')->resetear();
-                $this->s__mostrar_obj = 0;
+            $count = 0;
+            $cant_obj = 0;
+            foreach ($obj_esp as $value) {
+                $count = $count + $value[ponderacion];
+                $cant_obj++;
+            }
+            $count = $count + $datos[ponderacion];
+
+            $datos[id_pext] = $pe['id_pext'];
+            if ($cant_obj < 5) {
+                if ($count <= 100) {
+                    $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
+                    $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+                    $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+                    $this->s__mostrar_obj = 0;
+                } else {
+                    toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
+                }
             } else {
-                toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
+                toba::notificacion()->agregar(utf8_decode('Maximo de Objeticos Especificos superado ( Maximo 5 Objetivos Especificos ).'), 'info');
             }
         } else {
-            toba::notificacion()->agregar(utf8_decode('Maximo de Objeticos Especificos superado ( Maximo 5 Objetivos Especificos ).'), 'info');
+            toba::notificacion()->agregar(utf8_decode('La Ponderación es errorea (es menor o igual a 0) debe ser mayor a 0 y menor o igual a 100.'), 'info');
         }
     }
 
