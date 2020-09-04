@@ -4712,5 +4712,3 @@ class ci_proyectos_extension extends extension_ci {
     }
 
 }
-
-?>
