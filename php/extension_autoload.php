@@ -1,6 +1,6 @@
 <?php
 /**
- * Esta clase fue y será generada automáticamente. NO EDITAR A MANO.
+ * Esta clase fue y serï¿½ generada automï¿½ticamente. NO EDITAR A MANO.
  * @ignore
  */
 class extension_autoload 
@@ -40,4 +40,3 @@ class extension_autoload
 		'extension_modelo' => 'extension_toba/extension_modelo.php',
 	);
 }
-?>
