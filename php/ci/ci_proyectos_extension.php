@@ -101,7 +101,10 @@ class ci_proyectos_extension extends extension_ci {
                 $director = $director[0];
 
                 //obtengo co-director
-                $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->get_co_director($datos[id_pext]);
+                $co_director = $this->dep('datos')->tabla('integrante_interno_pe')->getCodirectorVigente($datos[id_pext]);
+                if (is_null($co_director[0])) {
+                    $co_director = $this->dep('datos')->tabla('integrante_externo_pe')->getCodirectorVigente($datos[id_pext]);
+                }
                 $co_director = $co_director[0];
 
                 //Objetivos Especificos 
@@ -111,6 +114,7 @@ class ci_proyectos_extension extends extension_ci {
 
                 // Organizaciones
                 $organizaciones = $this->dep('datos')->tabla('organizaciones_participantes')->get_listado($datos[id_pext]);
+
 
 
                 $presupuestos = $this->dep('datos')->tabla('presupuesto_extension')->get_listado($datos[id_pext]);
@@ -471,14 +475,17 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp = array();
                 $i = 0;
                 foreach ($organizaciones as $organizacion) {
-                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
-                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
-                    $tabla_dp = array();
+                    if ($i == 0) {
+                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
+                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
+                        $tabla_dp = array();
+                    }
                     $tabla_dp[$i] = array('col1' => $i, 'col2' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col3' => $organizacion[telefono], 'col4' => $organizacion[email], 'col5' => $organizacion[referencia_vinculacion_inst]);
 
                     $i = $i + 1;
                 }
+
                 if (count($tabla_dp) >= 1) {
                     $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 140), 'col3' => array('width' => 80), 'col4' => array('width' => 200), 'col5' => array('width' => 100))));
                 }
@@ -1341,7 +1348,7 @@ class ci_proyectos_extension extends extension_ci {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("newMessage2.gif", true);
             } else {
                 $this->s__datos[$aux][revision] = toba_recurso::imagen_proyecto("correcto2.jpg", true);
-                print_r($alerta);
+
                 if (isset($this->s__filtro_alerta) && $this->s__filtro_alerta[alerta][valor] == 1) {
                     unset($this->s__datos[$aux]);
                 }
@@ -2363,9 +2370,15 @@ class ci_proyectos_extension extends extension_ci {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } elseif ($perfil == 'formulador') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    $form->ef('tipo_solicitud')->set_solo_lectura();
+                    $form->ef('cambio_integrante')->set_solo_lectura();
+                    $form->ef('cambio_proyecto')->set_solo_lectura();
+                    $form->ef('motivo')->set_solo_lectura();
                 } elseif ($perfil == 'sec_ext_ua') {
                     if ($datos[estado_solicitud] == "Aceptada" || $datos[estado_solicitud] == "Rechazada") {
                         $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                        $form->ef('recibido')->set_solo_lectura();
+                        $form->ef('descrip_ua')->set_solo_lectura();
                         $form->ef('estado_solicitud')->set_solo_lectura();
                     }
                 }
@@ -3488,7 +3501,7 @@ class ci_proyectos_extension extends extension_ci {
                     if ($boolean) {
                         if ($director_ua) {
                             $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->getIntegranteVigente($datos[id_docente], $pe['id_pext'])[0];
-                            if (!is_null($int_interno)) {
+                            if (is_null($int_interno)) {
                                 // date('Y-m-d') fecha actual 
                                 if (strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($int_interno['hasta']))) <= 0) {
                                     toba::notificacion()->agregar('El integrante seleccionado ya es un integrante vigente dentro del proyecto', 'info');
@@ -3530,31 +3543,8 @@ class ci_proyectos_extension extends extension_ci {
                                     $this->s__mostrar = 0;
                                 }
                             } else {
-
-                                // copia de los datos cargados antes de error  
-                                $datos['id_pext'] = $pe['id_pext'];
-                                $datos['tipo'] = 'Docente';
-                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-
-                                //-----------cv interno-----------------------
-                                //si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
-                                $datos[cv];
-                                if (is_array($datos['cv'])) {
-                                    if ($datos['cv']['size'] > $this->tamano_byte) {
-                                        toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
-                                        $fp = null;
-                                    } else {
-                                        $fp = fopen($datos['cv']['tmp_name'], 'rb');
-                                        $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
-                                    }
-                                } else {
-                                    $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', null);
-                                }
-
-                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                                $this->dep('datos')->tabla('integrante_interno_pe')->resetear();
-                                unset($this->s__datos_docente_aux);
-                                $this->s__mostrar = 0;
+                                $this->s__datos_docente_aux = $datos;
+                                toba::notificacion()->agregar(utf8_decode('El docente seleccionado es un integrante vigente del proyecto.'), 'info');
                             }
                         } else {
                             $this->s__datos_docente_aux = $datos;
@@ -3588,7 +3578,6 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_integrantes__modificacion($datos) {
-
         $this->valido = false;
         //proyecto de extension datos
         $pe = $this->dep('datos')->tabla('pextension')->get();
@@ -3639,40 +3628,53 @@ class ci_proyectos_extension extends extension_ci {
 
 
                     if ($boolean) {
+
                         if ($director_ua) {
+
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'Docente';
-                            if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
-                                if ($datos['cv']['size'] > 0) {
-                                    if ($datos['cv']['size'] > $this->tamano_byte) {
-                                        toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
-                                        $fp = null;
+                            $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->getIntegranteVigente($datos[id_docente], $pe['id_pext'])[0];
+                            if (is_null($int_interno)) {
+                                if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
+                                    if ($datos['cv']['size'] > 0) {
+                                        if ($datos['cv']['size'] > $this->tamano_byte) {
+                                            toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
+                                            $fp = null;
+                                        } else {
+                                            $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                        }
                                     } else {
-                                        $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                        $fp = null;
                                     }
-                                } else {
-                                    $fp = null;
+                                    $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
                                 }
-                                $this->dep('datos')->tabla('integrante_interno_pe')->set_blob('cv', $fp);
-                            }
 
-                            $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
-                            $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
-                            unset($this->s__datos_docente_aux);
-                            $this->s__mostrar = 0;
+                                $this->dep('datos')->tabla('integrante_interno_pe')->set($datos);
+                                $this->dep('datos')->tabla('integrante_interno_pe')->sincronizar();
+                                unset($this->s__datos_docente_aux);
+                                $this->s__mostrar = 0;
+                            } else {
+                                $this->s__datos_docente_aux = $datos;
+                                toba::notificacion()->agregar(utf8_decode('El docente seleccionado es un integrante vigente del proyecto.'), 'info');
+                            }
                         } else {
+                            $this->s__datos_docente_aux = $datos;
                             toba::notificacion()->agregar(utf8_decode('El director del proyecto debe permanecer a la misma unidad que la del formulador.'), 'info');
                         }
                     } else {
+                        $this->s__datos_docente_aux = $datos;
                         toba::notificacion()->agregar(utf8_decode('Función duplicada el director y co-director debe ser unico.'), 'info');
                     }
                 } else {
+                    $this->s__datos_docente_aux = $datos;
                     toba::notificacion()->agregar('La fecha de inicio de vigencia dentro del proyecto es inferior a la fecha de inicio de proyecto', 'info');
                 }
             } else {
+                $this->s__datos_docente_aux = $datos;
                 toba::notificacion()->agregar('La fecha de fin de vigencia dentro del proyecto excede la fecha de fin de proyecto', 'info');
             }
         } else {
+            $this->s__datos_docente_aux = $datos;
             toba::notificacion()->agregar('Las fechas de participación del integrantes estan incorrectas ("hasta es menor que desde")', 'info');
         }
     }
@@ -3935,6 +3937,7 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_integrante_e__modificacion($datos) {
+
         $this->valido = false;
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $integrante_datos_almacenados = $this->dep('datos')->tabla('integrante_externo_pe')->get();
@@ -3965,7 +3968,7 @@ class ci_proyectos_extension extends extension_ci {
                         toba::notificacion()->agregar(utf8_d_seguro('El integrante seleccionado ya es un integrante vigente dentro del proyecto'), 'info');
                     } else {
                         $boolean = true;
-
+                        // Control por cambio de funcion dato guardado con dato a guardar 
                         if ($datos['funcion_p'] != $integrante_datos_almacenados['funcion_p']) {
 
                             //control codirector no repetido 
@@ -3991,16 +3994,21 @@ class ci_proyectos_extension extends extension_ci {
 
                             //-----------cv interno-----------------------
                             //si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
+
                             if (is_array($datos['cv'])) {
-                                if ($datos['cv']['size'] > $this->tamano_byte) {
-                                    toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
-                                    $fp = null;
+                                if ($datos['cv']['size'] > 0) { // control de null
+                                    if ($datos['cv']['size'] > $this->tamano_byte) {
+                                        toba::notificacion()->agregar(utf8_d_seguro('El tamaño del archivo debe ser menor a ') . $this->tamano_mega . 'MB', 'error');
+                                        $fp = null;
+                                    } else {
+                                        $fp = fopen($datos['cv']['tmp_name'], 'rb');
+                                    }
                                 } else {
-                                    $fp = fopen($datos['cv']['tmp_name'], 'rb');
-                                    $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', $fp);
+                                    $fp = null;
                                 }
-                            } else {
-                                $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', null);
+
+                                $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', $fp);
+                                // fclose($fp); esto borra el archivo!!!!
                             }
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                             $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
@@ -4236,7 +4244,12 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_objetivo(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $cuadro->set_datos($this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']));
+        $datos = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe['id_pext']);
+        if (count($datos) != 0) {
+            $datos[0][descripcion] = substr($datos[0][descripcion], 0, 40);
+            $datos[0][meta] = substr($datos[0][meta], 0, 30);
+        }
+        $cuadro->set_datos($datos);
     }
 
     function evt__cuadro_objetivo__seleccion($datos) {
@@ -4277,30 +4290,35 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__form_objetivos_esp__alta($datos) {
-        $this->valido = false;
-        $pe = $this->dep('datos')->tabla('pextension')->get();
-        $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
 
-        $count = 0;
-        $cant_obj = 0;
-        foreach ($obj_esp as $value) {
-            $count = $count + $value[ponderacion];
-            $cant_obj++;
-        }
-        $count = $count + $datos[ponderacion];
+        if ($datos[ponderacion] > 0) {
+            $this->valido = false;
+            $pe = $this->dep('datos')->tabla('pextension')->get();
+            $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pe[id_pext]);
 
-        $datos[id_pext] = $pe['id_pext'];
-        if ($cant_obj < 5) {
-            if ($count <= 100) {
-                $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
-                $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
-                $this->dep('datos')->tabla('objetivo_especifico')->resetear();
-                $this->s__mostrar_obj = 0;
+            $count = 0;
+            $cant_obj = 0;
+            foreach ($obj_esp as $value) {
+                $count = $count + $value[ponderacion];
+                $cant_obj++;
+            }
+            $count = $count + $datos[ponderacion];
+
+            $datos[id_pext] = $pe['id_pext'];
+            if ($cant_obj < 5) {
+                if ($count <= 100) {
+                    $this->dep('datos')->tabla('objetivo_especifico')->set($datos);
+                    $this->dep('datos')->tabla('objetivo_especifico')->sincronizar();
+                    $this->dep('datos')->tabla('objetivo_especifico')->resetear();
+                    $this->s__mostrar_obj = 0;
+                } else {
+                    toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
+                }
             } else {
-                toba::notificacion()->agregar(utf8_decode('Se supero el porcetaje de ponderación maximo disponible.'), 'info');
+                toba::notificacion()->agregar(utf8_decode('Maximo de Objeticos Especificos superado ( Maximo 5 Objetivos Especificos ).'), 'info');
             }
         } else {
-            toba::notificacion()->agregar(utf8_decode('Maximo de Objeticos Especificos superado ( Maximo 5 Objetivos Especificos ).'), 'info');
+            toba::notificacion()->agregar(utf8_decode('La Ponderación es errorea (es menor o igual a 0) debe ser mayor a 0 y menor o igual a 100.'), 'info');
         }
     }
 
@@ -4383,7 +4401,12 @@ class ci_proyectos_extension extends extension_ci {
     function conf__cuadro_plan(toba_ei_cuadro $cuadro) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $obj_esp = $this->s__where;
-        $cuadro->set_datos($this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp['id_objetivo']));
+        $datos = $this->dep('datos')->tabla('plan_actividades')->get_listado($obj_esp['id_objetivo']);
+        if (count($datos) != 0) {
+            $datos[0][localizacion] = substr($datos[0][localizacion], 0, 30);
+            $datos[0][detalle] = substr($datos[0][detalle], 0, 30);
+        }
+        $cuadro->set_datos($datos);
     }
 
     function evt__cuadro_plan__seleccion($datos) {
@@ -4529,14 +4552,18 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
 
+        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($perfil == formulador) {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        } elseif ($estado == 'FORM') {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
         if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
         }
-        $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
@@ -4685,5 +4712,3 @@ class ci_proyectos_extension extends extension_ci {
     }
 
 }
-
-?>
