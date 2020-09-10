@@ -4590,6 +4590,9 @@ class ci_proyectos_extension extends extension_ci {
         }
         if ($perfil == 'sec_ext_ua' || $perfil == 'sec_ext_central') {
             $this->controlador()->evento('alta')->ocultar();
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         }
 
         // si presiono el boton enviar no puede editar nada mas 
