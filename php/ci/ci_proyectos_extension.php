@@ -3914,7 +3914,6 @@ class ci_proyectos_extension extends extension_ci {
                             } else {
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', null);
                             }
-
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                             $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
                             unset($this->s__datos_otro_aux);
@@ -3962,8 +3961,9 @@ class ci_proyectos_extension extends extension_ci {
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['nro_docum'], $datos['id_pext'])[0];
         }
         //Si count == 2 se modifico la persona asociada
+        $count = count($datos['integrante']);
+        $int_ext = array();
         if ($count == 2) {
-            $int_ext = array();
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
         }
 
@@ -4021,8 +4021,9 @@ class ci_proyectos_extension extends extension_ci {
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', $fp);
                                 // fclose($fp); esto borra el archivo!!!!
                             }
+                            $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
-                            $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                            
                             unset($this->s__datos_otro_aux);
                             $this->s__mostrar_e = 0;
                         } else {
