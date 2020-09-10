@@ -2245,11 +2245,18 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
 
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
 
+
+
         if (($estado != 'APRB' && $estado != 'PRG ')) {
             $this->controlador()->evento('alta')->ocultar();
+            // Si perfil central
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         }
     }
 
@@ -2850,6 +2857,9 @@ class ci_proyectos_extension extends extension_ci {
             if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'ECEN' || $estado == 'EUA ') {
                 $this->pantalla()->tab("pant_solicitud")->ocultar();
                 $this->pantalla()->tab("pant_avance")->ocultar();
+                if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                    $this->pantalla()->tab("pant_seguimiento")->ocultar();
+                }
             }
 
             // si presiono el boton enviar no puede editar nada mas 
@@ -3107,6 +3117,9 @@ class ci_proyectos_extension extends extension_ci {
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         } else {
             $this->pantalla()->tab("pant_solicitud")->ocultar();
             $this->pantalla()->tab("pant_avance")->ocultar();
@@ -3228,9 +3241,9 @@ class ci_proyectos_extension extends extension_ci {
             $this->pantalla()->tab("pant_solicitud")->ocultar();
             $this->pantalla()->tab("pant_avance")->ocultar();
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        } elseif ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
-
-
 
         $this->s__imprimir = 0;
     }
@@ -3311,6 +3324,9 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         } else {
             /*
               // Obtener solicitudes alta aprobadas
@@ -3714,6 +3730,9 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua') {
             $this->controlador()->evento('alta')->ocultar();
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         } else {
 
             /*
@@ -4063,6 +4082,9 @@ class ci_proyectos_extension extends extension_ci {
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         } else {
             $this->pantalla()->tab("pant_solicitud")->ocultar();
             $this->pantalla()->tab("pant_avance")->ocultar();
@@ -4231,6 +4253,9 @@ class ci_proyectos_extension extends extension_ci {
         $estado = $pext[id_estado];
         $obj_esp = $this->dep('datos')->tabla('objetivo_especifico')->get_listado($pext['id_pext']);
         // si presiono el boton enviar no puede editar nada mas 
+        if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
+        }
         if (($estado != 'FORM' && $estado != 'MODF') || count($obj_esp) == 5) {
             $this->controlador()->evento('alta')->ocultar();
         } else {
@@ -4393,6 +4418,9 @@ class ci_proyectos_extension extends extension_ci {
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
+            if ($perfil == 'sec_ext_central' && $estado != 'ECEN') {
+                $this->pantalla()->tab("pant_seguimiento")->ocultar();
+            }
         }
     }
 
