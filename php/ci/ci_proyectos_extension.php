@@ -1462,6 +1462,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos = $this->dep('datos')->tabla('seguimiento_central')->get_listado($pe['id_pext']);
         $datos[0]['denominacion'] = $pe['denominacion'];
         $cuadro->set_datos($datos);
+        $estado = $pe[id_estado];
 
         // BOTON SELECCION 
         // SI EXISTE UN FORMULARIO CARGADO 
@@ -1476,10 +1477,12 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('cuadro_seg_central')->evento('alta')->ocultar();
             $this->dep('cuadro_seg_central')->evento('editar')->ocultar();
         } else {
-            $pext = $this->dep('datos')->tabla('pextension')->get();
-            if ($this->dep('datos')->tabla('seguimiento_central')->get_listado($pext['id_pext'])[0]) {
+            if ($this->dep('datos')->tabla('seguimiento_central')->get_listado($pe['id_pext'])[0]) {
                 $this->dep('cuadro_seg_central')->evento('alta')->ocultar();
             } else {
+                if ($estado == 'FORM' || $estado == 'MODF' || $estado == 'EUA ') {
+                    $this->dep('cuadro_seg_central')->evento('alta')->ocultar();
+                }
                 $this->dep('cuadro_seg_central')->evento('editar')->ocultar();
             }
         }
@@ -1517,6 +1520,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos[0]['denominacion'] = $pe['denominacion'];
         $cuadro->set_datos($datos);
 
+
         // BOTON SELECCION
         if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext'])) {
             $this->dep('cuadro_seg_ua')->evento('seleccion')->mostrar();
@@ -1528,8 +1532,8 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
             $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
         } else {
-            $pext = $this->dep('datos')->tabla('pextension')->get();
-            if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pext['id_pext'])[0]) {
+
+            if ($this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext'])[0]) {
                 $this->dep('cuadro_seg_ua')->evento('alta')->ocultar();
             } else {
                 $this->dep('cuadro_seg_ua')->evento('editar')->ocultar();
@@ -2245,8 +2249,11 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
 
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $estado = $pe[id_estado];
+
+
 
         if (($estado != 'APRB' && $estado != 'PRG ')) {
             $this->controlador()->evento('alta')->ocultar();
@@ -3230,8 +3237,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
 
-
-
         $this->s__imprimir = 0;
     }
 
@@ -3634,7 +3639,15 @@ class ci_proyectos_extension extends extension_ci {
                             $datos['id_pext'] = $pe['id_pext'];
                             $datos['tipo'] = 'Docente';
                             $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->getIntegranteVigente($datos[id_docente], $pe['id_pext'])[0];
-                            if (is_null($int_interno)) {
+                            $iguales = false;
+                         
+                            if (!is_null($integrante_datos_almacenados)) {
+                                $id_docente = $this->dep('datos')->tabla('docente')->get_id_docente($integrante_datos_almacenados[id_designacion]);
+                                if (!is_null($int_interno) && $id_docente[id_docente] == $int_interno[id_docente]) {
+                                    $iguales = true;
+                                }
+                            }
+                            if ($iguales || is_null($int_interno)) {
                                 if (is_array($datos['cv'])) {//si adjunto un pdf entonces "pdf" viene con los datos del archivo adjuntado
                                     if ($datos['cv']['size'] > 0) {
                                         if ($datos['cv']['size'] > $this->tamano_byte) {
@@ -3901,7 +3914,6 @@ class ci_proyectos_extension extends extension_ci {
                             } else {
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', null);
                             }
-
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
                             $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
                             unset($this->s__datos_otro_aux);
@@ -3948,11 +3960,10 @@ class ci_proyectos_extension extends extension_ci {
             $datos['id_pext'] = $this->s__datos_otro_aux['id_pext'];
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['nro_docum'], $datos['id_pext'])[0];
         }
-
         //Si count == 2 se modifico la persona asociada
         $count = count($datos['integrante']);
+        $int_ext = array();
         if ($count == 2) {
-            $int_ext = array();
             $int_ext = $this->dep('datos')->tabla('integrante_externo_pe')->getIntegranteVigente($datos['integrante'][1], $pe['id_pext'])[0];
         }
 
@@ -4010,8 +4021,9 @@ class ci_proyectos_extension extends extension_ci {
                                 $this->dep('datos')->tabla('integrante_externo_pe')->set_blob('cv', $fp);
                                 // fclose($fp); esto borra el archivo!!!!
                             }
+                            $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
-                            $this->dep('datos')->tabla('integrante_externo_pe')->resetear();
+                            
                             unset($this->s__datos_otro_aux);
                             $this->s__mostrar_e = 0;
                         } else {
@@ -4567,6 +4579,10 @@ class ci_proyectos_extension extends extension_ci {
         // si presiono el boton enviar no puede editar nada mas 
         if ($estado != 'FORM' && $estado != 'MODF') {
             $this->controlador()->evento('alta')->ocultar();
+        } else {
+            $this->pantalla()->tab("pant_solicitud")->ocultar();
+            $this->pantalla()->tab("pant_avance")->ocultar();
+            $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
     }
 

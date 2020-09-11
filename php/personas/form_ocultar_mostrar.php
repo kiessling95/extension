@@ -38,5 +38,3 @@ class form_ocultar_mostrar extends extension_ei_formulario
                         ";
     }
 }
-
-?>
