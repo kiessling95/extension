@@ -2302,7 +2302,8 @@ class ci_proyectos_extension extends extension_ci {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
-        $datos['id_estado'] = $pe['id_estado'];
+        //$datos['id_estado'] = $pe['id_estado'];
+        
         $datos = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos)[0];
 
 
@@ -2886,6 +2887,8 @@ class ci_proyectos_extension extends extension_ci {
             $this->pantalla()->tab("pant_seguimiento")->ocultar();
         }
         $this->s__imprimir = 1;
+        unset($this->s__where);
+        unset($this->s__datos_filtro);
     }
 
     //------------------------- FORMULARIO PRINCIPAL ---------------------------------
