@@ -46,7 +46,6 @@ class dt_solicitud extends extension_datos_tabla {
         }
 
         $sql .= "ORDER BY tipo_solicitud";
-        
         return toba::db('extension')->consultar($sql);
     }
 

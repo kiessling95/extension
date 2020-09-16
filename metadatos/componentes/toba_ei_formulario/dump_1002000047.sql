@@ -485,16 +485,17 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'4', --orden
 	'Cantidad', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
-	NULL, --colapsado
-	NULL, --desactivado
+	'Cantidad aproximada de el/los elemento/s mencionados en la descripción:
+Ej 20 resmas de papel + 10 cuadernos +...', --descripcion
+	'0', --colapsado
+	'0', --desactivado
 	NULL, --estilo
 	NULL, --total
 	NULL, --inicializacion
-	NULL, --permitir_html
-	NULL, --deshabilitar_rest_func
+	'0', --permitir_html
+	'0', --deshabilitar_rest_func
 	NULL, --estado_defecto
-	NULL, --solo_lectura
+	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
 	NULL, --carga_metodo
 	NULL, --carga_clase
@@ -565,7 +566,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'5', --orden
 	'Monto Total', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'El valor total que se gastara aproximadamente para lo mencionado en la descripción en relación con la cantidad total ingresada .', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
