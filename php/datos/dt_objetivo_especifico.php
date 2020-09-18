@@ -48,4 +48,3 @@ class dt_objetivo_especifico extends extension_datos_tabla
         return toba::db('extension')->consultar($sql);
     }
 }
-

@@ -2316,13 +2316,14 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('fecha_dictamen')->set_solo_lectura();
                     $form->ef('obs_resolucion')->set_solo_lectura();
                     $form->ef('fecha_fin_prorroga')->set_solo_lectura();
+                    $form->ef('estado_solicitud_aux2')->set_solo_lectura();
                 }
                 if ($perfil != 'sec_ext_ua') {
                     // Secretaria UA
                     $form->ef('recibido')->set_solo_lectura();
                     $form->ef('fecha_solicitud')->set_solo_lectura();
                     $form->ef('fecha_recepcion')->set_solo_lectura();
-                    $form->ef('estado_solicitud')->set_solo_lectura();
+                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
                     $form->ef('descrip_ua')->set_solo_lectura();
                     $form->ef('estado_solicitud')->set_solo_lectura();
                 }
@@ -2348,6 +2349,11 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('solicitud')->get();
+            if (!is_null($datos['estado_solicitud']) && $datos[tipo_solicitud] == 'PROYECTO') {
+                $datos['estado_solicitud_aux2'] = $datos['estado_solicitud'];
+            } elseif (!is_null($datos['estado_solicitud'])) {
+                $datos['estado_solicitud_aux1'] = $datos['estado_solicitud'];
+            }
             $datos[id_estado] = $estado;
 
             if ($datos[estado_solicitud] != "Formulacion") {
@@ -2367,7 +2373,7 @@ class ci_proyectos_extension extends extension_ci {
                         $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                         $form->ef('recibido')->set_solo_lectura();
                         $form->ef('descrip_ua')->set_solo_lectura();
-                        $form->ef('estado_solicitud')->set_solo_lectura();
+                        //$form->ef('estado_solicitud')->set_solo_lectura();
                     }
                 }
             }
@@ -2452,7 +2458,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         unset($pe[x_dbr_clave]);
 
-        if ($datos[estado_solicitud] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
+        if ($datos[estado_solicitud_aux2] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
             switch ($datos[cambio_proyecto]) {
                 case 'BAJA':
                     $pe[id_estado] = 'BAJA';
