@@ -280,17 +280,17 @@ class ci_proyectos_extension extends extension_ci {
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b> Destinatarios </b>');
                     $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    $cols_dp = array('col1' => "<b>Nro</b>", 'col2' => utf8_d_seguro('Nombre'), 'col3' => utf8_d_seguro('email'), 'col4' => utf8_d_seguro('domicilio'), 'col5' => utf8_d_seguro('telefono'), 'col6' => utf8_d_seguro('Contacto'));
+                    $cols_dp = array('col1' => "<b>Nro</b>", 'col2' => utf8_d_seguro('Nombre'), 'col3' => utf8_d_seguro('Domicilio'), 'col4' => utf8_d_seguro('Telefono'), 'col5' => utf8_d_seguro('Cantidad'), 'col6' => utf8_d_seguro('Contacto'));
 
                     $tabla_dp = array();
                     $i = 0;
                     foreach ($destinatarios as $destinatario) {
 
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $destinatario[descripcion], 'col3' => $destinatario[email], 'col4' => $destinatario[domicilio], 'col5' => $destinatario[telefono], 'col6' => $destinatario[contacto]);
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $destinatario[descripcion], 'col3' => $destinatario[domicilio], 'col4' => $destinatario[telefono], 'col5' => $destinatario[cantidad], 'col6' => $destinatario[contacto]);
                         $i = $i + 1;
                     }
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 90), 'col3' => array('width' => 170), 'col4' => array('width' => 100), 'col5' => array('width' => 80), 'col6' => array('width' => 80))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 100), 'col3' => array('width' => 160), 'col4' => array('width' => 100), 'col5' => array('width' => 60), 'col6' => array('width' => 100))));
 
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
@@ -474,18 +474,16 @@ class ci_proyectos_extension extends extension_ci {
                 $i = 0;
                 foreach ($organizaciones as $organizacion) {
                     if ($i == 0) {
-                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
-                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
+                        $cols_dp = array('col1' => "<b> Nombre </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
                         $tabla_dp = array();
                     }
-                    $tabla_dp[$i] = array('col1' => $i, 'col2' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col3' => $organizacion[telefono], 'col4' => $organizacion[email], 'col5' => $organizacion[referencia_vinculacion_inst]);
+                    $tabla_dp[$i] = array('col1' => $organizacion[nombre], 'col2' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col3' => $organizacion[telefono], 'col4' => $organizacion[email], 'col5' => $organizacion[referencia_vinculacion_inst]);
 
                     $i = $i + 1;
                 }
 
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 140), 'col3' => array('width' => 80), 'col4' => array('width' => 200), 'col5' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 80), 'col2' => array('width' => 140), 'col3' => array('width' => 80), 'col4' => array('width' => 150), 'col5' => array('width' => 100))));
                 }
 
                 //salto de linea
@@ -2316,13 +2314,14 @@ class ci_proyectos_extension extends extension_ci {
                     $form->ef('fecha_dictamen')->set_solo_lectura();
                     $form->ef('obs_resolucion')->set_solo_lectura();
                     $form->ef('fecha_fin_prorroga')->set_solo_lectura();
+                    $form->ef('estado_solicitud_aux2')->set_solo_lectura();
                 }
                 if ($perfil != 'sec_ext_ua') {
                     // Secretaria UA
                     $form->ef('recibido')->set_solo_lectura();
                     $form->ef('fecha_solicitud')->set_solo_lectura();
                     $form->ef('fecha_recepcion')->set_solo_lectura();
-                    $form->ef('estado_solicitud')->set_solo_lectura();
+                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
                     $form->ef('descrip_ua')->set_solo_lectura();
                     $form->ef('estado_solicitud')->set_solo_lectura();
                 }
@@ -2348,6 +2347,11 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('solicitud')->get();
+            if (!is_null($datos['estado_solicitud']) && $datos[tipo_solicitud] == 'PROYECTO') {
+                $datos['estado_solicitud_aux2'] = $datos['estado_solicitud'];
+            } elseif (!is_null($datos['estado_solicitud'])) {
+                $datos['estado_solicitud_aux1'] = $datos['estado_solicitud'];
+            }
             $datos[id_estado] = $estado;
 
             if ($datos[estado_solicitud] != "Formulacion") {
@@ -2367,7 +2371,7 @@ class ci_proyectos_extension extends extension_ci {
                         $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                         $form->ef('recibido')->set_solo_lectura();
                         $form->ef('descrip_ua')->set_solo_lectura();
-                        $form->ef('estado_solicitud')->set_solo_lectura();
+                        //$form->ef('estado_solicitud')->set_solo_lectura();
                     }
                 }
             }
@@ -2452,7 +2456,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         unset($pe[x_dbr_clave]);
 
-        if ($datos[estado_solicitud] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
+        if ($datos[estado_solicitud_aux2] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
             switch ($datos[cambio_proyecto]) {
                 case 'BAJA':
                     $pe[id_estado] = 'BAJA';
