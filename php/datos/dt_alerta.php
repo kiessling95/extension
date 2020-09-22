@@ -38,4 +38,3 @@ class dt_alerta extends extension_datos_tabla {
 
 }
 ?>
-
