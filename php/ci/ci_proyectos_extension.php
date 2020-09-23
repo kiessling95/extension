@@ -2305,33 +2305,20 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
-            } else {
-                $form->ef('id_estado')->set_solo_lectura();
-                if ($perfil != 'sec_ext_central') {
-                    // Secretaria Central
+            } elseif($perfil == 'sec_ext_central') {
+                $this->dep('form_solicitud')->evento('modificacion')->mostrar();
+            }
 
-                    $form->ef('nro_acta')->set_solo_lectura();
-                    $form->ef('fecha_dictamen')->set_solo_lectura();
-                    $form->ef('obs_resolucion')->set_solo_lectura();
-                    $form->ef('fecha_fin_prorroga')->set_solo_lectura();
-                    $form->ef('estado_solicitud_aux2')->set_solo_lectura();
-                }
-                if ($perfil != 'sec_ext_ua') {
-                    // Secretaria UA
-                    $form->ef('recibido')->set_solo_lectura();
-                    $form->ef('fecha_solicitud')->set_solo_lectura();
-                    $form->ef('fecha_recepcion')->set_solo_lectura();
-                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
-                    $form->ef('descrip_ua')->set_solo_lectura();
-                    $form->ef('estado_solicitud')->set_solo_lectura();
-                }
-                if ($perfil != 'formulador') {
-                    // Formulador
-                    $form->ef('tipo_solicitud')->set_solo_lectura();
-                    $form->ef('cambio_integrante')->set_solo_lectura();
-                    $form->ef('cambio_proyecto')->set_solo_lectura();
-                    $form->ef('motivo')->set_solo_lectura();
-                }
+            if ($perfil != 'formulador') {
+                // Formulador
+                $form->ef('tipo_solicitud')->set_solo_lectura();
+                $form->ef('cambio_integrante')->set_solo_lectura();
+                $form->ef('cambio_proyecto')->set_solo_lectura();
+                $form->ef('motivo')->set_solo_lectura();
+            } else {
+                $form->ef('recibido')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux2')->set_solo_lectura();
             }
 
             $form->ef('fecha_solicitud')->set_solo_lectura();
@@ -2349,16 +2336,49 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('solicitud')->get();
             if (!is_null($datos['estado_solicitud']) && $datos[tipo_solicitud] == 'PROYECTO') {
                 $datos['estado_solicitud_aux2'] = $datos['estado_solicitud'];
+                unset($datos['estado_solicitud_aux1']);
             } elseif (!is_null($datos['estado_solicitud'])) {
                 $datos['estado_solicitud_aux1'] = $datos['estado_solicitud'];
+                unset($datos['estado_solicitud_aux2']);
             }
+
+            if ($perfil != 'sec_ext_central') {
+                // Secretaria Central
+
+                $form->ef('nro_acta')->set_solo_lectura();
+                $form->ef('fecha_dictamen')->set_solo_lectura();
+                $form->ef('obs_resolucion')->set_solo_lectura();
+                $form->ef('fecha_fin_prorroga')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux2')->set_solo_lectura();
+            }
+            if ($perfil != 'sec_ext_ua') {
+                // Secretaria UA
+                if ($datos[tipo_solicitud] == 'PROYECTO' && $perfil == 'sec_ext_central') {
+                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                    $form->ef('descrip_ua')->set_solo_lectura();
+                } else {
+                    $form->ef('recibido')->set_solo_lectura();
+                    $form->ef('fecha_solicitud')->set_solo_lectura();
+                    $form->ef('fecha_recepcion')->set_solo_lectura();
+                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                    $form->ef('descrip_ua')->set_solo_lectura();
+                }
+            } elseif ($datos[tipo_solicitud] == 'PROYECTO') {
+                $form->ef('recibido')->set_solo_lectura();
+                $form->ef('fecha_solicitud')->set_solo_lectura();
+                $form->ef('fecha_recepcion')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                $form->ef('descrip_ua')->set_solo_lectura();
+            }
+
+
             $datos[id_estado] = $estado;
 
             if ($datos[estado_solicitud] != "Formulacion") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
 
-                if ($perfil == 'sec_ext_central' && ($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
+                if ($perfil == 'sec_ext_central'&& $datos[tipo_solicitud] != 'PROYECTO' && ($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                 } elseif ($perfil == 'formulador') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
@@ -2371,7 +2391,7 @@ class ci_proyectos_extension extends extension_ci {
                         $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                         $form->ef('recibido')->set_solo_lectura();
                         $form->ef('descrip_ua')->set_solo_lectura();
-                        //$form->ef('estado_solicitud')->set_solo_lectura();
+                        $form->ef('estado_solicitud_aux1')->set_solo_lectura();
                     }
                 }
             }
@@ -2421,7 +2441,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
         unset($datos[barra1]);
+        unset($datos[barra1_aux]);
         unset($datos[barra2]);
+        unset($datos[barra2_aux]);
+        unset($datos['estado_solicitud_aux1']);
+        unset($datos['estado_solicitud_aux2']);
 
         if ($carga) {
             $tipo_cambio_correcto = false;
@@ -2455,6 +2479,12 @@ class ci_proyectos_extension extends extension_ci {
 
         $pe = $this->dep('datos')->tabla('pextension')->get();
         unset($pe[x_dbr_clave]);
+
+        if (is_null($datos['estado_solicitud_aux2'])) {
+            $datos['estado_solicitud'] = $datos['estado_solicitud_aux1'];
+        } else {
+            $datos['estado_solicitud'] = $datos['estado_solicitud_aux2'];
+        }
 
         if ($datos[estado_solicitud_aux2] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
             switch ($datos[cambio_proyecto]) {
@@ -2493,9 +2523,8 @@ class ci_proyectos_extension extends extension_ci {
             }
             // Quitar alerta 
             if ($datos[id_estado] != 'ECEN') {
-
+                $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
                 // Finalizo de haber alguna alerta
-                $rol = 'sec_ext_ua';
 
                 /*
                  * rol
@@ -2505,10 +2534,34 @@ class ci_proyectos_extension extends extension_ci {
                  */
 
                 // cancelo alerta por evaluacion central 
-                $claves[rol] = 'sec_ext_ua';
+                $claves[rol] = $perfil;
                 $claves[tipo_cambio] = $datos[tipo_cambio];
                 $claves[tipo_solicitud] = $datos[tipo_solicitud];
                 $this->alerta_finalizada($claves);
+
+
+                // creo alerta Central 
+
+
+                if ($perfil == 'sec_ext_ua' && ($datos['estado_solicitud'] == 'Aceptada' || $datos['estado_solicitud'] == 'Rechazada' )) {
+                    // obtengo alertas perdientes del formulador 
+                    $clave[id_pext] = $pe[id_pext];
+                    $clave[rol] = 'sec_ext_central';
+                    $clave['id_solicitud'] = $datos['tipo_solicitud'];
+                    $clave['tipo_cambio'] = $datos[tipo_cambio];
+                    $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
+                    if (count($alertas_c) == 0) {
+                        $alerta = null;
+                        $alerta['rol'] = 'sec_ext_central';
+                        $alerta['id_pext'] = $pe['id_pext'];
+                        $alerta['tipo'] = "Evualuacion ua solicitud";
+                        $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
+                        $alerta['tipo_cambio'] = $datos[tipo_cambio];
+                        $alerta['descripcion'] = "El formulador solicito un cambio de tipo " . $alerta['tipo_solicitud'] . " " . $alerta['tipo_cambio'];
+
+                        $this->alerta_creada($alerta);
+                    }
+                }
             }
             $datos['fecha_recepcion'] = date('Y-m-d');
         }
@@ -2516,7 +2569,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
         unset($datos[barra1]);
+        unset($datos[barra1_aux]);
         unset($datos[barra2]);
+        unset($datos[barra2_aux]);
+        unset($datos['estado_solicitud_aux1']);
+        unset($datos['estado_solicitud_aux2']);
 
 
 
@@ -2537,7 +2594,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
         unset($datos[barra1]);
+        unset($datos[barra1_aux]);
         unset($datos[barra2]);
+        unset($datos[barra2_aux]);
+        unset($datos['estado_solicitud_aux1']);
+        unset($datos['estado_solicitud_aux2']);
 
         $datos['estado_solicitud'] = 'Enviada';
 
@@ -2545,19 +2606,24 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('solicitud')->sincronizar();
         $this->dep('datos')->tabla('solicitud')->cargar($datos);
 
-        // Quitar alerta 
+
+
         // obtengo alertas perdientes del formulador 
         $clave[id_pext] = $pe[id_pext];
-        $clave[rol] = 'sec_ext_ua';
+        if ($datos[tipo_solicitud] == 'PROYECTO') {
+            $clave[rol] = 'sec_ext_central';
+        } else {
+            $clave[rol] = 'sec_ext_ua';
+        }
         $clave['id_solicitud'] = $datos['tipo_solicitud'];
-        $clave['tipo_cambio'] = $datos[tipo_cambio];
+        $clave['tipo_cambio'] = $datos[tipo_solicitud];
         $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
 
 
         // control de alertas no mas de una por rol
         if (count($alertas_c) == 0) {
             $alerta = null;
-            $alerta['rol'] = "sec_ext_ua";
+            $alerta['rol'] = $clave[rol];
             $alerta['id_pext'] = $pe['id_pext'];
             $alerta['tipo'] = "Evualuacion ua solicitud";
             $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
