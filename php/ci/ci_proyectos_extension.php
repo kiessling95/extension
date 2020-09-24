@@ -631,7 +631,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__organizacion = $datos;
 
         $nombre = str_replace(',', '', $this->s__organizacion['nombre']);
-        $nombre = str_replace(' ', '', $this->s__organizacion['nombre']);
+        $nombre = str_replace(' ', '', $nombre);
 
         $this->s__nombre = "aval_" . $nombre . ".pdf";
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion['id_organizacion']);
