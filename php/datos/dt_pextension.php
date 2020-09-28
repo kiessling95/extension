@@ -202,5 +202,3 @@ class dt_pextension extends extension_datos_tabla {
     }
 
 }
-
-?>

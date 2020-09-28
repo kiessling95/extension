@@ -2,8 +2,13 @@
 
 class ci_proyectos_extension extends extension_ci {
 
+    // Filtros 
+
     protected $s__datos_filtro;
     protected $s__where;
+    protected $s__filtro_alerta;
+    protected $s__datos;
+    // Fomrularios ocultar / mostrar 
     protected $s__mostrar;
     protected $s__mostrar_e;
     protected $s__mostrar_presup;
@@ -13,28 +18,27 @@ class ci_proyectos_extension extends extension_ci {
     protected $s__mostrar_dest;
     protected $s__mostrar_solicitud;
     protected $s__mostrar_avance;
+    // PDF 
+    protected $tamano_byte = 2000000; // tamaño max pdf
+    protected $tamano_mega = 2; // tamaño max pdf
+    protected $s__imprimir = 1; // pdf completo
+    protected $s__imprimir_resumen = 0; // pdf resumen
+    protected $s__nombre; // nombre del archivo generado 
+    protected $s__cv_interno;
+    protected $s__cv_externo;
     protected $s__guardar;
     protected $s__integrantes;
     protected $s__pantalla;
-    protected $tamano_byte = 2000000;
-    protected $tamano_mega = 2;
-    protected $s__imprimir = 1;
-    protected $s__imprimir_resumen = 0;
     protected $s__datos_docente;
     protected $s__datos_otro;
-    protected $s__datos;
     protected $s__datos_org;
     protected $s__organizacion;
     protected $s__destinatario;
-    protected $s__cv_interno;
-    protected $s__cv_externo;
-    protected $s__nombre;
     protected $s__pextension;
     protected $s__datos_docente_aux;
     protected $s__datos_otro_aux;
     protected $s__id_obj_esp;
-    protected $valido = false;
-    protected $s__filtro_alerta;
+    protected $valido = false; // Se usa para el control antes de enviar a evaluar 
 
     // GENERA O OBTIENE PDF
     function vista_pdf(toba_vista_pdf $salida) {
@@ -226,16 +230,10 @@ class ci_proyectos_extension extends extension_ci {
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del origen del proyecto') . '</b>');
                     $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
 
                     $tabla_dp = array();
                     $tabla_dp[0] = array('col1' => '<b>' . utf8_d_seguro('Fundamentación del Proyecto') . '</b>', 'col2' => trim($datos['descripcion_situacion']));
 
-                    //$pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 200), 'col2' => array('width' => 350))));
-                    //$datos_pext = array();
-                    //$datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Destinatarios') . '</b>');
-                    //$pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    //$cols_dp = array('col1'=>"<b>Datos Principales</b>",'col2'=>'');
                     $tabla_dp[1] = array('col1' => utf8_d_seguro('Identificar destinatarios'), 'col2' => $datos['caracterizacion_poblacion']);
 
                     $tabla_dp[2] = array('col1' => utf8_d_seguro('Localización geográfica'), 'col2' => $datos['localizacion_geo']);
@@ -282,17 +280,17 @@ class ci_proyectos_extension extends extension_ci {
                     $datos_pext = array();
                     $datos_pext[0] = array('col1' => '<b> Destinatarios </b>');
                     $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                    $cols_dp = array('col1' => "<b>Nro</b>", 'col2' => utf8_d_seguro('Nombre'), 'col3' => utf8_d_seguro('email'), 'col4' => utf8_d_seguro('domicilio'), 'col5' => utf8_d_seguro('telefono'), 'col6' => utf8_d_seguro('Contacto'));
+                    $cols_dp = array('col1' => "<b>Nro</b>", 'col2' => utf8_d_seguro('Nombre'), 'col3' => utf8_d_seguro('Domicilio'), 'col4' => utf8_d_seguro('Telefono'), 'col5' => utf8_d_seguro('Cantidad'), 'col6' => utf8_d_seguro('Contacto'));
 
                     $tabla_dp = array();
                     $i = 0;
                     foreach ($destinatarios as $destinatario) {
 
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $destinatario[descripcion], 'col3' => $destinatario[email], 'col4' => $destinatario[domicilio], 'col5' => $destinatario[telefono], 'col6' => $destinatario[contacto]);
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $destinatario[descripcion], 'col3' => $destinatario[domicilio], 'col4' => $destinatario[telefono], 'col5' => $destinatario[cantidad], 'col6' => $destinatario[contacto]);
                         $i = $i + 1;
                     }
 
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 90), 'col3' => array('width' => 170), 'col4' => array('width' => 100), 'col5' => array('width' => 80), 'col6' => array('width' => 80))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 100), 'col3' => array('width' => 160), 'col4' => array('width' => 100), 'col5' => array('width' => 60), 'col6' => array('width' => 100))));
 
                     //------------------------------------------------------------------------------------------------------------
                     //salto de linea
@@ -388,17 +386,17 @@ class ci_proyectos_extension extends extension_ci {
                         if ($i == 0) {
                             $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Estudiantes') . '</b>');
                             $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('e-mail'));
                             $tabla_dp = array();
                         }
 
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[mail]);
 
                         $i = $i + 1;
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 80), 'col3' => array('width' => 135), 'col4' => array('width' => 85), 'col5' => array('width' => 220))));
                 }
 
                 //------------------------------------ Claustro Graduados
@@ -409,17 +407,17 @@ class ci_proyectos_extension extends extension_ci {
                         if ($i == 0) {
                             $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Graduados') . '</b>');
                             $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('e-mail'));
                             $tabla_dp = array();
                         }
 
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail]);
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[mail]);
 
                         $i = $i + 1;
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 80), 'col3' => array('width' => 135), 'col4' => array('width' => 85), 'col5' => array('width' => 220))));
                 }
 
                 // --------------------------                    Claustro No Docente
@@ -430,18 +428,18 @@ class ci_proyectos_extension extends extension_ci {
                         if ($i == 0) {
                             $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('No-Docentes') . '</b>');
                             $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('e-mail'));
 
                             $tabla_dp = array();
                         }
 
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail],);
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[mail],);
 
                         $i = $i + 1;
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 80), 'col3' => array('width' => 135), 'col4' => array('width' => 85), 'col5' => array('width' => 220))));
                 }
 
                 // ---------------------------------      Claustro Externo
@@ -452,18 +450,18 @@ class ci_proyectos_extension extends extension_ci {
                         if ($i == 0) {
                             $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Colaboradores Externo') . '</b>');
                             $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('Unidad Academica'), 'col6' => utf8_d_seguro('e-mail'));
+                            $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => '<b>' . utf8_d_seguro('Función') . '</b>', 'col3' => 'Nombre y Apellido', 'col4' => utf8_d_seguro('Documento'), 'col5' => utf8_d_seguro('e-mail'));
 
                             $tabla_dp = array();
                         }
 
-                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[ua], 'col6' => $integrante[mail],);
+                        $tabla_dp[$i] = array('col1' => $i, 'col2' => $integrante[funcion_p], 'col3' => $integrante[nombre], 'col4' => $integrante[tipo_docum] . '' . $integrante[nro_docum], 'col5' => $integrante[mail],);
 
                         $i = $i + 1;
                     }
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 50), 'col3' => array('width' => 115), 'col4' => array('width' => 85), 'col5' => array('width' => 70), 'col6' => array('width' => 200))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 80), 'col3' => array('width' => 135), 'col4' => array('width' => 85), 'col5' => array('width' => 220))));
                 }
 
                 $pdf->ezText("\n", 10, ['justification' => 'full']);
@@ -476,18 +474,16 @@ class ci_proyectos_extension extends extension_ci {
                 $i = 0;
                 foreach ($organizaciones as $organizacion) {
                     if ($i == 0) {
-                        $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro($organizacion[nombre]) . '</b>');
-                        $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
+                        $cols_dp = array('col1' => "<b> Nombre </b>", 'col2' => "<b> Domicilio </b>", 'col3' => '<b>' . utf8_d_seguro('Telefono') . '</b>', 'col4' => '<b> e-mail </b>', 'col5' => utf8_d_seguro('<b> Contacto </b>'));
                         $tabla_dp = array();
                     }
-                    $tabla_dp[$i] = array('col1' => $i, 'col2' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col3' => $organizacion[telefono], 'col4' => $organizacion[email], 'col5' => $organizacion[referencia_vinculacion_inst]);
+                    $tabla_dp[$i] = array('col1' => $organizacion[nombre], 'col2' => $organizacion[domicilio] . ',' . $organizacion[localidad], 'col3' => $organizacion[telefono], 'col4' => $organizacion[email], 'col5' => $organizacion[referencia_vinculacion_inst]);
 
                     $i = $i + 1;
                 }
 
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 140), 'col3' => array('width' => 80), 'col4' => array('width' => 200), 'col5' => array('width' => 100))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 80), 'col2' => array('width' => 140), 'col3' => array('width' => 80), 'col4' => array('width' => 150), 'col5' => array('width' => 100))));
                 }
 
                 //salto de linea
@@ -635,7 +631,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s__organizacion = $datos;
 
         $nombre = str_replace(',', '', $this->s__organizacion['nombre']);
-        $nombre = str_replace(' ', '', $this->s__organizacion['nombre']);
+        $nombre = str_replace(' ', '', $nombre);
 
         $this->s__nombre = "aval_" . $nombre . ".pdf";
         $tiene = $this->dep('datos')->tabla('organizaciones_participantes')->tiene_aval($this->s__organizacion['id_organizacion']);
@@ -816,6 +812,8 @@ class ci_proyectos_extension extends extension_ci {
         return $this->dep('datos')->tabla('bases_convocatoria')->get_convocatorias_vigentes($id_estado);
     }
 
+    // Genera las alertas de cambios que necesitan ser atendidas 
+
     function alerta_creada($datos) {
         // tipo,rol,descripcion vienen dentro de datos 
         // Si es de tipo solicitud tambien viene dentro de datos
@@ -970,6 +968,7 @@ class ci_proyectos_extension extends extension_ci {
         $this->s_mostrar_avance = 0;
     }
 
+    // botones integrantes 
     function evt__integrantesi() {
         $this->set_pantalla('pant_integrantesi');
     }
@@ -1614,15 +1613,6 @@ class ci_proyectos_extension extends extension_ci {
         $form->ef('fec_desde')->set_solo_lectura();
         $form->ef('fec_hasta')->set_solo_lectura();
 
-
-
-        // OBTENGO DE EXISTIR EL BECARIO
-        /*
-          $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
-          if ($seg_ua[0]['nro_docum'] != null) {
-          $int = $this->dep('datos')->tabla('integrante_externo_pe')->get_integrante($seg_ua[0]['nro_docum'], $pe['id_pext']);
-          } */
-
         if ($this->dep('datos')->tabla('seguimiento_central')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('seguimiento_central')->get();
 
@@ -1634,12 +1624,6 @@ class ci_proyectos_extension extends extension_ci {
             $datos[fec_hasta] = $pe[fec_hasta];
             $datos[id_estado] = $pe[id_estado];
 
-            /*
-              if (!is_null($int)) {
-              $datos[nombre_becario] = $int[0][nombre];
-              $datos[dni_becario] = $int[0][tipo_docum] . $int[0][nro_docum];
-              } */
-
             $form->set_datos($datos);
         } else {
             $form->ef('denominacion')->set_estado($pe[denominacion]);
@@ -1648,10 +1632,6 @@ class ci_proyectos_extension extends extension_ci {
             $form->ef('fec_desde')->set_estado($pe[fec_desde]);
             $form->ef('fec_hasta')->set_estado($pe[fec_hasta]);
             $form->ef('id_estado')->set_estado($pe[id_estado]);
-            /* if (!is_null($int)) {
-              $form->ef('nombre_becario')->set_estado($int[0][nombre]);
-              $form->ef('dni_becario')->set_estado($int[0][tipo_docum] . $int[0][nro_docum]);
-              } */
         }
     }
 
@@ -1934,7 +1914,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('formulario_seg_ua')->set_solo_lectura();
             $this->dep('formulario_seg_ua')->evento('modificacion')->ocultar();
             $this->dep('formulario_seg_ua')->evento('baja')->ocultar();
-            //$this->dep('formulario_seg_ua')->evento('cancelar')->ocultar();
         }
 
         if ($perfil == 'sec_ext_ua') {
@@ -2085,7 +2064,6 @@ class ci_proyectos_extension extends extension_ci {
             $this->dep('datos')->tabla('pextension')->cargar($pe);
         }
 
-        // Esto corresponde ??
         if (!is_null($datos[nro_resol])) {
             $integrantes = $this->dep('datos')->tabla('integrante_externo_pe')->get_listado($datos[id_pext]);
 
@@ -2098,7 +2076,7 @@ class ci_proyectos_extension extends extension_ci {
             $integrantes = $this->dep('datos')->tabla('integrante_interno_pe')->get_listado($datos[id_pext]);
 
             foreach ($integrantes as $integrante) {
-
+                // actualizo / cargo los datos de la resolucion 
                 $sql = "UPDATE integrante_interno_pe SET rescd ='$datos[nro_resol]' WHERE id_designacion=" . $integrante[id_designacion] . " AND desde='" . $integrante[desde] . "' AND id_pext =" . $integrante[id_pext];
                 toba::db('extension')->consultar($sql);
             }
@@ -2303,7 +2281,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         $datos['id_pext'] = $pe['id_pext'];
         //$datos['id_estado'] = $pe['id_estado'];
-        
+
         $datos = $this->dep('datos')->tabla('solicitud')->get_solicitud($datos)[0];
 
 
@@ -2323,36 +2301,25 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s_mostrar_solicitud == 1) {
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'APRB' && $estado != 'PRG ') {
-                $this->dep('form_solicitud')->set_solo_lectura();
-                $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                if ($perfil != 'sec_ext_central') {
+                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    $this->dep('form_solicitud')->set_solo_lectura();
+                }
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
-            } else {
-                $form->ef('id_estado')->set_solo_lectura();
-                if ($perfil != 'sec_ext_central') {
-                    // Secretaria Central
+            }
 
-                    $form->ef('nro_acta')->set_solo_lectura();
-                    $form->ef('fecha_dictamen')->set_solo_lectura();
-                    $form->ef('obs_resolucion')->set_solo_lectura();
-                    $form->ef('fecha_fin_prorroga')->set_solo_lectura();
-                }
-                if ($perfil != 'sec_ext_ua') {
-                    // Secretaria UA
-                    $form->ef('recibido')->set_solo_lectura();
-                    $form->ef('fecha_solicitud')->set_solo_lectura();
-                    $form->ef('fecha_recepcion')->set_solo_lectura();
-                    $form->ef('estado_solicitud')->set_solo_lectura();
-                    $form->ef('descrip_ua')->set_solo_lectura();
-                    $form->ef('estado_solicitud')->set_solo_lectura();
-                }
-                if ($perfil != 'formulador') {
-                    // Formulador
-                    $form->ef('tipo_solicitud')->set_solo_lectura();
-                    $form->ef('cambio_integrante')->set_solo_lectura();
-                    $form->ef('cambio_proyecto')->set_solo_lectura();
-                    $form->ef('motivo')->set_solo_lectura();
-                }
+
+            if ($perfil != 'formulador') {
+                // Formulador
+                $form->ef('tipo_solicitud')->set_solo_lectura();
+                $form->ef('cambio_integrante')->set_solo_lectura();
+                $form->ef('cambio_proyecto')->set_solo_lectura();
+                $form->ef('motivo')->set_solo_lectura();
+            } else {
+                $form->ef('recibido')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux2')->set_solo_lectura();
             }
 
             $form->ef('fecha_solicitud')->set_solo_lectura();
@@ -2368,14 +2335,60 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('solicitud')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('solicitud')->get();
+            if (!is_null($datos['estado_solicitud']) && $datos[tipo_solicitud] == 'PROYECTO') {
+                $datos['estado_solicitud_aux2'] = $datos['estado_solicitud'];
+                unset($datos['estado_solicitud_aux1']);
+            } elseif (!is_null($datos['estado_solicitud'])) {
+                $datos['estado_solicitud_aux1'] = $datos['estado_solicitud'];
+                unset($datos['estado_solicitud_aux2']);
+            }
+
+            if ($perfil != 'sec_ext_central') {
+                // Secretaria Central
+
+                $form->ef('nro_acta')->set_solo_lectura();
+                $form->ef('fecha_dictamen')->set_solo_lectura();
+                $form->ef('obs_resolucion')->set_solo_lectura();
+                $form->ef('fecha_fin_prorroga')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux2')->set_solo_lectura();
+            }
+            if ($perfil != 'sec_ext_ua') {
+                // Secretaria UA
+                if ($datos[tipo_solicitud] == 'PROYECTO' && $perfil == 'sec_ext_central') {
+                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                    $form->ef('descrip_ua')->set_solo_lectura();
+                } else {
+                    $form->ef('recibido')->set_solo_lectura();
+                    $form->ef('fecha_solicitud')->set_solo_lectura();
+                    $form->ef('fecha_recepcion')->set_solo_lectura();
+                    $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                    $form->ef('descrip_ua')->set_solo_lectura();
+                }
+            } elseif ($datos[tipo_solicitud] == 'PROYECTO') {
+                $form->ef('recibido')->set_solo_lectura();
+                $form->ef('fecha_solicitud')->set_solo_lectura();
+                $form->ef('fecha_recepcion')->set_solo_lectura();
+                $form->ef('estado_solicitud_aux1')->set_solo_lectura();
+                $form->ef('descrip_ua')->set_solo_lectura();
+            }
+
+
             $datos[id_estado] = $estado;
 
             if ($datos[estado_solicitud] != "Formulacion") {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
 
-                if ($perfil == 'sec_ext_central' && ($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                if ($perfil == 'sec_ext_central') {
+                    if ($datos[tipo_solicitud] != 'PROYECTO') {
+                        if (($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
+                            $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                        }
+                    } else {
+                        if (($datos[estado_solicitud] == "Aceptada" || $datos[estado_solicitud] == "Rechazada")) {
+                            $form->ef('estado_solicitud_aux2')->set_solo_lectura();
+                        }
+                    }
                 } elseif ($perfil == 'formulador') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                     $form->ef('tipo_solicitud')->set_solo_lectura();
@@ -2387,10 +2400,12 @@ class ci_proyectos_extension extends extension_ci {
                         $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                         $form->ef('recibido')->set_solo_lectura();
                         $form->ef('descrip_ua')->set_solo_lectura();
-                        $form->ef('estado_solicitud')->set_solo_lectura();
+                        $form->ef('estado_solicitud_aux1')->set_solo_lectura();
                     }
                 }
             }
+        } else {
+            $this->dep('form_solicitud')->evento('enviar')->ocultar();
         }
 
         $form->set_datos($datos);
@@ -2435,23 +2450,35 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
         unset($datos[barra1]);
+        unset($datos[barra1_aux]);
         unset($datos[barra2]);
+        unset($datos[barra2_aux]);
+        unset($datos['estado_solicitud_aux1']);
+        unset($datos['estado_solicitud_aux2']);
 
         if ($carga) {
+            $tipo_cambio_correcto = false;
             if (!is_null($datos['cambio_proyecto'])) {
                 $datos['tipo_cambio'] = $datos['cambio_proyecto'];
+                $tipo_cambio_correcto = true;
             } else {
-                $datos['tipo_cambio'] = $datos['cambio_integrante'];
+                if (!is_null($datos['cambio_integrante'])) {
+                    $datos['tipo_cambio'] = $datos['cambio_integrante'];
+                    $tipo_cambio_correcto = true;
+                }
             }
+            if ($tipo_cambio_correcto) {
+                $this->dep('datos')->tabla('solicitud')->set($datos);
+                $this->dep('datos')->tabla('solicitud')->sincronizar();
+                $this->dep('datos')->tabla('solicitud')->cargar($datos);
 
-            $this->dep('datos')->tabla('solicitud')->set($datos);
-            $this->dep('datos')->tabla('solicitud')->sincronizar();
-            $this->dep('datos')->tabla('solicitud')->cargar($datos);
-
-            $solicitud = $this->dep('datos')->tabla('solicitud')->get();
+                $solicitud = $this->dep('datos')->tabla('solicitud')->get();
 
 
-            toba::notificacion()->agregar('La solicitud se registro correctamente', 'info');
+                toba::notificacion()->agregar('La solicitud se registro correctamente', 'info');
+            } else {
+                toba::notificacion()->agregar('Falta agregar el tipo de cambio', 'info');
+            }
         } else {
             toba::notificacion()->agregar('Ya existe una solicitud del tipo seleccionado', 'info');
         }
@@ -2462,7 +2489,13 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         unset($pe[x_dbr_clave]);
 
-        if ($datos[estado_solicitud] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
+        if (is_null($datos['estado_solicitud_aux2'])) {
+            $datos['estado_solicitud'] = $datos['estado_solicitud_aux1'];
+        } else {
+            $datos['estado_solicitud'] = $datos['estado_solicitud_aux2'];
+        }
+
+        if ($datos[estado_solicitud_aux2] == 'Aceptada' && $datos[tipo_solicitud] == 'PROYECTO') {
             switch ($datos[cambio_proyecto]) {
                 case 'BAJA':
                     $pe[id_estado] = 'BAJA';
@@ -2473,7 +2506,7 @@ class ci_proyectos_extension extends extension_ci {
                     $pe[fec_hasta] = $datos[fecha_fin_prorroga];
                     break;
 
-                case 'FINALIZACIÓN':
+                case 'FINALIZACION':
                     $pe['id_estado'] = 'FIN ';
                     break;
 
@@ -2499,9 +2532,8 @@ class ci_proyectos_extension extends extension_ci {
             }
             // Quitar alerta 
             if ($datos[id_estado] != 'ECEN') {
-
+                $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
                 // Finalizo de haber alguna alerta
-                $rol = 'sec_ext_ua';
 
                 /*
                  * rol
@@ -2511,10 +2543,34 @@ class ci_proyectos_extension extends extension_ci {
                  */
 
                 // cancelo alerta por evaluacion central 
-                $claves[rol] = 'sec_ext_ua';
+                $claves[rol] = $perfil;
                 $claves[tipo_cambio] = $datos[tipo_cambio];
                 $claves[tipo_solicitud] = $datos[tipo_solicitud];
                 $this->alerta_finalizada($claves);
+
+
+                // creo alerta Central 
+
+
+                if ($perfil == 'sec_ext_ua' && ($datos['estado_solicitud'] == 'Aceptada' || $datos['estado_solicitud'] == 'Rechazada' )) {
+                    // obtengo alertas perdientes del formulador 
+                    $clave[id_pext] = $pe[id_pext];
+                    $clave[rol] = 'sec_ext_central';
+                    $clave['id_solicitud'] = $datos['tipo_solicitud'];
+                    $clave['tipo_cambio'] = $datos[tipo_cambio];
+                    $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
+                    if (count($alertas_c) == 0) {
+                        $alerta = null;
+                        $alerta['rol'] = 'sec_ext_central';
+                        $alerta['id_pext'] = $pe['id_pext'];
+                        $alerta['tipo'] = "Evualuacion ua solicitud";
+                        $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
+                        $alerta['tipo_cambio'] = $datos[tipo_cambio];
+                        $alerta['descripcion'] = "El formulador solicito un cambio de tipo " . $alerta['tipo_solicitud'] . " " . $alerta['tipo_cambio'];
+
+                        $this->alerta_creada($alerta);
+                    }
+                }
             }
             $datos['fecha_recepcion'] = date('Y-m-d');
         }
@@ -2522,7 +2578,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
         unset($datos[barra1]);
+        unset($datos[barra1_aux]);
         unset($datos[barra2]);
+        unset($datos[barra2_aux]);
+        unset($datos['estado_solicitud_aux1']);
+        unset($datos['estado_solicitud_aux2']);
 
 
 
@@ -2543,7 +2603,11 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[id_estado]);
         unset($datos[barra]);
         unset($datos[barra1]);
+        unset($datos[barra1_aux]);
         unset($datos[barra2]);
+        unset($datos[barra2_aux]);
+        unset($datos['estado_solicitud_aux1']);
+        unset($datos['estado_solicitud_aux2']);
 
         $datos['estado_solicitud'] = 'Enviada';
 
@@ -2551,19 +2615,24 @@ class ci_proyectos_extension extends extension_ci {
         $this->dep('datos')->tabla('solicitud')->sincronizar();
         $this->dep('datos')->tabla('solicitud')->cargar($datos);
 
-        // Quitar alerta 
+
+
         // obtengo alertas perdientes del formulador 
         $clave[id_pext] = $pe[id_pext];
-        $clave[rol] = 'sec_ext_ua';
+        if ($datos[tipo_solicitud] == 'PROYECTO') {
+            $clave[rol] = 'sec_ext_central';
+        } else {
+            $clave[rol] = 'sec_ext_ua';
+        }
         $clave['id_solicitud'] = $datos['tipo_solicitud'];
-        $clave['tipo_cambio'] = $datos[tipo_cambio];
+        $clave['tipo_cambio'] = $datos[tipo_solicitud];
         $alertas_c = $this->dep('datos')->tabla('alerta')->get_alerta_solicitud($clave)[0];
 
 
         // control de alertas no mas de una por rol
         if (count($alertas_c) == 0) {
             $alerta = null;
-            $alerta['rol'] = "sec_ext_ua";
+            $alerta['rol'] = $clave[rol];
             $alerta['id_pext'] = $pe['id_pext'];
             $alerta['tipo'] = "Evualuacion ua solicitud";
             $alerta['tipo_solicitud'] = $datos['tipo_solicitud'];
@@ -3643,7 +3712,7 @@ class ci_proyectos_extension extends extension_ci {
                             $datos['tipo'] = 'Docente';
                             $int_interno = $this->dep('datos')->tabla('integrante_interno_pe')->getIntegranteVigente($datos[id_docente], $pe['id_pext'])[0];
                             $iguales = false;
-                         
+
                             if (!is_null($integrante_datos_almacenados)) {
                                 $id_docente = $this->dep('datos')->tabla('docente')->get_id_docente($integrante_datos_almacenados[id_designacion]);
                                 if (!is_null($int_interno) && $id_docente[id_docente] == $int_interno[id_docente]) {
@@ -4026,7 +4095,7 @@ class ci_proyectos_extension extends extension_ci {
                             }
                             $this->dep('datos')->tabla('integrante_externo_pe')->set($datos);
                             $this->dep('datos')->tabla('integrante_externo_pe')->sincronizar();
-                            
+
                             unset($this->s__datos_otro_aux);
                             $this->s__mostrar_e = 0;
                         } else {

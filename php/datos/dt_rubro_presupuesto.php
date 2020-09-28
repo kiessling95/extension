@@ -10,4 +10,3 @@ class dt_rubro_presupuesto extends toba_datos_tabla
 	}
 
 }
-?>

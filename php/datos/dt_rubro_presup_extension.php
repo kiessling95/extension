@@ -104,5 +104,3 @@ class dt_rubro_presup_extension extends extension_datos_tabla {
       return toba::db('extension')->consultar($sql);
       } */
 }
-?>
-
