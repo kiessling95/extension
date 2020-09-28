@@ -3557,7 +3557,10 @@ class ci_proyectos_extension extends extension_ci {
                                 $boolean = false;
                             }
                         } else {
-                            $director_ua = false;
+                            // excepcion rectorado 
+                            if ($perfil_ua[sigla] != 'RECT') {
+                                $director_ua = false;
+                            }
                         }
                     }
 
