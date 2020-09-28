@@ -2301,13 +2301,14 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->s_mostrar_solicitud == 1) {
             // si presiono el boton enviar no puede editar nada mas 
             if ($estado != 'APRB' && $estado != 'PRG ') {
-                $this->dep('form_solicitud')->set_solo_lectura();
-                $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                if ($perfil != 'sec_ext_central') {
+                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                    $this->dep('form_solicitud')->set_solo_lectura();
+                }
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
-            } elseif($perfil == 'sec_ext_central') {
-                $this->dep('form_solicitud')->evento('modificacion')->mostrar();
             }
+
 
             if ($perfil != 'formulador') {
                 // Formulador
@@ -2378,8 +2379,16 @@ class ci_proyectos_extension extends extension_ci {
                 $this->dep('form_solicitud')->evento('baja')->ocultar();
                 $this->dep('form_solicitud')->evento('enviar')->ocultar();
 
-                if ($perfil == 'sec_ext_central'&& $datos[tipo_solicitud] != 'PROYECTO' && ($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
-                    $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                if ($perfil == 'sec_ext_central') {
+                    if ($datos[tipo_solicitud] != 'PROYECTO') {
+                        if (($datos[estado_solicitud] != "Aceptada" && $datos[estado_solicitud] != "Rechazada")) {
+                            $this->dep('form_solicitud')->evento('modificacion')->ocultar();
+                        }
+                    } else {
+                        if (($datos[estado_solicitud] == "Aceptada" || $datos[estado_solicitud] == "Rechazada")) {
+                            $form->ef('estado_solicitud_aux2')->set_solo_lectura();
+                        }
+                    }
                 } elseif ($perfil == 'formulador') {
                     $this->dep('form_solicitud')->evento('modificacion')->ocultar();
                     $form->ef('tipo_solicitud')->set_solo_lectura();
