@@ -123,4 +123,11 @@ INSERT INTO apex_usuario_perfil_datos_dims (proyecto, usuario_perfil_datos, dime
 	'1001000034', --elemento
 	'FALE '  --clave
 );
+INSERT INTO apex_usuario_perfil_datos_dims (proyecto, usuario_perfil_datos, dimension, elemento, clave) VALUES (
+	'extension', --proyecto
+	'1001000018', --usuario_perfil_datos
+	'1001000004', --dimension
+	'1001000036', --elemento
+	'RECT '  --clave
+);
 --- FIN Grupo de desarrollo 1001
