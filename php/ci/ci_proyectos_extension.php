@@ -808,7 +808,7 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pext = $this->dep('datos')->tabla('pextension')->get();
             $id_estado = $pext['id_estado'];
-
+/*
             $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
             $proyectos = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
 
@@ -819,7 +819,10 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
+ * 
+ */
         } else {
+            /*
             $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
             $pext = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
 
@@ -828,6 +831,7 @@ class ci_proyectos_extension extends extension_ci {
                     $where .= " AND id_bases !=" . $proyecto[id_bases];
                 }
             }
+             */
 
             $id_estado = 'FORM';
         }
@@ -1312,6 +1316,8 @@ class ci_proyectos_extension extends extension_ci {
 
         // Restriccón proyectos no finalizados 
         $carga = true;
+        /*
+         * Limite de proyectos por formulador ( Actualmente sin limite )
         if ($perfil == 'formulador') {
             $pextension = $this->dep('datos')->tabla('pextension')->get_listado();
             foreach ($pextension as $proyecto) {
@@ -1322,6 +1328,8 @@ class ci_proyectos_extension extends extension_ci {
                 }
             }
         }
+         * 
+         */
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua' || !$carga) {
             $this->controlador()->evento('nuevo_proyecto')->ocultar();
         }
