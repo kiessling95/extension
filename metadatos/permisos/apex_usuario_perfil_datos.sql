@@ -123,4 +123,11 @@ INSERT INTO apex_usuario_perfil_datos (proyecto, usuario_perfil_datos, nombre, d
 	NULL, --descripcion
 	NULL  --listar
 );
+INSERT INTO apex_usuario_perfil_datos (proyecto, usuario_perfil_datos, nombre, descripcion, listar) VALUES (
+	'extension', --proyecto
+	'1001000018', --usuario_perfil_datos
+	'RECT', --nombre
+	NULL, --descripcion
+	NULL  --listar
+);
 --- FIN Grupo de desarrollo 1001
