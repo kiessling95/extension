@@ -803,13 +803,39 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function convocatorias() {
+        $where = "WHERE 1=1 ";
+
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pext = $this->dep('datos')->tabla('pextension')->get();
             $id_estado = $pext['id_estado'];
+/*
+            $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
+            $proyectos = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
+
+            if (!is_null($proyectos)) {
+                foreach ($proyectos as $proyecto) {
+                    if ($pext[id_bases] != $proyecto[id_bases]) {
+                        $where .= " AND id_bases !=" . $proyecto[id_bases];
+                    }
+                }
+            }
+ * 
+ */
         } else {
+            /*
+            $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
+            $pext = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
+
+            if (!is_null($pext)) {
+                foreach ($pext as $proyecto) {
+                    $where .= " AND id_bases !=" . $proyecto[id_bases];
+                }
+            }
+             */
+
             $id_estado = 'FORM';
         }
-        return $this->dep('datos')->tabla('bases_convocatoria')->get_convocatorias_vigentes($id_estado);
+        return $this->dep('datos')->tabla('bases_convocatoria')->get_convocatorias_vigentes($id_estado, $where);
     }
 
     // Genera las alertas de cambios que necesitan ser atendidas 
@@ -1290,14 +1316,20 @@ class ci_proyectos_extension extends extension_ci {
 
         // Restriccón proyectos no finalizados 
         $carga = true;
+        /*
+         * Limite de proyectos por formulador ( Actualmente sin limite )
         if ($perfil == 'formulador') {
             $pextension = $this->dep('datos')->tabla('pextension')->get_listado();
             foreach ($pextension as $proyecto) {
                 if ($proyecto['id_estado'] != 'FIN' && $proyecto['id_estado'] != 'BAJA') {
-                    $carga = false;
+                    if ($proyecto['id_estado'] != 'FORM') {
+                        $carga = false;
+                    }
                 }
             }
         }
+         * 
+         */
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua' || !$carga) {
             $this->controlador()->evento('nuevo_proyecto')->ocultar();
         }
@@ -3550,13 +3582,16 @@ class ci_proyectos_extension extends extension_ci {
                     $perfil_ua = $this->dep('datos')->tabla('unidad_acad')->get_ua()[0];
                     $director_ua = true;
 
-                    if ($datos['funcion_p'] == 'D    ') {
+                    if ($datos['funcion_p'] == 'D    ' && $perfil_ua[sigla] != 'RECT ') {
+
                         if ($perfil_ua[sigla] == $datos[ua]) {
                             $director_vigente = $this->dep('datos')->tabla('integrante_interno_pe')->getDirectorVigente($pe['id_pext'])[0];
                             if (!is_null($director_vigente)) {
                                 $boolean = false;
                             }
                         } else {
+                            // excepcion rectorado 
+
                             $director_ua = false;
                         }
                     }
@@ -3676,7 +3711,7 @@ class ci_proyectos_extension extends extension_ci {
                         $perfil_ua = $this->dep('datos')->tabla('unidad_acad')->get_ua()[0];
 
                         // control Director unico
-                        if ($datos['funcion_p'] == 'D    ') {
+                        if ($datos['funcion_p'] == 'D    ' && $perfil_ua[sigla] != 'RECT ') {
                             if ($perfil_ua[sigla] == $datos[ua]) {
                                 $director_vigente = $this->dep('datos')->tabla('integrante_interno_pe')->getDirectorVigente($pe['id_pext'])[0];
                                 if (!is_null($director_vigente)) {
