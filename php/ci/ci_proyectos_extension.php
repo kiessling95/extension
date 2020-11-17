@@ -781,6 +781,43 @@ class ci_proyectos_extension extends extension_ci {
         return $this->dep('datos')->tabla('destinatarios')->get_listado($id_pext);
     }
 
+    function unidades() {
+        $pext = $this->dep('datos')->tabla('pextension')->get();
+
+        $unidades = array();
+
+        $multi_uni = array();
+        $aux_uni = $pext[multi_uni];
+        for ($i = 0; $i < strlen($aux_uni); $i++) {
+            if ($aux_uni[$i] != '{' AND $aux_uni[$i] != ',' AND $aux_uni[$i] != '}') {
+                $sigla = $aux_uni[$i] . $aux_uni[$i + 1] . $aux_uni[$i + 2] . $aux_uni[$i + 3];
+                $multi_uni . array_push($multi_uni, $sigla . ' ');
+                $i = $i + 4;
+            }
+        }
+        $siglas = $multi_uni;
+
+        $unidades_todas = $this->dep('datos')->tabla('unidad_acad')->get_descripciones();
+
+        $aux = 0;
+        $boolean_uni_proyecto = true;
+        for ($index = 0; $index < count($unidades_todas); $index++) {
+            if ($boolean_uni_proyecto && $unidades_todas[$index][sigla] == $pext[uni_acad]) {
+                $unidades[$aux] = $unidades_todas[$index];
+                $aux++;
+                $boolean_uni_proyecto = false;
+            }
+
+            for ($index1 = 0; $index1 < count($siglas); $index1++) {
+                if ($siglas[$index1] == $unidades_todas[$index][sigla]) {
+                    $unidades[$aux] = $unidades_todas[$index];
+                    $aux++;
+                }
+            }
+        }
+        return $unidades;
+    }
+
     function objetivos() {
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         return $this->dep('datos')->tabla('objetivo_especifico')->get_descripcion($id_pext);
@@ -1374,10 +1411,10 @@ class ci_proyectos_extension extends extension_ci {
             $clave[rol] = $perfil;
             $alerta = $this->dep('datos')->tabla('alerta')->get_alerta_rol($clave)[0];
 
-            if($proyecto['es_multi'] == 1){
-                $this->s__datos[$aux][es_multi]="SI";
+            if ($proyecto['es_multi'] == 1) {
+                $this->s__datos[$aux][es_multi] = "SI";
             } else {
-                $this->s__datos[$aux][es_multi]="NO"; 
+                $this->s__datos[$aux][es_multi] = "NO";
             }
 
             if (!is_null($alerta) && $alerta['estado_alerta'] = 'Pendiente') {
@@ -3056,9 +3093,9 @@ class ci_proyectos_extension extends extension_ci {
             $aux_uni = $datos['multi_uni'];
             for ($i = 0; $i < strlen($aux_uni); $i++) {
                 if ($aux_uni[$i] != '{' AND $aux_uni[$i] != ',' AND $aux_uni[$i] != '}') {
-                    $sigla = $aux_uni[$i] . $aux_uni[$i+1] . $aux_uni[$i+2] . $aux_uni[$i+3];
-                    $multi_uni . array_push($multi_uni, $sigla.' ');
-                    $i=$i+3;
+                    $sigla = $aux_uni[$i] . $aux_uni[$i + 1] . $aux_uni[$i + 2] . $aux_uni[$i + 3];
+                    $multi_uni . array_push($multi_uni, $sigla . ' ');
+                    $i = $i + 3;
                 }
             }
 
@@ -3202,7 +3239,11 @@ class ci_proyectos_extension extends extension_ci {
             $array_uni = $array_uni . ',' . $uni;
         }
         $array_uni = $array_uni . '}';
-        $datos['multi_uni'] = $array_uni;
+        if ($datos['es_multi'] == 0) {
+            $datos['multi_uni'] = null;
+        } else {
+            $datos['multi_uni'] = $array_uni;
+        }
 
 
         $datos[id_estado] = $datos_pe[id_estado];
@@ -4762,7 +4803,10 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($this->s__mostrar_presup == 1) {
-            $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            $estado = $pext[id_estado];
+
+
             // si presiono el boton enviar no puede editar nada mas 
             if (($estado != 'FORM' && $estado != 'MODF') || $perfil != 'formulador') {
                 $this->dep('form_presupuesto')->set_solo_lectura();
