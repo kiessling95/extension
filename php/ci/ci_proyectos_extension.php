@@ -781,6 +781,43 @@ class ci_proyectos_extension extends extension_ci {
         return $this->dep('datos')->tabla('destinatarios')->get_listado($id_pext);
     }
 
+    function unidades() {
+        $pext = $this->dep('datos')->tabla('pextension')->get();
+
+        $unidades = array();
+
+        $multi_uni = array();
+        $aux_uni = $pext[multi_uni];
+        for ($i = 0; $i < strlen($aux_uni); $i++) {
+            if ($aux_uni[$i] != '{' AND $aux_uni[$i] != ',' AND $aux_uni[$i] != '}') {
+                $sigla = $aux_uni[$i] . $aux_uni[$i + 1] . $aux_uni[$i + 2] . $aux_uni[$i + 3];
+                $multi_uni . array_push($multi_uni, $sigla . ' ');
+                $i = $i + 4;
+            }
+        }
+        $siglas = $multi_uni;
+
+        $unidades_todas = $this->dep('datos')->tabla('unidad_acad')->get_descripciones();
+
+        $aux = 0;
+        $boolean_uni_proyecto = true;
+        for ($index = 0; $index < count($unidades_todas); $index++) {
+            if ($boolean_uni_proyecto && $unidades_todas[$index][sigla] == $pext[uni_acad]) {
+                $unidades[$aux] = $unidades_todas[$index];
+                $aux++;
+                $boolean_uni_proyecto = false;
+            }
+
+            for ($index1 = 0; $index1 < count($siglas); $index1++) {
+                if ($siglas[$index1] == $unidades_todas[$index][sigla]) {
+                    $unidades[$aux] = $unidades_todas[$index];
+                    $aux++;
+                }
+            }
+        }
+        return $unidades;
+    }
+
     function objetivos() {
         $id_pext = $this->dep('datos')->tabla('pextension')->get()['id_pext'];
         return $this->dep('datos')->tabla('objetivo_especifico')->get_descripcion($id_pext);
@@ -808,29 +845,29 @@ class ci_proyectos_extension extends extension_ci {
         if ($this->dep('datos')->tabla('pextension')->esta_cargada()) {
             $pext = $this->dep('datos')->tabla('pextension')->get();
             $id_estado = $pext['id_estado'];
-/*
-            $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
-            $proyectos = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
+            /*
+              $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
+              $proyectos = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
 
-            if (!is_null($proyectos)) {
-                foreach ($proyectos as $proyecto) {
-                    if ($pext[id_bases] != $proyecto[id_bases]) {
-                        $where .= " AND id_bases !=" . $proyecto[id_bases];
-                    }
-                }
-            }
- * 
- */
+              if (!is_null($proyectos)) {
+              foreach ($proyectos as $proyecto) {
+              if ($pext[id_bases] != $proyecto[id_bases]) {
+              $where .= " AND id_bases !=" . $proyecto[id_bases];
+              }
+              }
+              }
+             * 
+             */
         } else {
             /*
-            $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
-            $pext = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
+              $reponsable[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
+              $pext = $this->dep('datos')->tabla('pextension')->get_proyectos_vigentes();
 
-            if (!is_null($pext)) {
-                foreach ($pext as $proyecto) {
-                    $where .= " AND id_bases !=" . $proyecto[id_bases];
-                }
-            }
+              if (!is_null($pext)) {
+              foreach ($pext as $proyecto) {
+              $where .= " AND id_bases !=" . $proyecto[id_bases];
+              }
+              }
              */
 
             $id_estado = 'FORM';
@@ -1318,16 +1355,16 @@ class ci_proyectos_extension extends extension_ci {
         $carga = true;
         /*
          * Limite de proyectos por formulador ( Actualmente sin limite )
-        if ($perfil == 'formulador') {
-            $pextension = $this->dep('datos')->tabla('pextension')->get_listado();
-            foreach ($pextension as $proyecto) {
-                if ($proyecto['id_estado'] != 'FIN' && $proyecto['id_estado'] != 'BAJA') {
-                    if ($proyecto['id_estado'] != 'FORM') {
-                        $carga = false;
-                    }
-                }
-            }
-        }
+          if ($perfil == 'formulador') {
+          $pextension = $this->dep('datos')->tabla('pextension')->get_listado();
+          foreach ($pextension as $proyecto) {
+          if ($proyecto['id_estado'] != 'FIN' && $proyecto['id_estado'] != 'BAJA') {
+          if ($proyecto['id_estado'] != 'FORM') {
+          $carga = false;
+          }
+          }
+          }
+          }
          * 
          */
         if ($perfil == 'sec_ext_central' || $perfil == 'sec_ext_ua' || !$carga) {
@@ -1373,6 +1410,12 @@ class ci_proyectos_extension extends extension_ci {
             $clave[id_pext] = $proyecto[id_pext];
             $clave[rol] = $perfil;
             $alerta = $this->dep('datos')->tabla('alerta')->get_alerta_rol($clave)[0];
+
+            if ($proyecto['es_multi'] == 1) {
+                $this->s__datos[$aux][es_multi] = "SI";
+            } else {
+                $this->s__datos[$aux][es_multi] = "NO";
+            }
 
             if (!is_null($alerta) && $alerta['estado_alerta'] = 'Pendiente') {
                 //$img_pendiente = toba_recurso::imagen_proyecto("alerta2.gif", true);
@@ -3032,6 +3075,7 @@ class ci_proyectos_extension extends extension_ci {
             }
 
             $datos[codigo] = $seg_central[0][codigo];
+
             $ejes = array();
             $aux = $datos['eje_tematico'];
 
@@ -3045,6 +3089,16 @@ class ci_proyectos_extension extends extension_ci {
                     }
                 }
             }
+            $multi_uni = array();
+            $aux_uni = $datos['multi_uni'];
+            for ($i = 0; $i < strlen($aux_uni); $i++) {
+                if ($aux_uni[$i] != '{' AND $aux_uni[$i] != ',' AND $aux_uni[$i] != '}') {
+                    $sigla = $aux_uni[$i] . $aux_uni[$i + 1] . $aux_uni[$i + 2] . $aux_uni[$i + 3];
+                    $multi_uni . array_push($multi_uni, $sigla . ' ');
+                    $i = $i + 3;
+                }
+            }
+
             if ($estado != 'FORM') {
                 $bases = $this->dep('datos')->tabla('bases_convocatoria')->get_datos($datos[id_bases]);
 
@@ -3054,6 +3108,7 @@ class ci_proyectos_extension extends extension_ci {
             }
 
             $datos['eje_tematico'] = $ejes;
+            $datos['multi_uni'] = $multi_uni;
             $form->set_datos($datos);
         }
     }
@@ -3075,6 +3130,15 @@ class ci_proyectos_extension extends extension_ci {
         }
         $array = $array . '}';
         $datos['eje_tematico'] = $array;
+
+        $multi_uni = $datos['multi_uni'];
+        $array_uni = '{' . $multi_uni[0];
+        unset($multi_uni[0]);
+        foreach ($multi_uni as $multi) {
+            $array_uni = $array_uni . ',' . $multi;
+        }
+        $array_uni = $array_uni . '}';
+        $datos['multi_uni'] = $array_uni;
 
         // Solo se muestran, no se guardan directamente en la tabla pextension
         unset($datos[director]);
@@ -3167,6 +3231,20 @@ class ci_proyectos_extension extends extension_ci {
         }
         $array = $array . '}';
         $datos['eje_tematico'] = $array;
+
+        $multi_uni = $datos['multi_uni'];
+        $array_uni = '{' . $multi_uni[0];
+        unset($multi_uni[0]);
+        foreach ($multi_uni as $uni) {
+            $array_uni = $array_uni . ',' . $uni;
+        }
+        $array_uni = $array_uni . '}';
+        if ($datos['es_multi'] == 0) {
+            $datos['multi_uni'] = null;
+        } else {
+            $datos['multi_uni'] = $array_uni;
+        }
+
 
         $datos[id_estado] = $datos_pe[id_estado];
 
@@ -4725,7 +4803,10 @@ class ci_proyectos_extension extends extension_ci {
 
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
         if ($this->s__mostrar_presup == 1) {
-            $estado = $this->dep('datos')->tabla('pextension')->get()[id_estado];
+            $pext = $this->dep('datos')->tabla('pextension')->get();
+            $estado = $pext[id_estado];
+
+
             // si presiono el boton enviar no puede editar nada mas 
             if (($estado != 'FORM' && $estado != 'MODF') || $perfil != 'formulador') {
                 $this->dep('form_presupuesto')->set_solo_lectura();
