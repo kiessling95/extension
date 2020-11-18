@@ -16,7 +16,20 @@ class dt_presupuesto_extension extends extension_datos_tabla {
                 . "from presupuesto_extension as p_e "
                 . "INNER JOIN rubro_presup_extension as r ON ( p_e.id_rubro_extension = r.id_rubro_extension )  "
                 . "where id_pext=" . $id_p
-                . "order by concepto,monto";
+                . "order by uni_acad,concepto";
+        return toba::db('extension')->consultar($sql);
+    }
+    function get_montos($id_p = null) {
+
+        $sql = "select "
+                . "p_e.id_pext,"
+                . "p_e.id_presupuesto,"
+                . "p_e.monto,"
+                . "p_e.uni_acad "
+                . "from presupuesto_extension as p_e "
+                . "INNER JOIN rubro_presup_extension as r ON ( p_e.id_rubro_extension = r.id_rubro_extension )  "
+                . "where id_pext=" . $id_p
+                . "order by uni_acad";
         return toba::db('extension')->consultar($sql);
     }
 
