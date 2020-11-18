@@ -253,6 +253,9 @@
                                         case 'DES ':
                                                 this.ef('id_estado').mostrar();
 						break;
+                                        case 'EUA ':
+                                                this.ef('id_estado').mostrar();
+						break;
 					default:
                                                 this.ef('id_estado').ocultar();
 						break;					
