@@ -498,16 +498,16 @@ class ci_proyectos_extension extends extension_ci {
                 $total = 0;
                 foreach ($presupuestos as $presupuesto) {
                     if ($i == 0) {
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Rubro </b>", 'col3' => "<b> Concepto </b>", 'col4' => utf8_d_seguro('Cantidad'), 'col5' => 'Monto');
+                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Rubro </b>", 'col3' => "<b> Concepto </b>", 'col4' => utf8_d_seguro('Cantidad'),'col5' => 'Unidad Academica', 'col6' => 'Monto');
 
                         $tabla_dp = array();
                     }
-                    $tabla_dp[$i] = array('col1' => $i, 'col2' => $presupuesto[rubro], 'col3' => $presupuesto[concepto], 'col4' => $presupuesto[cantidad], 'col5' => $presupuesto[monto]);
+                    $tabla_dp[$i] = array('col1' => $i, 'col2' => $presupuesto[rubro], 'col3' => $presupuesto[concepto], 'col4' => $presupuesto[cantidad],'col5' => $presupuesto[uni_acad], 'col6' => "$ ".$presupuesto[monto]);
                     $total = $total + $presupuesto[monto];
                     $i = $i + 1;
                 }
                 if (count($tabla_dp) >= 1) {
-                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 170), 'col3' => array('width' => 170), 'col4' => array('width' => 75), 'col5' => array('justification' => 'right', 'width' => 105))));
+                    $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 30), 'col2' => array('width' => 170), 'col3' => array('width' => 100), 'col4' => array('width' => 75), 'col5' => array('width' => 70), 'col6' => array('justification' => 'right', 'width' => 105))));
                 }
 
                 $datos_pext = array();
@@ -4787,6 +4787,41 @@ class ci_proyectos_extension extends extension_ci {
 
         $this->dep('datos')->tabla('pextension')->set($pe);
         $this->dep('datos')->tabla('pextension')->sincronizar();
+    }
+
+    function conf__cuadro_uni_acad(toba_ei_cuadro $cuadro) {
+        $pext = $this->dep('datos')->tabla('pextension')->get();
+        
+        $multi_uni = array();
+        $aux_uni = $pext[multi_uni];
+        for ($i = 0; $i < strlen($aux_uni); $i++) {
+            if ($aux_uni[$i] != '{' AND $aux_uni[$i] != ',' AND $aux_uni[$i] != '}') {
+                $sigla = $aux_uni[$i] . $aux_uni[$i + 1] . $aux_uni[$i + 2] . $aux_uni[$i + 3];
+                $multi_uni . array_push($multi_uni, $sigla . ' ');
+                $i = $i + 4;
+            }
+        }
+        $multi_uni . array_push($multi_uni, $pext[uni_acad]);
+        // todas las unidades participantes
+        $siglas = $multi_uni;
+        
+
+        $datos = $this->dep('datos')->tabla('presupuesto_extension')->get_montos($pext['id_pext']);
+        //$cuadro->set_datos();
+        // MONTO DECLARADO 
+        $datos_montos= array();
+        for ($i = 0; $i < count($siglas); $i++) {
+            $monto_aux=0;
+            for ($j = 0; $j < count($datos); $j++) {
+                if($siglas[$i]==$datos[$j][uni_acad]){
+                    $monto_aux=$datos[$j][monto];
+                    print_r($monto_aux);
+                }
+            }
+            $datos_montos[$i][uni_acad]=$siglas[$i];
+            $datos_montos[$i][monto]=$monto_aux;
+        }
+        $cuadro->set_datos($datos_montos);
     }
 
     function evt__cuadro_presup__seleccion($datos) {
