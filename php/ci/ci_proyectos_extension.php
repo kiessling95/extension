@@ -4814,8 +4814,7 @@ class ci_proyectos_extension extends extension_ci {
             $monto_aux=0;
             for ($j = 0; $j < count($datos); $j++) {
                 if($siglas[$i]==$datos[$j][uni_acad]){
-                    $monto_aux=$datos[$j][monto];
-                    print_r($monto_aux);
+                    $monto_aux=$monto_aux+$datos[$j][monto];
                 }
             }
             $datos_montos[$i][uni_acad]=$siglas[$i];
