@@ -4,15 +4,22 @@ class dt_unidad_acad extends extension_datos_tabla {
 
     //trae todas las dependencias 
     function get_descripciones() {
-        
-        $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )"
+
+        $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )"
                 . "ORDER BY ua.descripcion";
         return toba::db('extension')->consultar($sql);
     }
-    
-   
+
+    function get_ua_restantes($sigla) {
+
+        $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )"
+                . " WHERE sigla != '".$sigla. "'"
+                . " ORDER BY ua.descripcion";
+        return toba::db('extension')->consultar($sql);
+    }
+
     function get_descripcion($sigla) {
-        
+
         $sql = "select descripcion from unidad_acad where sigla='" . $sigla . "'";
         $resul = toba::db('extension')->consultar($sql);
         if (count($resul) > 0) {
@@ -23,16 +30,15 @@ class dt_unidad_acad extends extension_datos_tabla {
     }
 
     function get_ua_dependencia() {//trae todas menos la UA asociada al usuario logueado, para las ua dependencia de los proyectos 
-        
         $perfil = toba::usuario()->get_perfil_datos();
         if (isset($perfil)) {       //es usuario de la UA
-            $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
+            $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
             $sql = toba::perfil_de_datos()->filtrar($sql);
             $resul = toba::db('extension')->consultar($sql);
-            
-            $sql = "select * FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) ) WHERE sigla<>'AUZA' and sigla<>'ASMA' and sigla<>'" . $resul[0]['sigla'] . "'";
+
+            $sql = "select * FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) ) WHERE sigla<>'AUZA' and sigla<>'ASMA' and sigla<>'" . $resul[0]['sigla'] . "'";
         } else {
-            $sql = "SELECT * FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
+            $sql = "SELECT * FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
         }
         return toba::db('extension')->consultar($sql);
     }
@@ -50,13 +56,13 @@ class dt_unidad_acad extends extension_datos_tabla {
 
     //filtra por dependencia
     function get_ua() {
-        
+
         //primero veo si esta asociado a un perfil de datos departamento y obtengo la ua del departamento
-        $sql = "SELECT d.iddepto,d.idunidad_academica FROM dblink('".$this->dblink_designa()."','SELECT iddepto,idunidad_academica FROM departamento') as d (iddepto INTEGER, idunidad_academica CHARACTER(5))";
-        
+        $sql = "SELECT d.iddepto,d.idunidad_academica FROM dblink('" . $this->dblink_designa() . "','SELECT iddepto,idunidad_academica FROM departamento') as d (iddepto INTEGER, idunidad_academica CHARACTER(5))";
+
         $sql = toba::perfil_de_datos()->filtrar($sql);
 
-        $perfil = toba::perfil_de_datos('designa')->get_restricciones_dimension('designa','unidad_acad');
+        $perfil = toba::perfil_de_datos('designa')->get_restricciones_dimension('designa', 'unidad_acad');
 
 
         if (count($perfil) == 1) {//si solo tiene un registro entonces esta asociado a un perfil de datos departamento
@@ -64,18 +70,17 @@ class dt_unidad_acad extends extension_datos_tabla {
         } else {
             $condicion = "";
         }
-        
-        $sql = "SELECT ua.sigla,ua.descripcion FROM (SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad ') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )) as ua $condicion"
+
+        $sql = "SELECT ua.sigla,ua.descripcion FROM (SELECT ua.sigla,ua.descripcion FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad ') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )) as ua $condicion"
                 . "ORDER BY ua.descripcion";
         $sql = toba::perfil_de_datos()->filtrar($sql);
         $resul = toba::db('extension')->consultar($sql);
-        
+
         return $resul;
     }
 
     function get_ua_departamentos() {//es para el filtro de asignacion materias.El director de departamento no filtra por UA
-        
-        $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('".$this->dblink_designa()."','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
+        $sql = "SELECT ua.sigla,ua.descripcion FROM dblink('" . $this->dblink_designa() . "','SELECT sigla,descripcion FROM unidad_acad') as ua (sigla CHARACTER(5),descripcion CHARACTER(60) )";
         $sql = toba::perfil_de_datos()->filtrar($sql);
         $resul = toba::db('extension')->consultar($sql);
         return $resul;
