@@ -94,6 +94,20 @@ class ci_proyectos_extension extends extension_ci {
                 }
                 $ejes_tematicos = $aux;
 
+
+                $multi_uni = array();
+                $multi_uni . array_push($multi_uni, $datos[uni_acad]);
+                $aux_uni = $datos[multi_uni];
+                for ($i = 0; $i < strlen($aux_uni); $i++) {
+                    if ($aux_uni[$i] != '{' AND $aux_uni[$i] != ',' AND $aux_uni[$i] != '}') {
+                        $sigla = $aux_uni[$i] . $aux_uni[$i + 1] . $aux_uni[$i + 2] . $aux_uni[$i + 3];
+                        $multi_uni . array_push($multi_uni, $sigla . ' ');
+                        $i = $i + 4;
+                    }
+                }
+                // todas las unidades participantes
+                $unidades_participantes = $multi_uni;
+
                 $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($datos[id_pext]);
 
 
@@ -199,12 +213,20 @@ class ci_proyectos_extension extends extension_ci {
                 $tabla_dp = array();
                 //Nombre del Proyecto
                 $tabla_dp[0] = array('col1' => "<b>Nombre del proyecto </b>", 'col2' => '<b>' . mb_strtoupper($datos['denominacion'], 'LATIN1') . '</b>');
-                $tabla_dp[1] = array('col1' => utf8_d_seguro('Unidad Académica'), 'col2' => $datos['uni_acad']);
+                if ($datos[es_multi] == 1) {
+                    $col2 = '';
+                    foreach ($unidades_participantes as $uni) {
+                        $col2 = $col2 . ' - ' . $uni . "\n";
+                    }
+                    $tabla_dp[1] = array('col1' => utf8_d_seguro('Unidades Académicas'), 'col2' => $col2);
+                } else {
+                    $tabla_dp[1] = array('col1' => utf8_d_seguro('Unidad Académica'), 'col2' => $datos['uni_acad']);
+                }
 
 
                 $col2 = '';
                 foreach ($ejes_tematicos as $eje) {
-                    $col2 = '* ' . $eje . "\n";
+                    $col2 = $col2.' - ' . $eje . "\n";
                     //$tabla_dp[$i] = array('col1' => '', 'col2' => '- ' . $eje);
                     //$i = $i + 1;
                 }
@@ -498,11 +520,11 @@ class ci_proyectos_extension extends extension_ci {
                 $total = 0;
                 foreach ($presupuestos as $presupuesto) {
                     if ($i == 0) {
-                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Rubro </b>", 'col3' => "<b> Concepto </b>", 'col4' => utf8_d_seguro('Cantidad'),'col5' => 'Unidad Academica', 'col6' => 'Monto');
+                        $cols_dp = array('col1' => "<b> Nro </b>", 'col2' => "<b> Rubro </b>", 'col3' => "<b> Concepto </b>", 'col4' => utf8_d_seguro('Cantidad'), 'col5' => 'Unidad Academica', 'col6' => 'Monto');
 
                         $tabla_dp = array();
                     }
-                    $tabla_dp[$i] = array('col1' => $i, 'col2' => $presupuesto[rubro], 'col3' => $presupuesto[concepto], 'col4' => $presupuesto[cantidad],'col5' => $presupuesto[uni_acad], 'col6' => "$ ".$presupuesto[monto]);
+                    $tabla_dp[$i] = array('col1' => $i, 'col2' => $presupuesto[rubro], 'col3' => $presupuesto[concepto], 'col4' => $presupuesto[cantidad], 'col5' => $presupuesto[uni_acad], 'col6' => "$ " . $presupuesto[monto]);
                     $total = $total + $presupuesto[monto];
                     $i = $i + 1;
                 }
@@ -4791,7 +4813,7 @@ class ci_proyectos_extension extends extension_ci {
 
     function conf__cuadro_uni_acad(toba_ei_cuadro $cuadro) {
         $pext = $this->dep('datos')->tabla('pextension')->get();
-        
+
         $multi_uni = array();
         $aux_uni = $pext[multi_uni];
         for ($i = 0; $i < strlen($aux_uni); $i++) {
@@ -4804,21 +4826,21 @@ class ci_proyectos_extension extends extension_ci {
         $multi_uni . array_push($multi_uni, $pext[uni_acad]);
         // todas las unidades participantes
         $siglas = $multi_uni;
-        
+
 
         $datos = $this->dep('datos')->tabla('presupuesto_extension')->get_montos($pext['id_pext']);
         //$cuadro->set_datos();
         // MONTO DECLARADO 
-        $datos_montos= array();
+        $datos_montos = array();
         for ($i = 0; $i < count($siglas); $i++) {
-            $monto_aux=0;
+            $monto_aux = 0;
             for ($j = 0; $j < count($datos); $j++) {
-                if($siglas[$i]==$datos[$j][uni_acad]){
-                    $monto_aux=$monto_aux+$datos[$j][monto];
+                if ($siglas[$i] == $datos[$j][uni_acad]) {
+                    $monto_aux = $monto_aux + $datos[$j][monto];
                 }
             }
-            $datos_montos[$i][uni_acad]=$siglas[$i];
-            $datos_montos[$i][monto]=$monto_aux;
+            $datos_montos[$i][uni_acad] = $siglas[$i];
+            $datos_montos[$i][monto] = $monto_aux;
         }
         $cuadro->set_datos($datos_montos);
     }
