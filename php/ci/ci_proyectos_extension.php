@@ -108,6 +108,21 @@ class ci_proyectos_extension extends extension_ci {
                 // todas las unidades participantes
                 $unidades_participantes = $multi_uni;
 
+                $montos = $this->dep('datos')->tabla('presupuesto_extension')->get_montos($datos['id_pext']);
+                //$cuadro->set_datos();
+                // MONTO DECLARADO 
+                $datos_montos = array();
+                for ($i = 0; $i < count($unidades_participantes); $i++) {
+                    $monto_aux = 0;
+                    for ($j = 0; $j < count($montos); $j++) {
+                        if ($unidades_participantes[$i] == $montos[$j][uni_acad]) {
+                            $monto_aux = $monto_aux + $montos[$j][monto];
+                        }
+                    }
+                    $datos_montos[$i][uni_acad] = $unidades_participantes[$i];
+                    $datos_montos[$i][monto] = $monto_aux;
+                }
+
                 $destinatarios = $this->dep('datos')->tabla('destinatarios')->get_listado($datos[id_pext]);
 
 
@@ -226,7 +241,7 @@ class ci_proyectos_extension extends extension_ci {
 
                 $col2 = '';
                 foreach ($ejes_tematicos as $eje) {
-                    $col2 = $col2.' - ' . $eje . "\n";
+                    $col2 = $col2 . ' - ' . $eje . "\n";
                     //$tabla_dp[$i] = array('col1' => '', 'col2' => '- ' . $eje);
                     //$i = $i + 1;
                 }
@@ -536,6 +551,31 @@ class ci_proyectos_extension extends extension_ci {
                 $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Total  = $ ') . $total . '</b>');
                 $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'right', 'width' => 550))));
 
+                if ($datos[es_multi] == 1) {
+                    //salto de linea
+                    $pdf->ezText("\n", 10, ['justification' => 'full']);
+                    // Presupuesto
+                    $datos_pext = array();
+                    $datos_pext[0] = array('col1' => '<b>' . utf8_d_seguro('Resumen Presupuesto') . '</b>');
+                    $pdf->ezTable($datos_pext, array('col1' => ''), ' ', array('showHeadings' => 0, 'shaded' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 550))));
+
+
+                    $tabla_dp = array();
+                    $i = 0;
+                    $total = 0;
+                    foreach ($datos_montos as $uni_presup) {
+                        if ($i == 0) {
+                            $cols_dp = array('col1' => 'Unidad Academica', 'col2' => 'Monto');
+
+                            $tabla_dp = array();
+                        }
+                        $tabla_dp[$i] = array('col1' => $uni_presup[uni_acad], 'col2' => "$ " . $uni_presup[monto]);
+                        $i = $i + 1;
+                    }
+                    if (count($tabla_dp) >= 1) {
+                        $pdf->ezTable($tabla_dp, $cols_dp, '', array('shaded' => 0, 'showLines' => 2, 'width' => 550, 'cols' => array('col1' => array('justification' => 'center', 'width' => 500), 'col2' => array('width' => 50))));
+                    }
+                }
                 /*
                   //
                   $pdf->ezText(utf8_d_seguro('').$datos[''], 10, ['justification' => 'full']);
