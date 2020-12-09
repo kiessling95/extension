@@ -1531,7 +1531,10 @@ class ci_proyectos_extension extends extension_ci {
     //-----------------------------------------------------------------------------
     
     function conf__formulario_observacion(toba_ei_formulario $form) {
-        
+        $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+        if($perfil != null && $perfil == 'admin') {
+            $form->ef('observacion_ua')->set_solo_lectura();
+        }
     }
     
     function evt__formulario_observacion__alta($datos) {

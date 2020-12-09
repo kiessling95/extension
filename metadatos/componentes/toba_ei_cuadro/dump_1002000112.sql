@@ -96,7 +96,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'1002000094', --objeto_cuadro_col
 	'observacion_ua', --clave
 	'3', --orden
-	'Observacion ua', --titulo
+	'Observacion', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
