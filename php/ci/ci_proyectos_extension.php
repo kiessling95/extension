@@ -1,5 +1,5 @@
 <?php
-
+require_once('lib/consultas.php');
 class ci_proyectos_extension extends extension_ci {
 
     // Filtros 
@@ -1525,7 +1525,41 @@ class ci_proyectos_extension extends extension_ci {
         $this->pantalla()->tab("pant_avance")->ocultar();
         $this->pantalla()->tab("pant_historial")->ocultar();
     }
+    
+    //-----------------------------------------------------------------------------
+    //------------------------FORMULARIO OBSERVACION--------------------------------------
+    //-----------------------------------------------------------------------------
+    
+    function conf__formulario_observacion(toba_ei_formulario $form) {
+        
+    }
+    
+    function evt__formulario_observacion__alta($datos) {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos['id_pext'] = $pe['id_pext'];
+        
+        $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
+        $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
+        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
+        
+        $this->set_pantalla('pant_seguimiento');
+    }
+    
+    //-----------------------------------------------------------------------------
+    //------------------------CUADRO OBSERVACION--------------------------------------
+    //-----------------------------------------------------------------------------
 
+    function conf__cuadro_observacion(toba_ei_cuadro $cuadro) {
+        
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $datos = consultas::get_observaciones_existentes($pe['id_pext']);
+       // $datos = $this->dep('datos')->tabla('seguimiento_ua')->get_observaciones($pe[id_pext]);
+        
+        $cuadro->set_datos($datos);
+        
+            
+    }
+    
     // ------------------------------------------------------------------------------
     //------------------------- CUADRO SEGUIMIENTO CENTRAL --------------------------
     //-------------------------------------------------------------------------------
@@ -2011,7 +2045,7 @@ class ci_proyectos_extension extends extension_ci {
 
             if ($pe['id_estado'] != 'EUA ') {
                 $form->ef('id_estado')->set_solo_lectura();
-                $form->ef('observacion_ua')->set_solo_lectura();
+                //$form->ef('observacion_ua')->set_solo_lectura();
             }
 
             $datos[uni_acad] = $pe[uni_acad];
