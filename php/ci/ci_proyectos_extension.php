@@ -541,7 +541,7 @@ class ci_proyectos_extension extends extension_ci {
 
                     $datos = array();
                     $datos[0] = array('col1' => '....................................', 'col2' => '....................................', 'col3' => '....................................');
-                    $datos[1] = array('col1' => 'RECTOR', 'col2' => 'DIRECTOR/CO-DIRECTOR DEL PROYECTO', 'col3' => utf8_d_seguro('SECRETARIO DE EXTENSIÓN / BIENESTAR ESTUDIANTIL '));
+                    $datos[1] = array('col1' => 'DIRECTOR/CO-DIRECTOR DEL PROYECTO', 'col2' => 'SECRETARIO DE EXTENSIÓN / BIENESTAR ESTUDIANTIL', 'col3' => utf8_d_seguro('DECANO'));
                     //$datos=array(array('col1'=>'SOLICITANTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT','col2'=>'DIRECTOR/CO-DIRECTOR DEL PROYECTO','col3'=>utf8_d_seguro('SECRETARIO DE CIENCIA Y TÉCNICA')));
                     $pdf->ezTable($datos, array('col1' => '', 'col2' => '', 'col3' => ''), '', $opciones);
                 }
