@@ -1532,18 +1532,26 @@ class ci_proyectos_extension extends extension_ci {
     
     function conf__formulario_observacion(toba_ei_formulario $form) {
         $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-        if($perfil != null && $perfil == 'admin') {
+        $pe = $this->dep('datos')->tabla('pextension')->get();
+        $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
+        
+        if($perfil != null && $perfil == 'admin' || $seg_ua == null) {
             $form->ef('observacion_ua')->set_solo_lectura();
         }
     }
     
     function evt__formulario_observacion__alta($datos) {
         $pe = $this->dep('datos')->tabla('pextension')->get();
-        $datos['id_pext'] = $pe['id_pext'];
+        $seg_ua = $this->dep('datos')->tabla('seguimiento_ua')->get_listado($pe['id_pext']);
         
-        $this->dep('datos')->tabla('seguimiento_ua')->set($datos);
-        $this->dep('datos')->tabla('seguimiento_ua')->sincronizar();
-        $this->dep('datos')->tabla('seguimiento_ua')->cargar($datos);
+        $datos['id_pext'] = $pe['id_pext'];
+        if($seg_ua != null) {
+            $sql = "UPDATE seguimiento_ua SET observacion_ua ='". $datos['observacion_ua']
+                . "' WHERE id_pext = ".$datos['id_pext'];
+                
+            return toba::db('extension')->consultar($sql);
+        } 
+        
         
         $this->set_pantalla('pant_seguimiento');
     }
