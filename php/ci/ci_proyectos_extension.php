@@ -4799,9 +4799,9 @@ class ci_proyectos_extension extends extension_ci {
         $array = $array . '}';
         $datos['destinatarios'] = $array;
 
-        if ($datos[anio] > date('Y') + 1) {
-            toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
-            $datos[anio] = date('Y') + 1;
+        if ($datos[anio] < date('Y')) {
+
+            $datos[anio] = date('Y')+1;
         }
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
@@ -4820,9 +4820,9 @@ class ci_proyectos_extension extends extension_ci {
 
     function evt__form_actividad__modificacion($datos) {
         $this->valido = false;
-        if ($datos[anio] > date('Y') + 1) {
-            toba::notificacion()->agregar('La actividad tendra fecha de comienzo el anio entrante', 'info');
-            $datos[anio] = date('Y') + 1;
+        if ($datos[anio] < date('Y')) {
+
+            $datos[anio] = date('Y')+1;
         }
 
         $destinatarios = $datos['destinatarios'];
