@@ -36,6 +36,12 @@ class ci_bases extends extension_ci {
         } else {
             $this->s__datos = $this->dep('datos')->tabla('bases_convocatoria')->get_listado();
         }
+        foreach($this->s__datos as $dato => $valor){
+            
+                if(isset($valor['ordenanza']))
+                    $this->s__datos[$dato]['ordenanza']="<a href='".$this->s__datos[$dato]['ordenanza']."'target='_blank'>link a ordenanza</a>";            
+        }
+        
         $cuadro->set_datos($this->s__datos);
     }
 
