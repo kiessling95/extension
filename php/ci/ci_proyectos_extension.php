@@ -3246,6 +3246,21 @@ class ci_proyectos_extension extends extension_ci {
 
             $datos['eje_tematico'] = $ejes;
             $datos['multi_uni'] = $multi_uni;
+            if(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) > 0) {
+                $personal = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($datos['id_pext'],$this->s__datos_filtro);
+                foreach($personal as $per){
+                    if($per['funcion_p'] == "Director"){
+                        $datos[director]=$per['nombre'];
+                        $datos[dir_email]=$per['mail'];
+                        $datos[dir_telefono]=$per['telefono'];
+                    } else if($per['funcion_p'] == "Codirector"){
+                        $datos[co_director]=$per['nombre'];
+                        $datos[co_email]=$per['mail'];
+                        $datos[co_telefono]=$per['telefono'];
+                    }
+                }
+                
+            }
             $form->set_datos($datos);
         }
     }
@@ -3278,6 +3293,7 @@ class ci_proyectos_extension extends extension_ci {
         $datos['multi_uni'] = $array_uni;
 
         // Solo se muestran, no se guardan directamente en la tabla pextension
+        
         unset($datos[director]);
         unset($datos[dir_email]);
         unset($datos[dir_telefono]);
@@ -3305,7 +3321,6 @@ class ci_proyectos_extension extends extension_ci {
     }
 
     function evt__formulario__modificacion($datos) {
-
         $this->valido = false;
         //Obtengo los datos del proyecto cargado
         $datos_pe = $this->dep('datos')->tabla('pextension')->get();
@@ -3566,7 +3581,7 @@ class ci_proyectos_extension extends extension_ci {
         $pe = $this->dep('datos')->tabla('pextension')->get();
         // OBTENGO TODOS LOS INTEGRANTES VIGENTES
         $datos = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($pe['id_pext'], $this->s__datos_filtro);
-
+        
         $cuadro->set_datos($datos);
     }
 
