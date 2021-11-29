@@ -3246,7 +3246,9 @@ class ci_proyectos_extension extends extension_ci {
 
             $datos['eje_tematico'] = $ejes;
             $datos['multi_uni'] = $multi_uni;
-            if(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($interno['hasta']))) > 0) {
+            
+            if(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['fec_hasta']))) > 0) {
+                
                 $personal = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($datos['id_pext'],$this->s__datos_filtro);
                 foreach($personal as $per){
                     if($per['funcion_p'] == "Director"){
