@@ -1513,6 +1513,17 @@ class ci_proyectos_extension extends extension_ci {
                     unset($this->s__datos[$aux]);
                 }
             }
+            if(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($proyecto['fec_hasta']))) > 0 && $proyecto['id_estado'] == 'APRB') {
+                $personal = $this->dep('datos')->tabla('integrante_externo_pe')->get_plantilla($proyecto['id_pext'],$this->s__datos);
+                foreach($personal as $per){
+                    if($per['funcion_p'] == "Director"){
+                        $proyecto[director]=$per['nombre']." ".$per['nro_docum'];
+                        $this->s__datos[$aux][director] = $proyecto[director];
+                    }
+                        
+                }
+                
+            }
             $aux = $aux + 1;
         }
 
@@ -3308,7 +3319,9 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[nro_ord_cs]);
 
         //Cambio de estado a en formulacion ( ESTADO INICIAL )
-        $datos[id_estado] = 'FORM';
+        if(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['fec_hasta']))) <= 0){
+            $datos[id_estado] = 'FORM';
+        }
 
         //responsable de carga proyecto
         $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();
