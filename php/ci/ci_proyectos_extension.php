@@ -362,20 +362,36 @@ class ci_proyectos_extension extends extension_ci {
                     $tabla_dp = array();
                     $i = 0;
                     $j = 0;
+                    $index=0;
                     foreach ($obj_especificos as $obj_especifico) {
                         $plan_actividades = $this->dep('datos')->tabla('plan_actividades')->get_listado($obj_especifico[id_objetivo]);
-
-                        for ($index = 0; $index < count($plan_actividades); $index++) {
-                            $plan = $plan_actividades[$index];
+                        
+                        foreach ($plan_actividades as $plan){
                             $text = '';
-                            foreach ($destinatarios as $destinatario) {
-                                $destinatario_act = $this->dep('datos')->tabla('destinatarios')->get_descripciones($destinatario[id_destinatario]);
+                            $aux_dest = $plan[destinatarios];
+                            $destinatarios = array();
+                            for ($l = 0; $l < strlen($aux_dest); $l++) {
+                                if ($aux_dest[$l] != '{' AND $aux_dest[$l] != ',' AND $aux_dest[$l] != '}') {
+                                    if ($aux_dest[$l + 1] != '{' AND $aux_dest[$l + 1] != ',' AND $aux_dest[$l + 1] != '}') {
+                                        $destinatarios . array_push($destinatarios, $aux_dest[$l] . $aux_dest[$l + 1]);
+                                        $l++;
+                                    } else {
+                                        $destinatarios . array_push($destinatarios, $aux_dest[$l]);
+                                    }
+                                }
+                            }
+                            for ($k = 0; $k < sizeof($destinatarios); $k++) {
+                                $destinatario_act = $this->dep('datos')->tabla('destinatarios')->get_descripciones($destinatarios[$k]);
                                 $text = $text . $destinatario_act[0][descripcion] . "\n";
                             }
+                        
                             $tabla_dp[$j] = array('col1' => $i . ' , ' . $index, 'col2' => $plan[fecha] . ' ' . $plan[anio], 'col3' => $plan[localizacion], 'col4' => $text, 'col5' => $plan[detalle]);
 
                             $j = $j + 1;
-                        }
+                            $index = $index+1;
+                         }
+                        
+                        
                         $i = $i + 1;
                     }
 
@@ -4821,7 +4837,7 @@ class ci_proyectos_extension extends extension_ci {
             $datos = $this->dep('datos')->tabla('plan_actividades')->get();
             $dest = array();
             $aux = $datos['destinatarios'];
-
+            
             for ($i = 0; $i < strlen($aux); $i++) {
                 if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
                     if ($aux[$i + 1] != '{' AND $aux[$i + 1] != ',' AND $aux[$i + 1] != '}') {
@@ -4852,7 +4868,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $array = $array . '}';
         $datos['destinatarios'] = $array;
-
+        
         if ($datos[anio] < date('Y')) {
 
             $datos[anio] = date('Y')+1;
@@ -4887,7 +4903,7 @@ class ci_proyectos_extension extends extension_ci {
         }
         $array = $array . '}';
         $datos['destinatarios'] = $array;
-
+        
         $this->dep('datos')->tabla('plan_actividades')->set($datos);
         $this->dep('datos')->tabla('plan_actividades')->sincronizar();
         $this->s__mostrar_activ = 0;
