@@ -9,7 +9,7 @@ class dt_destinatarios extends extension_datos_tabla {
                     . "d.id_destinatario, "
                     . "d.descripcion "
                     . "FROM destinatarios as d "
-                    . "WHERE d.id_destinatario = $id_dest ";
+                    . "WHERE d.id_destinatario IN $id_dest ";
             $res = toba::db('extension')->consultar($sql);
         } else {
             $res = array();
