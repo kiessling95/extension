@@ -1250,9 +1250,10 @@ class ci_proyectos_extension extends extension_ci {
                 $correcto = true;
                 if (count($proyectos) > 1) {
                     foreach ($proyectos as $proyecto) {
-                        if ($proyecto['id_pext'] != $pextension['id_pext'] && $proyecto['id_estado'] != 'FORM') {
+                        $anio = strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($proyecto['fec_hasta'])));
+                        if ($proyecto['id_pext'] != $pextension['id_pext'] && $proyecto['id_estado'] == 'APRB' && $anio >= 1) {
                             $director_aux = $this->dep('datos')->tabla('integrante_interno_pe')->get_director($proyecto['id_pext'])[0];
-                            if ($director['id_designacion'] == $director_aux['id_designacion']) {
+                            if ($director['nro_docum'] == $director_aux['nro_docum']) {
                                 $validacion = 'El director seleccionado adeuda rendimientos';
                                 toba::notificacion()->agregar($validacion, "error");
                                 $correcto = false;
@@ -3335,9 +3336,7 @@ class ci_proyectos_extension extends extension_ci {
         unset($datos[nro_ord_cs]);
 
         //Cambio de estado a en formulacion ( ESTADO INICIAL )
-        if(strcasecmp(date('Y-m-d'), date('Y-m-d', strtotime($datos['fec_hasta']))) <= 0){
             $datos[id_estado] = 'FORM';
-        }
 
         //responsable de carga proyecto
         $datos[responsable_carga] = toba::manejador_sesiones()->get_id_usuario_instancia();

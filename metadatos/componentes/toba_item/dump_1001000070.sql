@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[1001000070]--  Manual 
+--[1001000070]--  Manual de Carga 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -23,7 +23,7 @@ INSERT INTO apex_item (item_id, proyecto, item, padre_id, padre_proyecto, padre,
 	NULL, --actividad_buffer
 	NULL, --actividad_patron_proyecto
 	NULL, --actividad_patron
-	'Manual', --nombre
+	'Manual de Carga', --nombre
 	NULL, --descripcion
 	'1001000004', --punto_montaje
 	'./manual.php', --actividad_accion
