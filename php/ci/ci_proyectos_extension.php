@@ -4825,20 +4825,13 @@ class ci_proyectos_extension extends extension_ci {
 
         if ($this->dep('datos')->tabla('plan_actividades')->esta_cargada()) {
             $datos = $this->dep('datos')->tabla('plan_actividades')->get();
-            $dest = array();
-            $aux = $datos['destinatarios'];
             
-            for ($i = 0; $i < strlen($aux); $i++) {
-                if ($aux[$i] != '{' AND $aux[$i] != ',' AND $aux[$i] != '}') {
-                    if ($aux[$i + 1] != '{' AND $aux[$i + 1] != ',' AND $aux[$i + 1] != '}') {
-                        $dest . array_push($dest, $aux[$i] . $aux[$i + 1]);
-                        $i++;
-                    } else {
-                        $dest . array_push($dest, $aux[$i]);
-                    }
-                }
-            }
+            $aux = explode(',',$datos['destinatarios']);
+            
+            $dest = str_replace('{', '', $aux);
+            $dest = str_replace('}', '', $dest);
             $datos['destinatarios'] = $dest;
+            
             $form->set_datos($datos);
         }
     }
