@@ -368,14 +368,15 @@ class ci_proyectos_extension extends extension_ci {
                         
                         foreach ($plan_actividades as $plan){
                             $text = '';
-                            $aux_dest = $plan[destinatarios];
-                            $destinatarios = strtr($aux_dest,"{}","()");
+                            if($plan[destinatarios] != '{}'){
+                                $aux_dest = $plan[destinatarios];
+                                $destinatarios = strtr($aux_dest,"{}","()");
                             
-                            $destinatario_act = $this->dep('datos')->tabla('destinatarios')->get_descripciones($destinatarios);
-                            for ($k = 0; $k < sizeof($destinatario_act); $k++) {
-                                $text = $text . $destinatario_act[$k][descripcion] . "\n";
+                                $destinatario_act = $this->dep('datos')->tabla('destinatarios')->get_descripciones($destinatarios);
+                                for ($k = 0; $k < sizeof($destinatario_act); $k++) {
+                                    $text = $text . $destinatario_act[$k][descripcion] . "\n";
+                                }
                             }
-                            
                             $tabla_dp[$j] = array('col1' => $i . ' , ' . $index, 'col2' => $plan[fecha] . ' ' . $plan[anio], 'col3' => $plan[localizacion], 'col4' => $text, 'col5' => $plan[detalle]);
 
                             $j = $j + 1;
